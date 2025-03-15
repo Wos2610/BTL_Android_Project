@@ -17,10 +17,9 @@
         android:layout_weight="1"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        xmlns:app="http://schema.android.com/apk/res/res-auto"
         android:id="@+id/navigation"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="start"
         app:menu="@menu/navigation_items" />
 
