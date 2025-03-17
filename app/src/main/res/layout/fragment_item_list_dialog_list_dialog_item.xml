@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_log_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/dark_gray"
+    android:paddingLeft="@dimen/list_item_spacing"
+    android:paddingTop="@dimen/list_item_spacing"
+    android:paddingRight="@dimen/list_item_spacing"
+    android:paddingBottom="@dimen/list_item_spacing"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    tools:text="Hello">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="24dp">
+
+        <ImageView
+            android:id="@+id/iv_log_item"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_food"
+            android:scaleType="fitCenter"
+            android:layout_marginVertical="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_log_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/white"
+            android:text="Log"
+            android:textAlignment="center"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
