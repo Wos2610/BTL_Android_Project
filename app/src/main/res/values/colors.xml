@@ -6,4 +6,6 @@
     <color name="gray">#BEBFC5</color>
     <color name="dark_black">#171723</color>
     <color name="dark_gray">#262632</color>
+    <color name="blue">#3B88EA</color>
+    <color name="separator">#333333</color>
 </resources>
