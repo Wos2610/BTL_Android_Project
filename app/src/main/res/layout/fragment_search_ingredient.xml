@@ -3,11 +3,166 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_black"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.log_recipe.SearchIngredientFragment">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
+
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/searchToolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            android:background="@color/dark_black"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnBack"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:src="@drawable/ic_arrow_back_24"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:tint="@color/white" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/etSearch"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:background="@android:color/transparent"-->
+<!--                    android:hint="Search"-->
+<!--                    android:text="milk"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textColorHint="@color/light_gray"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/btnClear"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/btnBack"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnClear"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:src="@drawable/ic_tick"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/btnBarcode"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:tint="@color/white" />-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnBarcode"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:src="@drawable/ic_barcode_reader"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:tint="@color/white" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--        </androidx.appcompat.widget.Toolbar>-->
+
+
+        <LinearLayout
+            android:id="@+id/layoutResultsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/searchToolbar">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:text="Search Results"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Only"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:chipStrokeWidth="1dp"
+                app:chipIcon="@drawable/ic_verified"
+                app:chipBackgroundColor="@color/dark_black"
+                app:chipIconTint="@color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Best Matches"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:paddingHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="18sp" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/separator" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewBestMatches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutResultsHeader"
+            tools:listitem="@layout/item_search_ingredient"
+            tools:itemCount="4"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="More Result"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:paddingHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/separator" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMoreResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutResultsHeader"
+            tools:listitem="@layout/item_search_ingredient"
+            tools:itemCount="5"/>
+
+    </LinearLayout>
 
 </FrameLayout>
