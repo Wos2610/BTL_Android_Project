@@ -3,11 +3,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/dark_black"
     tools:context=".presentation.log_recipe.IngredientsFragment">
 
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ingredientsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:clipToPadding="false"
+        android:paddingTop="16dp"
+        android:paddingBottom="80dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_ingredient"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/emptyStateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgEmptyState"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_magnifying_glass"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45"
+            android:alpha="0.7"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/tvEmptyStateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="No Ingredients"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgEmptyState" />
+
+        <TextView
+            android:id="@+id/tvEmptyStateDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Add the list of ingredients in the recipe."
+            android:textColor="@color/light_gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEmptyStateTitle" />
+
+        <Button
+            android:id="@+id/btnAddIngredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/blue"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:text="Add Ingredients"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:cornerRadius="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEmptyStateDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddIngredient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/baseline_add"
+        android:backgroundTint="@color/blue"
+        android:visibility="gone"
+        app:tint="@color/white"
+        tools:visibility="visible" />
+
+
+
+
+
 
 </FrameLayout>
