@@ -8,9 +8,14 @@ import com.google.common.reflect.TypeToken
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import android.content.Context
+import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.remote.onError
+import com.example.btl_android_project.remote.onException
+import com.example.btl_android_project.remote.onSuccess
 import com.google.gson.Gson
 import timber.log.Timber
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,6 +49,19 @@ class DashboardViewModel @Inject constructor(
         } catch (e: Exception) {
             Timber.e("Error reading JSON: ${e.message}")
             emptyList()
+        }
+    }
+
+    fun getStaticRecipeIngredients() {
+        viewModelScope.launch {
+            val result = staticRecipeIngredientRepository.getStaticRecipeIngredients()
+            result.onSuccess {
+                Timber.d("Static recipe ingredients: ${it?.size}")
+            }.onError { error ->
+                Timber.e("Error getting static recipe ingredients: ${error}")
+            }.onException { exeption ->
+                Timber.e("Exception getting static recipe ingredients: ${exeption}")
+            }
         }
     }
 

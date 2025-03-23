@@ -2,8 +2,9 @@ package com.example.btl_android_project.remote.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.btl_android_project.remote.DataInterceptor
 import com.example.btl_android_project.remote.NetworkResultCallAdapterFactory
+import com.example.btl_android_project.remote.interceptor.AuthInterceptor
+import com.example.btl_android_project.remote.interceptor.BasicAuthInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -18,6 +19,8 @@ import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
 
 val API_URL = "https://api.nal.usda.gov/fdc/"
+val API_KEY = "zpcc8adgTnRmJQSibMaPxSHyGbyoPHjisTDrub0k"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object DataApiModule {
@@ -26,7 +29,7 @@ object DataApiModule {
     fun provideOkHttp(): OkHttpClient {
         return OkHttpClient.Builder().apply {
             protocols(listOf(Protocol.HTTP_1_1, Protocol.HTTP_2))
-            addInterceptor(DataInterceptor())
+            addInterceptor(BasicAuthInterceptor(API_KEY, ""))
             addInterceptor(HttpLoggingInterceptor())
             connectTimeout(5, TimeUnit.SECONDS)
             hostnameVerifier { hostname, session -> true }
