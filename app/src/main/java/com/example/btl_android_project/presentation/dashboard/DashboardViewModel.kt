@@ -24,44 +24,9 @@ class DashboardViewModel @Inject constructor(
     val userRepository = UserRepository()
     @Inject lateinit var staticRecipeIngredientRepository: StaticRecipeIngredientRepository
 
-    fun addUser(){
-        userRepository.addUser(1, "username", "email", "password")
-    }
-
-    fun addAllRecipeIngredients(context: Context){
-        val recipeIngredients = readJsonFile("ingredients.json", context)
-        println("Adding ${recipeIngredients.size} ingredients")
-        staticRecipeIngredientRepository.addAllRecipeIngredients(recipeIngredients)
-    }
-
-    private fun readJsonFile(fileName: String, context: Context): List<StaticRecipeIngredient> {
-        return try {
-            val inputStream = context.assets.open(fileName)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val jsonString = reader.readText()
-            reader.close()
-
-            val listType = object : TypeToken<List<StaticRecipeIngredient>>() {}.type
-            val list = Gson().fromJson<List<StaticRecipeIngredient>>(jsonString, listType)
-
-            Timber.d("Total items read: ${list.size}")
-            list
-        } catch (e: Exception) {
-            Timber.e("Error reading JSON: ${e.message}")
-            emptyList()
-        }
-    }
-
-    fun getStaticRecipeIngredients() {
+    fun pullStaticRecipeIngredients() {
         viewModelScope.launch {
-            val result = staticRecipeIngredientRepository.getStaticRecipeIngredients()
-            result.onSuccess {
-                Timber.d("Static recipe ingredients: ${it?.size}")
-            }.onError { error ->
-                Timber.e("Error getting static recipe ingredients: ${error}")
-            }.onException { exeption ->
-                Timber.e("Exception getting static recipe ingredients: ${exeption}")
-            }
+            staticRecipeIngredientRepository.pullStaticRecipeIngredients()
         }
     }
 

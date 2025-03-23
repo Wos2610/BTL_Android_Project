@@ -7,5 +7,13 @@ import javax.inject.Inject
 class StaticRecipeIngredientRemoteDataSourceImpl @Inject constructor(
     private val staticRecipeIngredientService: StaticRecipeIngredientService,
 ) : StaticRecipeIngredientRemoteDataSource {
-    override suspend fun getStaticRecipeIngredients() = staticRecipeIngredientService.getStaticRecipeIngredients()
+    override suspend fun getStaticRecipeIngredients(
+        pageSize: Int,
+        pageNumber: Int,
+        dataType: String,
+    ) = staticRecipeIngredientService.getStaticRecipeIngredients(
+        pageSize = pageSize,
+        pageNumber = pageNumber,
+        dataType = dataType,
+    )
 }

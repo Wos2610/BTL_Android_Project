@@ -26,7 +26,6 @@ class DashboardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getStaticRecipeIngredients()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,13 +41,6 @@ class DashboardFragment : Fragment() {
         binding.tvFood.setOnClickListener{
             val action = DashboardFragmentDirections.actionDashboardFragmentToLogMealFragment()
             findNavController().navigate(action)
-        }
-
-        binding.tvExercise.setOnClickListener{
-            context?.let {
-                viewModel.addAllRecipeIngredients(it)
-            }
-
         }
     }
 
