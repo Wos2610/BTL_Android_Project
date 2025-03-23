@@ -2,6 +2,10 @@ package com.example.btl_android_project.presentation.user_goal
 
 import androidx.lifecycle.ViewModel
 
-class UserInformation2ViewModel : ViewModel() {
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class UserInformation2ViewModel @Inject constructor(): ViewModel() {
     // TODO: Implement the ViewModel
 }

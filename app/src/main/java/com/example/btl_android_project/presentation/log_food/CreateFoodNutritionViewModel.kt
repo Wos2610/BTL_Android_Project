@@ -2,6 +2,10 @@ package com.example.btl_android_project.presentation.log_food
 
 import androidx.lifecycle.ViewModel
 
-class CreateFoodNutritionViewModel : ViewModel() {
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class CreateFoodNutritionViewModel @Inject constructor(): ViewModel() {
     // TODO: Implement the ViewModel
 }

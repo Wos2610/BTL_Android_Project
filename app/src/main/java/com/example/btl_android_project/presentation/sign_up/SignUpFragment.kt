@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentSignUpBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!

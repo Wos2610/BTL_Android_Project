@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentUserGoalBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserGoalFragment : Fragment() {
     private var _binding: FragmentUserGoalBinding? = null
     private val binding get() = _binding!!

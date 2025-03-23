@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogMealBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LogMealFragment : Fragment() {
     private var _binding: FragmentLogMealBinding? = null
     private val binding get() = _binding!!

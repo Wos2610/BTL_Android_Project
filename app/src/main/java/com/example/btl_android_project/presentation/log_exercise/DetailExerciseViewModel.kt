@@ -1,7 +1,10 @@
 package com.example.btl_android_project.presentation.log_exercise
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DetailExerciseViewModel : ViewModel() {
+@HiltViewModel
+class DetailExerciseViewModel @Inject constructor(): ViewModel() {
     // TODO: Implement the ViewModel
 }

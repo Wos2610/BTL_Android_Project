@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentUserActivityLevelBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserActivityLevelFragment : Fragment() {
     private var _binding: FragmentUserActivityLevelBinding? = null
     private val binding get() = _binding!!

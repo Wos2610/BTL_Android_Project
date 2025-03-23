@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentSearchIngredientBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchIngredientFragment : Fragment() {
     private var _binding: FragmentSearchIngredientBinding? = null
     private val binding get() = _binding!!

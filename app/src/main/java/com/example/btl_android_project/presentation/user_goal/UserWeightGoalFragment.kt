@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentUserWeightGoalBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserWeightGoalFragment : Fragment() {
     private var _binding: FragmentUserWeightGoalBinding? = null
     private val binding get() = _binding!!

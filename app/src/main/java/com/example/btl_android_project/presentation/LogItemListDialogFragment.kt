@@ -11,19 +11,10 @@ import android.widget.TextView
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentItemListDialogListDialogItemBinding
 import com.example.btl_android_project.databinding.FragmentItemListDialogListDialogBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Customize parameter argument names
 const val ARG_ITEM_COUNT = 4
-
-/**
- *
- * A fragment that shows a list of items as a modal bottom sheet.
- *
- * You can show this modal bottom sheet from your activity like this:
- * <pre>
- *    LogItemListDialogFragment.newInstance(30).show(supportFragmentManager, "dialog")
- * </pre>
- */
+@AndroidEntryPoint
 class LogItemListDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentItemListDialogListDialogBinding? = null

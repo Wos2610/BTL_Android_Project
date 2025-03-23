@@ -11,7 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDashboardBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -36,6 +38,13 @@ class DashboardFragment : Fragment() {
         binding.tvFood.setOnClickListener{
             val action = DashboardFragmentDirections.actionDashboardFragmentToLogMealFragment()
             findNavController().navigate(action)
+        }
+
+        binding.tvExercise.setOnClickListener{
+            context?.let {
+                viewModel.addAllRecipeIngredients(it)
+            }
+
         }
     }
 

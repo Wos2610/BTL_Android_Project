@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentNewRecipeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NewRecipeFragment : Fragment() {
     private var _binding: FragmentNewRecipeBinding? = null
     private val binding get() = _binding!!
