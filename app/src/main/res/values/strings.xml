@@ -14,4 +14,6 @@
     <string name="exercise">Exercise</string>
     <string name="search">Search</string>
     <string name="date_created">Date Created</string>
+    <string name="todo">TODO</string>
+    <string name="directions">Directions</string>
 </resources>

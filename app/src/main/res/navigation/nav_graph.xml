@@ -150,5 +150,10 @@
         android:id="@+id/logAllFragment"
         android:name="com.example.btl_android_project.presentation.log_all.LogAllFragment"
         android:label="fragment_log_all"
-        tools:layout="@layout/fragment_log_all" />
+        tools:layout="@layout/fragment_log_all" >
+        <action
+            android:id="@+id/action_logAllFragment_to_createMealFragment"
+            app:destination="@id/createMealFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 </navigation>

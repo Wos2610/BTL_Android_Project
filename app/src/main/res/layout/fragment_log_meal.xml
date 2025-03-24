@@ -8,6 +8,7 @@
     android:background="@color/dark_black">
 
     <include
+        android:id="@+id/btn_create_meal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
