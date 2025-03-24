@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogFoodBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,10 @@ class LogFoodFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvFoods.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = FoodAdapter(viewModel.foods)
+        }
     }
 
     override fun onDestroyView() {

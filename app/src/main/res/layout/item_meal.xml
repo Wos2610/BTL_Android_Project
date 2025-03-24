@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="10dp"
+    app:cardBackgroundColor="@color/dark_gray"
+    app:cardElevation="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Meal Image -->
+        <ImageView
+            android:id="@+id/ivMeal"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_food"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_rounded_image"
+            android:layout_alignParentStart="true" />
+
+        <!-- Meal Name -->
+        <TextView
+            android:id="@+id/tvMealName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meal Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_toEndOf="@id/ivMeal"
+            android:layout_marginStart="12dp"
+            android:layout_alignParentTop="true" />
+
+        <!-- Nutrition Info -->
+        <TextView
+            android:id="@+id/tvMealInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carbs 0g, Fat 0g, Protein 0g"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_toEndOf="@id/ivMeal"
+            android:layout_marginStart="12dp"
+            android:layout_below="@id/tvMealName" />
+
+        <!-- Add Button -->
+        <ImageView
+            android:id="@+id/btnAddMeal"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/baseline_add"
+            android:background="@drawable/bg_circle_button"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:tint="@android:color/white" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

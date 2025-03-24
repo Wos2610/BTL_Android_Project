@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.setupWithNavController(navController)
 
         binding.fab.setOnClickListener {
-            navController.navigate(R.id.action_global_logItemListDialogFragment)
+            val action = R.id.action_global_logItemListDialogFragment
+            navController.navigate(action)
         }
     }
 }

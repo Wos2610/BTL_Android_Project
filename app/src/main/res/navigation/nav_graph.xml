@@ -138,8 +138,17 @@
         android:id="@+id/logItemListDialogFragment"
         android:name="com.example.btl_android_project.presentation.LogItemListDialogFragment"
         android:label="fragment_item_list_dialog_list_dialog"
-        tools:layout="@layout/fragment_item_list_dialog_list_dialog" />
+        tools:layout="@layout/fragment_item_list_dialog_list_dialog" >
+        <action
+            android:id="@+id/action_logItemListDialogFragment_to_logAllFragment"
+            app:destination="@id/logAllFragment" />
+    </dialog>
     <action
         android:id="@+id/action_global_logItemListDialogFragment"
         app:destination="@id/logItemListDialogFragment" />
+    <fragment
+        android:id="@+id/logAllFragment"
+        android:name="com.example.btl_android_project.presentation.log_all.LogAllFragment"
+        android:label="fragment_log_all"
+        tools:layout="@layout/fragment_log_all" />
 </navigation>
