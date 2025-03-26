@@ -1,7 +1,11 @@
 package com.example.btl_android_project.remote.datasource
 
+import com.example.btl_android_project.entity.StaticRecipeIngredient
+import com.example.btl_android_project.remote.Resource
 import com.example.btl_android_project.remote.domain.StaticRecipeIngredientRemoteDataSource
 import com.example.btl_android_project.remote.service.StaticRecipeIngredientService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StaticRecipeIngredientRemoteDataSourceImpl @Inject constructor(
@@ -11,9 +15,13 @@ class StaticRecipeIngredientRemoteDataSourceImpl @Inject constructor(
         pageSize: Int,
         pageNumber: Int,
         dataType: String,
-    ) = staticRecipeIngredientService.getStaticRecipeIngredients(
-        pageSize = pageSize,
-        pageNumber = pageNumber,
-        dataType = dataType,
-    )
+    ): Resource<List<StaticRecipeIngredient>> {
+        return withContext(Dispatchers.IO) {
+            staticRecipeIngredientService.getStaticRecipeIngredients(
+                pageSize = pageSize,
+                pageNumber = pageNumber,
+                dataType = dataType,
+            )
+        }
+    }
 }

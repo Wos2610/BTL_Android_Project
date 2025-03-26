@@ -24,11 +24,7 @@
         android:id="@+id/dashboardFragment"
         android:name="com.example.btl_android_project.presentation.dashboard.DashboardFragment"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
-        <action
-            android:id="@+id/action_dashboardFragment_to_logMealFragment"
-            app:destination="@id/logMealFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_dashboard" />
     <fragment
         android:id="@+id/detailExerciseFragment"
         android:name="com.example.btl_android_project.presentation.log_exercise.DetailExerciseFragment"
@@ -141,11 +137,14 @@
         tools:layout="@layout/fragment_item_list_dialog_list_dialog" >
         <action
             android:id="@+id/action_logItemListDialogFragment_to_logAllFragment"
-            app:destination="@id/logAllFragment" />
+            app:destination="@id/logAllFragment"
+            app:popUpTo="@id/logItemListDialogFragment"
+            app:popUpToInclusive="false" />
     </dialog>
     <action
         android:id="@+id/action_global_logItemListDialogFragment"
-        app:destination="@id/logItemListDialogFragment" />
+        app:destination="@id/logItemListDialogFragment"
+        app:popUpTo="@id/dashboardFragment" />
     <fragment
         android:id="@+id/logAllFragment"
         android:name="com.example.btl_android_project.presentation.log_all.LogAllFragment"
@@ -153,7 +152,6 @@
         tools:layout="@layout/fragment_log_all" >
         <action
             android:id="@+id/action_logAllFragment_to_createMealFragment"
-            app:destination="@id/createMealFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/createMealFragment" />
     </fragment>
 </navigation>

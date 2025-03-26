@@ -26,6 +26,7 @@ class DashboardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.getAccessToken()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,11 +38,6 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.tvFood.setOnClickListener{
-            val action = DashboardFragmentDirections.actionDashboardFragmentToLogMealFragment()
-            findNavController().navigate(action)
-        }
     }
 
     override fun onDestroyView() {

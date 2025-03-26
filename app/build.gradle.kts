@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +8,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -40,7 +44,23 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
+
+    val localProperties = Properties().apply {
+        load(FileInputStream(rootProject.file("local.properties")))
+    }
+
+    defaultConfig {
+        buildConfigField("String", "USDA_API_URL", "\"${localProperties["usda.api.url"]}\"")
+        buildConfigField("String", "USDA_API_KEY", "\"${localProperties["usda.api.key"]}\"")
+        buildConfigField("String", "FAT_SECRET_API_URL", "\"${localProperties["fatsecret.api.url"]}\"")
+        buildConfigField("String", "OAUTH_FAT_SECRET_API_URL", "\"${localProperties["oauth.fatsecret.url"]}\"")
+        buildConfigField("String", "CLIENT_ID", "\"${localProperties["oauth.client.id"]}\"")
+        buildConfigField("String", "CLIENT_SECRET", "\"${localProperties["oauth.client.secret"]}\"")
+    }
+
+
 }
 
 dependencies {
@@ -74,4 +94,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
 }
