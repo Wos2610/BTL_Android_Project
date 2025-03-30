@@ -26,7 +26,6 @@ class DashboardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getAccessToken()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

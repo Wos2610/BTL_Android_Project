@@ -1,6 +1,10 @@
 package com.example.btl_android_project.firestore.di
 
+import com.example.btl_android_project.firestore.datasource.StaticFoodFireStoreDataSourceImpl
+import com.example.btl_android_project.firestore.datasource.StaticRecipeFireStoreDataSourceImpl
 import com.example.btl_android_project.firestore.datasource.StaticRecipeIngredientFireStoreDataSourceImpl
+import com.example.btl_android_project.firestore.domain.StaticFoodFireStoreDataSource
+import com.example.btl_android_project.firestore.domain.StaticRecipeFireStoreDataSource
 import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
 import dagger.Binds
 import dagger.Module
@@ -14,4 +18,14 @@ abstract class FireStoreDataModule {
     abstract fun bindStaticRecipeIngredientFireStoreDataSource(
         staticRecipeIngredientFireStoreDataSourceImpl: StaticRecipeIngredientFireStoreDataSourceImpl
     ): StaticRecipeIngredientFireStoreDataSource
+
+    @Binds
+    abstract fun bindStaticRecipeFireStoreDataSource(
+        staticRecipeFireStoreDataSourceImpl: StaticRecipeFireStoreDataSourceImpl
+    ): StaticRecipeFireStoreDataSource
+
+    @Binds
+    abstract fun bindStaticFoodFireStoreDataSource(
+        staticFoodFireStoreDataSourceImpl: StaticFoodFireStoreDataSourceImpl
+    ): StaticFoodFireStoreDataSource
 }

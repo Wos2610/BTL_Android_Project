@@ -17,17 +17,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
 import com.example.btl_android_project.BuildConfig
-import com.example.btl_android_project.entity.Direction
-import com.example.btl_android_project.entity.Ingredient
-import com.example.btl_android_project.entity.RecipeCategory
-import com.example.btl_android_project.remote.FatSecretTokenManager
+import com.example.btl_android_project.remote.model.Direction
+import com.example.btl_android_project.remote.model.Ingredient
+import com.example.btl_android_project.remote.model.RecipeCategory
 import com.example.btl_android_project.remote.interceptor.BearerInterceptor
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.coroutines.CoroutineScope
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -101,7 +99,11 @@ object DataApiModule {
             baseUrl(BuildConfig.FAT_SECRET_API_URL)
             client(okHttpClient)
             addConverterFactory(
-                RetrofitGsonConfig.createGsonConverterFactory()
+                GsonConverterFactory.create(
+                    GsonBuilder()
+                        .setLenient()
+                        .create()
+                )
             )
             addCallAdapterFactory(NetworkResultCallAdapterFactory.create())
         }.build()
@@ -124,79 +126,5 @@ object DataApiModule {
             )
             addCallAdapterFactory(NetworkResultCallAdapterFactory.create())
         }.build()
-    }
-}
-
-class RetrofitGsonConfig {
-    companion object {
-        fun createGsonConverterFactory(): GsonConverterFactory {
-            val gson = GsonBuilder()
-                .setLenient()
-                // Explicit type adapters with full type specification
-                .registerTypeAdapter(
-                    object : TypeToken<List<String>>() {}.type,
-                    createListTypeAdapter(String::class.java)
-                )
-                .registerTypeAdapter(
-                    object : TypeToken<List<RecipeCategory>>() {}.type,
-                    createListTypeAdapter(RecipeCategory::class.java)
-                )
-                .registerTypeAdapter(
-                    object : TypeToken<List<Ingredient>>() {}.type,
-                    createListTypeAdapter(Ingredient::class.java)
-                )
-                .registerTypeAdapter(
-                    object : TypeToken<List<Direction>>() {}.type,
-                    createListTypeAdapter(Direction::class.java)
-                )
-                .create()
-
-            return GsonConverterFactory.create(gson)
-        }
-
-        // Generic type adapter with explicit type handling
-        private fun <T> createListTypeAdapter(
-            elementClass: Class<T>
-        ): TypeAdapter<List<T>> {
-            return object : TypeAdapter<List<T>>() {
-                override fun write(out: JsonWriter, value: List<T>?) {
-                    if (value == null) {
-                        out.nullValue()
-                        return
-                    }
-                    out.beginArray()
-                    value.forEach { item ->
-                        when (item) {
-                            is String -> out.value(item)
-                            else -> Gson().toJson(item, elementClass, out)
-                        }
-                    }
-                    out.endArray()
-                }
-
-                override fun read(input: JsonReader): List<T>? {
-                    val list = mutableListOf<T>()
-
-                    input.beginArray()
-                    while (input.hasNext()) {
-                        val item: T = when (elementClass) {
-                            String::class.java -> input.nextString() as T
-                            else -> Gson().fromJson(input, elementClass)
-                        }
-                        list.add(item)
-                    }
-                    input.endArray()
-
-                    return list
-                }
-            }
-        }
-
-        // Additional helper methods for specific conversions
-        fun createCustomGson(): Gson {
-            return GsonBuilder()
-                .setLenient()
-                .create()
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.btl_android_project.remote.di
 import com.example.btl_android_project.remote.service.FatSecretAuthService
-import com.example.btl_android_project.remote.service.RecipeService
+import com.example.btl_android_project.remote.service.StaticFoodService
+import com.example.btl_android_project.remote.service.StaticRecipeService
 import com.example.btl_android_project.remote.service.StaticRecipeIngredientService
 import dagger.Module
 import dagger.Provides
@@ -26,7 +27,13 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun provideRecipeService(@FatSecretRetrofit retrofit: Retrofit) : RecipeService {
-        return retrofit.create(RecipeService::class.java)
+    fun provideRecipeService(@FatSecretRetrofit retrofit: Retrofit) : StaticRecipeService {
+        return retrofit.create(StaticRecipeService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideStaticFoodService(@FatSecretRetrofit retrofit: Retrofit) : StaticFoodService {
+        return retrofit.create(StaticFoodService::class.java)
     }
 }
