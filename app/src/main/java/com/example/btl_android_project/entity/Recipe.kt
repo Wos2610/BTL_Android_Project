@@ -7,5 +7,6 @@ data class Recipe(
     val name: String = "",
     val imageUrl: String = "",
     val instructions: String = "",
-    val calories: Float = 0f
+    val calories: Float = 0f,
+    val userId: Int = 0,
 ) : Serializable
