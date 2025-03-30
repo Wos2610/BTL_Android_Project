@@ -42,9 +42,6 @@ class MainActivity : AppCompatActivity() {
             val action = R.id.action_global_logItemListDialogFragment
             navController.navigate(action)
         }
-
-        askNotificationPermission()
-        logRegToken()
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
@@ -58,47 +55,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
-                println("Permission rationale")
-            } else {
-                // Directly ask for the permission
-                println("Requesting permission")
-                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-
-    }
-
-    fun logRegToken() {
-        Firebase.messaging.getToken().addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
-            }
-
-            val token = task.result
-
-            // Log and toast
-            val msg = "FCM Registration token: $token"
-            Log.d(TAG, token)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun runtimeEnableAutoInit() {
-        Firebase.messaging.isAutoInitEnabled = true
-    }
+//    private fun askNotificationPermission() {
+//        // This is only necessary for API level >= 33 (TIRAMISU)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+//                PackageManager.PERMISSION_GRANTED
+//            ) {
+//                // FCM SDK (and your app) can post notifications.
+//            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+//                // TODO: display an educational UI explaining to the user the features that will be enabled
+//                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+//                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+//                //       If the user selects "No thanks," allow the user to continue without notifications.
+//                println("Permission rationale")
+//            } else {
+//                // Directly ask for the permission
+//                println("Requesting permission")
+//                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+//            }
+//        }
+//
+//    }
+//
+//    fun logRegToken() {
+//        Firebase.messaging.getToken().addOnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+//                return@addOnCompleteListener
+//            }
+//
+//            val token = task.result
+//
+//            // Log and toast
+//            val msg = "FCM Registration token: $token"
+//            Log.d(TAG, token)
+//            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    fun runtimeEnableAutoInit() {
+//        Firebase.messaging.isAutoInitEnabled = true
+//    }
 
     companion object {
         private const val TAG = "MainActivity"
