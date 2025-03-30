@@ -16,7 +16,7 @@ class StaticFoodFireStoreDataSourceImpl @Inject constructor(
         val tasks = mutableListOf<Task<Void>>()
 
         foods.forEachIndexed { index, food ->
-            val docRef = firestore.collection("static_foods").document(food.foodId.toString())
+            val docRef = firestore.collection(STATIC_FOODS_COLLECTION).document(food.foodId.toString())
             batch.set(docRef, food)
 
             if (index > 0 && index % 500 == 0) {
@@ -38,5 +38,14 @@ class StaticFoodFireStoreDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Timber.e("Batch commit failed: ${e.message}")
         }
+    }
+
+    override suspend fun pullFoods(): List<StaticFood> {
+        val foods = firestore.collection(STATIC_FOODS_COLLECTION).get().await()
+        return foods.toObjects(StaticFood::class.java)
+    }
+
+    companion object{
+        private const val STATIC_FOODS_COLLECTION = "static_foods"
     }
 }

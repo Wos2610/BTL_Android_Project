@@ -8,6 +8,7 @@ import com.example.btl_android_project.remote.onError
 import com.example.btl_android_project.remote.onException
 import com.example.btl_android_project.remote.onSuccess
 import com.example.btl_android_project.utils.mapToStaticRecipeEntity
+import com.example.btl_android_project.utils.mapToStaticRecipeEntityList
 import com.example.btl_android_project.utils.mapToStaticRecipeList
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -60,6 +61,12 @@ class StaticRecipesRepository @Inject constructor(
         val recipes = staticRecipeDao.getAllStaticRecipes()
         Timber.d("Pushing ${recipes.size} recipes to Firestore")
         staticRecipeFireStoreDataSource.addAllRecipes(mapToStaticRecipeList(recipes))
+    }
+
+    suspend fun pullStaticRecipesFromFireStore() {
+        val recipes = staticRecipeFireStoreDataSource.pullRecipes()
+        Timber.d("Recipes from Firestore: $recipes")
+        staticRecipeDao.insertAllStaticRecipes(mapToStaticRecipeEntityList(recipes))
     }
 
     companion object {

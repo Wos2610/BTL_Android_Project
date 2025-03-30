@@ -67,6 +67,10 @@ fun mapToStaticRecipeList(entityList: List<StaticRecipesEntity>): List<StaticRec
     return entityList.map { mapToStaticRecipe(it) }
 }
 
+fun mapToStaticRecipeEntityList(recipeList: List<StaticRecipe>): List<StaticRecipesEntity> {
+    return recipeList.map { mapToStaticRecipeEntity(it) }
+}
+
 fun mapToStaticFoodEntity(staticFood: StaticFood): StaticFoodEntity {
     val gson = Gson()
 
@@ -93,4 +97,8 @@ fun mapToStaticFood(entity: StaticFoodEntity): StaticFood {
 
 fun mapToStaticFoodList(entityList: List<StaticFoodEntity>): List<StaticFood> {
     return entityList.map { mapToStaticFood(it) }
+}
+
+fun mapToStaticFoodEntityList(staticFoodList: List<StaticFood>): List<StaticFoodEntity> {
+    return staticFoodList.map { mapToStaticFoodEntity(it) }
 }

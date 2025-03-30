@@ -34,4 +34,10 @@ class StaticRecipeIngredientRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun pullStaticRecipeIngredientsFromFireStore() {
+        val recipeIngredients = staticRecipeIngredientFireStoreDataSource.pullRecipeIngredients()
+        Timber.d("Recipe ingredients from Firestore: $recipeIngredients")
+        staticRecipeIngredientDao.insertAllIngredients(recipeIngredients)
+    }
 }

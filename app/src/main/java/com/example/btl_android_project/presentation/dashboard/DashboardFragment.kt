@@ -26,6 +26,7 @@ class DashboardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.loadDataFromFireStore()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

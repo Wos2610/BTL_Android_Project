@@ -4,14 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.example.btl_android_project.repository.StaticRecipeIngredientRepository
 import com.example.btl_android_project.repository.UserRepository
 import androidx.lifecycle.viewModelScope
-import com.example.btl_android_project.remote.FatSecretTokenManager
-import com.example.btl_android_project.remote.domain.StaticRecipeRemoteDataSource
-import com.example.btl_android_project.remote.onError
-import com.example.btl_android_project.remote.onException
-import com.example.btl_android_project.remote.onSuccess
 import com.example.btl_android_project.repository.StaticFoodsRepository
 import com.example.btl_android_project.repository.StaticRecipesRepository
-import timber.log.Timber
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,6 +39,14 @@ class DashboardViewModel @Inject constructor(
     fun pushStaticFoodsToFireStore() {
         viewModelScope.launch {
             staticFoodRepository.pushToFireStore()
+        }
+    }
+
+    fun loadDataFromFireStore() {
+        viewModelScope.launch {
+            staticFoodRepository.pullFromFireStore()
+            staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore()
+            staticRecipesRepository.pullStaticRecipesFromFireStore()
         }
     }
 

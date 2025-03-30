@@ -1,6 +1,7 @@
 package com.example.btl_android_project.firestore.datasource
 
 import com.example.btl_android_project.firestore.domain.StaticRecipeFireStoreDataSource
+import com.example.btl_android_project.remote.model.StaticFood
 import com.example.btl_android_project.remote.model.StaticRecipe
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -17,7 +18,7 @@ class StaticRecipeFireStoreDataSourceImpl @Inject constructor(
         val tasks = mutableListOf<Task<Void>>()
 
         recipes.forEachIndexed { index, recipe ->
-            val docRef = firestore.collection("static_recipes").document(recipe.recipeId.toString())
+            val docRef = firestore.collection(STATIC_RECIPES_COLLECTION).document(recipe.recipeId.toString())
             batch.set(docRef, recipe)
 
             if (index > 0 && index % 500 == 0) {
@@ -39,5 +40,14 @@ class StaticRecipeFireStoreDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Timber.e("Batch commit failed: ${e.message}")
         }
+    }
+
+    override suspend fun pullRecipes(): List<StaticRecipe> {
+        val recipes = firestore.collection(STATIC_RECIPES_COLLECTION).get().await()
+        return recipes.toObjects(StaticRecipe::class.java)
+    }
+
+    companion object{
+        private const val STATIC_RECIPES_COLLECTION = "static_recipes"
     }
 }

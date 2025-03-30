@@ -8,6 +8,7 @@ import com.example.btl_android_project.remote.onError
 import com.example.btl_android_project.remote.onException
 import com.example.btl_android_project.remote.onSuccess
 import com.example.btl_android_project.utils.mapToStaticFoodEntity
+import com.example.btl_android_project.utils.mapToStaticFoodEntityList
 import com.example.btl_android_project.utils.mapToStaticFoodList
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -170,6 +171,13 @@ class StaticFoodsRepository @Inject constructor(
         val foods = staticFoodDao.getAllStaticFoods()
         Timber.d("Pushing ${foods.size} foods to Firestore")
         staticFoodFireStoreDataSource.addAllFoods(mapToStaticFoodList(foods))
+    }
+
+    suspend fun pullFromFireStore() {
+        Timber.d("Pulling foods from Firestore")
+        val foods = staticFoodFireStoreDataSource.pullFoods()
+        Timber.d("Pulled ${foods.size} foods from Firestore")
+        staticFoodDao.insertAllStaticFoods(mapToStaticFoodEntityList(foods))
     }
 
     companion object {
