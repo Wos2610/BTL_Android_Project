@@ -8,13 +8,14 @@ object NetworkUtils {
     suspend fun <T> processCall(fetchData: suspend () -> Response<T>) : Resource<T> {
         return try{
             val response = fetchData.invoke()
-//            Log.d(TAG, "body: ${response.body()}")
+            println("body: ${response.body()}")
             if(response.isSuccessful){
+                Log.d(TAG, "processCall success ${response.raw()}")
                 Timber.d("processCall success")
                 Resource.Success(response.body())
             }
             else{
-                Timber.d("processCall fail/error: ${response.code()} ${response.message()}")
+                Timber.d("processCall fail/error: ${response.code()} ${response.body()}")
                 Resource.DataError(response.code())
             }
         } catch (e: Exception){

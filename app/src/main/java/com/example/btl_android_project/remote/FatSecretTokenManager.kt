@@ -38,7 +38,14 @@ class FatSecretTokenManager @Inject constructor(
                 }
 
                 // Refresh token
-                refreshAccessToken()
+                val refreshToken = refreshAccessToken()
+                if (refreshToken.isNotBlank()) {
+                    // Log the new token
+                    println("New Token: $refreshToken")
+                } else {
+                    println("Failed to refresh token.")
+                }
+                refreshToken
             }
         }
     }
@@ -71,7 +78,7 @@ class FatSecretTokenManager @Inject constructor(
 
             is Resource.DataError<*>,
             is Resource.Exception<*> -> {
-                throw IOException("Failed to refresh access token")
+              throw IOException("Failed to refresh token.")
             }
         }.toString()
     }
