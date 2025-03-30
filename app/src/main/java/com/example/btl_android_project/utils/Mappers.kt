@@ -1,6 +1,6 @@
 package com.example.btl_android_project.utils
 
-import com.example.btl_android_project.entity.StaticFoodEntity
+import com.example.btl_android_project.local.entity.StaticFoodEntity
 import com.example.btl_android_project.remote.model.Directions
 import com.example.btl_android_project.remote.model.Ingredients
 import com.example.btl_android_project.remote.model.RecipeCategories
@@ -8,7 +8,7 @@ import com.example.btl_android_project.remote.model.RecipeImages
 import com.example.btl_android_project.remote.model.RecipeTypes
 import com.example.btl_android_project.remote.model.ServingSizes
 import com.example.btl_android_project.remote.model.StaticRecipe
-import com.example.btl_android_project.entity.StaticRecipesEntity
+import com.example.btl_android_project.local.entity.StaticRecipesEntity
 import com.example.btl_android_project.remote.model.Servings
 import com.example.btl_android_project.remote.model.StaticFood
 import com.google.gson.Gson

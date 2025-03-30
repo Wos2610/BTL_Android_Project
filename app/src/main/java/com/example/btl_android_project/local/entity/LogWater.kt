@@ -1,11 +1,11 @@
-package com.example.btl_android_project.entity
+package com.example.btl_android_project.local.entity
 
 import java.io.Serializable
 
-data class LogWeight(
+data class LogWater(
     val id: Int = 0,
     val userId: Int = 0,
     val dailyDiaryId: Int = 0,
-    val weight: Float = 0f,
+    val amountMl: Int = 0,
     val logTime: String = ""
 ) : Serializable

@@ -1,6 +1,6 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.entity.User
+import com.example.btl_android_project.local.entity.User
 import com.google.firebase.firestore.FirebaseFirestore
 import timber.log.Timber
 import javax.inject.Inject

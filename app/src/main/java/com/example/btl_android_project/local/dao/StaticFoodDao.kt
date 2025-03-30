@@ -3,7 +3,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.btl_android_project.entity.StaticFoodEntity
+import com.example.btl_android_project.local.entity.StaticFoodEntity
 
 @Dao
 interface StaticFoodDao {

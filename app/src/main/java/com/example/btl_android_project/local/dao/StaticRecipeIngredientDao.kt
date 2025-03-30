@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.btl_android_project.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 
 @Dao
 interface StaticRecipeIngredientDao {

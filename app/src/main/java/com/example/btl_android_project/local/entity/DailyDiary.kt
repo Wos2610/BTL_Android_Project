@@ -1,4 +1,4 @@
-package com.example.btl_android_project.entity
+package com.example.btl_android_project.local.entity
 
 import java.io.Serializable
 import java.util.Date

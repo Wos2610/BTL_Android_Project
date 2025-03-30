@@ -1,6 +1,6 @@
 package com.example.btl_android_project.firestore.datasource
 
-import com.example.btl_android_project.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
 import com.google.firebase.firestore.FirebaseFirestore
 import timber.log.Timber

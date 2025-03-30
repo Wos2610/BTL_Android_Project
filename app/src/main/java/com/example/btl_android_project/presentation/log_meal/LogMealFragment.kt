@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogMealBinding
-import com.example.btl_android_project.entity.Meal
 import com.example.btl_android_project.presentation.log_all.LogAllFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 

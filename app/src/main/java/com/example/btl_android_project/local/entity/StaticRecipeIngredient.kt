@@ -1,4 +1,4 @@
-package com.example.btl_android_project.entity
+package com.example.btl_android_project.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

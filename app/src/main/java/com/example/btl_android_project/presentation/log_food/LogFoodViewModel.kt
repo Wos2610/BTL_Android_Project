@@ -1,7 +1,7 @@
 package com.example.btl_android_project.presentation.log_food
 
 import androidx.lifecycle.ViewModel
-import com.example.btl_android_project.entity.Food
+import com.example.btl_android_project.local.entity.Food
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

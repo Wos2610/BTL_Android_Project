@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.databinding.ItemMealBinding
-import com.example.btl_android_project.entity.Food
+import com.example.btl_android_project.local.entity.Food
 
 class FoodAdapter(private val foods: List<Food>) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 

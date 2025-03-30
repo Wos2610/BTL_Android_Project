@@ -1,6 +1,6 @@
 package com.example.btl_android_project.remote.datasource
 
-import com.example.btl_android_project.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.remote.Resource
 import com.example.btl_android_project.remote.domain.StaticRecipeIngredientRemoteDataSource
 import com.example.btl_android_project.remote.service.StaticRecipeIngredientService

@@ -1,6 +1,6 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.entity.StaticFoodEntity
+import com.example.btl_android_project.local.entity.StaticFoodEntity
 import com.example.btl_android_project.firestore.domain.StaticFoodFireStoreDataSource
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.remote.domain.StaticFoodRemoteDataSource

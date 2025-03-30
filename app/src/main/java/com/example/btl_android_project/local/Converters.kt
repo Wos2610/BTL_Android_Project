@@ -1,6 +1,6 @@
 package com.example.btl_android_project.local
 import androidx.room.TypeConverter
-import com.example.btl_android_project.entity.Nutrition
+import com.example.btl_android_project.local.entity.Nutrition
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
