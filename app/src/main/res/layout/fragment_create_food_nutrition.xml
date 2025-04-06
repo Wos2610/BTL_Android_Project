@@ -6,34 +6,45 @@
     android:background="@color/dark_black"
     tools:context=".presentation.log_food.CreateFoodNutritionFragment">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Save" />
+
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Nutritions Facts"
-            android:textSize="18dp"
-            android:textColor="@color/white"
+            android:background="@color/dark_gray"
             android:paddingHorizontal="16dp"
             android:paddingVertical="16dp"
-            android:background="@color/separator"/>
+            android:text="Nutritions Facts"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/white" />
+            android:background="@color/separator" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewNutritions"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_food_nutrition"
-            />
+            tools:listitem="@layout/item_food_nutrition" />
 
     </LinearLayout>
 

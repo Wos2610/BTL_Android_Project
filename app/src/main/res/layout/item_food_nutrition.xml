@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/dark_gray"
+    android:background="@color/dark_black"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -18,29 +18,29 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="Calories"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etMinutesPerformed"
+            android:id="@+id/etNutritionAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
+            android:hint="Required"
             android:inputType="numberDecimal"
             android:minWidth="48dp"
-            android:hint="Required"
-            android:textColorHint="@color/gray"
             android:textAlignment="textEnd"
             android:textColor="@color/gray"
+            android:textColorHint="@color/gray"
             android:textSize="16sp" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white" />
+        android:background="@color/separator" />
 
 </LinearLayout>
