@@ -83,6 +83,10 @@ class LogFoodViewModel @Inject constructor(
         }
     }
 
+    suspend fun getFoodById(foodId: Int): Food? {
+        return foodRepository.getFoodById(foodId)
+    }
+
     private fun syncFoodsFromFirestore() {
         viewModelScope.launch {
             try {

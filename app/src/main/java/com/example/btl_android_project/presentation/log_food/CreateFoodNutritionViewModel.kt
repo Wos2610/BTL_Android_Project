@@ -6,8 +6,10 @@ import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.repository.FoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,7 +18,7 @@ import javax.inject.Inject
 class CreateFoodNutritionViewModel @Inject constructor(
     private val foodRepository: FoodRepository
 ) : ViewModel() {
-    // Danh sách các mục dinh dưỡng mặc định
+    // Danh sách mặc định
     private val _nutritions = MutableStateFlow<List<Nutrition>>(
         listOf(
             Nutrition(number = "1", name = "Calories", amount = 0f, unitName = "kcal"),
@@ -30,6 +32,9 @@ class CreateFoodNutritionViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _nutritionLoaded = MutableSharedFlow<Unit>()
+    val nutritionLoaded = _nutritionLoaded.asSharedFlow()
+
     private val _isSaved = MutableStateFlow(false)
     val isSaved: StateFlow<Boolean> = _isSaved
 
@@ -41,7 +46,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
     var servingsPerContainer: Int = 0
     private val userId = 1
 
-    // Hàm cập nhật giá trị dinh dưỡng khi người dùng thay đổi
+    // Hàm cập nhật
     fun updateNutrition(index: Int, amount: Float) {
         if (amount < 0) {
             Timber.e("Amount cannot be negative.")
@@ -54,8 +59,60 @@ class CreateFoodNutritionViewModel @Inject constructor(
         _nutritions.value = updatedList
     }
 
+    fun loadNutrition(foodId: Int) {
+        viewModelScope.launch {
+            val food = foodRepository.getFoodById(foodId)
+            food?.let {
+                _nutritions.value = food.nutritions
+                _nutritionLoaded.emit(Unit)
+            }
+        }
+    }
 
-    // Lưu món ăn với các thông tin dinh dưỡng được điền
+    // Update
+    fun updateFood(foodId: Int) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+
+                val calories = _nutritions.value.find { it.name == "Calories" }?.amount ?: 0f
+                val protein = _nutritions.value.find { it.name == "Protein" }?.amount ?: 0f
+                val carbs = _nutritions.value.find { it.name == "Carbs" }?.amount ?: 0f
+                val fat = _nutritions.value.find { it.name == "Fat" }?.amount ?: 0f
+
+                // Check for invalid values
+                if (calories < 0 || protein < 0 || carbs < 0 || fat < 0) {
+                    Timber.e("Invalid nutrition values. Amounts cannot be negative.")
+                    _isLoading.value = false
+                    return@launch
+                }
+
+                val food = Food(
+                    id = foodId,
+                    name = foodName,
+                    description = description,
+                    servingsSize = servingsSize,
+                    servingsUnit = servingsUnit,
+                    servingsPerContainer = servingsPerContainer,
+                    calories = calories,
+                    protein = protein,
+                    carbs = carbs,
+                    fat = fat,
+                    nutritions = _nutritions.value,
+                    userId = userId
+                )
+
+                foodRepository.updateFood(food)
+                _isSaved.value = true
+            } catch (e: Exception) {
+                Timber.e("Error saving food: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // Lưu
     fun saveFood() {
         _isLoading.value = true
         viewModelScope.launch {

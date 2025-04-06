@@ -16,6 +16,8 @@ class CreateFoodInformationViewModel @Inject constructor(
     private val foodRepository: FoodRepository
 ) : ViewModel() {
 
+    private val _food = MutableStateFlow<Food?>(null)
+    val food: StateFlow<Food?> get() = _food
 
     private val _foodName = MutableStateFlow("")
     val foodName: StateFlow<String> = _foodName
@@ -77,37 +79,9 @@ class CreateFoodInformationViewModel @Inject constructor(
         return validateBasicFoodInfo()
     }
 
-    // Lưu ý: Sau khi qua màn hình nhập Nutrition, các giá trị dinh dưỡng sẽ được chuyển qua CreateFoodNutritionViewModel
-    fun createFood(
-        calories: Float,
-        protein: Float,
-        carbs: Float,
-        fat: Float,
-        nutritions: List<com.example.btl_android_project.local.entity.Nutrition>
-    ) {
-        _isLoading.value = true
+    fun loadFood(foodId: Int) {
         viewModelScope.launch {
-            try {
-                val food = Food(
-                    name = _foodName.value,
-                    calories = calories,
-                    protein = protein,
-                    carbs = carbs,
-                    fat = fat,
-                    description = _description.value,
-                    servingsSize = _servingsSize.value,
-                    servingsUnit = _servingsUnit.value,
-                    servingsPerContainer = _servingsPerContainer.value,
-                    nutritions = nutritions,
-                    userId = userId
-                )
-                foodRepository.insertFood(food)
-                _isSaved.value = true
-            } catch (e: Exception) {
-                Timber.e("Error creating food: ${e.message}")
-            } finally {
-                _isLoading.value = false
-            }
+            _food.value = foodRepository.getFoodById(foodId)
         }
     }
 }

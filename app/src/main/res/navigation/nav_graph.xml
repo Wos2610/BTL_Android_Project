@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_createFoodInformationFragment_to_createFoodNutritionFragment"
             app:destination="@id/createFoodNutritionFragment" />
+        <argument
+            android:name="foodId"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
     <fragment
         android:id="@+id/createMealFragment"
@@ -39,6 +43,10 @@
         <argument
             android:name="servingsPerContainer"
             app:argType="integer" />
+        <argument
+            android:name="foodId"
+            app:argType="integer"
+            android:defaultValue="-1" />
 
     </fragment>
     <fragment

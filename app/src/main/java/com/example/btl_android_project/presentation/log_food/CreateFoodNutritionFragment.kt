@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.databinding.FragmentCreateFoodNutritionBinding
+import com.example.btl_android_project.local.entity.Nutrition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,6 +23,9 @@ class CreateFoodNutritionFragment : Fragment() {
 
     private val viewModel: CreateFoodNutritionViewModel by viewModels()
     private lateinit var nutritionAdapter: NutritionAdapter
+
+    private var foodId = -1
+    private lateinit var nutritions: MutableList<Nutrition>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +50,12 @@ class CreateFoodNutritionFragment : Fragment() {
         viewModel.servingsUnit = args.servingsUnit
         viewModel.servingsPerContainer = args.servingsPerContainer
 
+
+        foodId = arguments?.getInt("foodId") ?: -1
+        if (foodId != -1) {
+            viewModel.loadNutrition(foodId)
+        }
+
         setupRecyclerView()
         setupListeners()
         observeViewModel()
@@ -56,13 +66,18 @@ class CreateFoodNutritionFragment : Fragment() {
         nutritionAdapter = NutritionAdapter(viewModel.nutritions.value) { index, amount ->
             viewModel.updateNutrition(index, amount)
         }
+
         binding.recyclerViewNutritions.adapter = nutritionAdapter
     }
 
 
     private fun setupListeners() {
         binding.btnSave.setOnClickListener {
-            viewModel.saveFood()
+            if (foodId != -1) {
+                viewModel.updateFood(foodId)
+            } else {
+                viewModel.saveFood()
+            }
         }
 
         binding.btnBack.setOnClickListener {
@@ -77,6 +92,14 @@ class CreateFoodNutritionFragment : Fragment() {
                     Toast.makeText(context, "Food saved successfully", Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                     findNavController().navigateUp() // quay lai man log all
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.nutritionLoaded.collect {
+                binding.recyclerViewNutritions.post {
+                    nutritionAdapter.updateList(viewModel.nutritions.value)
                 }
             }
         }
