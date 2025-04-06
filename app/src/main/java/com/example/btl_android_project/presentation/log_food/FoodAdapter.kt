@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.databinding.ItemMealBinding
 import com.example.btl_android_project.local.entity.Food
 
-class FoodAdapter(private val foods: List<Food>) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
+class FoodAdapter(private val foods: List<Food>) :
+    RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 

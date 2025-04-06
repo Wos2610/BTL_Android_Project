@@ -9,7 +9,11 @@
         android:id="@+id/createFoodInformationFragment"
         android:name="com.example.btl_android_project.presentation.log_food.CreateFoodInformationFragment"
         android:label="fragment_create_food_information"
-        tools:layout="@layout/fragment_create_food_information" />
+        tools:layout="@layout/fragment_create_food_information">
+        <action
+            android:id="@+id/action_createFoodInformationFragment_to_createFoodNutritionFragment"
+            app:destination="@id/createFoodNutritionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createMealFragment"
         android:name="com.example.btl_android_project.presentation.log_meal.CreateMealFragment"
@@ -19,7 +23,24 @@
         android:id="@+id/createFoodNutritionFragment"
         android:name="com.example.btl_android_project.presentation.log_food.CreateFoodNutritionFragment"
         android:label="fragment_create_food_nutrition"
-        tools:layout="@layout/fragment_create_food_nutrition" />
+        tools:layout="@layout/fragment_create_food_nutrition">
+        <argument
+            android:name="foodName"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            app:argType="string" />
+        <argument
+            android:name="servingsSize"
+            app:argType="integer" />
+        <argument
+            android:name="servingsUnit"
+            app:argType="string" />
+        <argument
+            android:name="servingsPerContainer"
+            app:argType="integer" />
+
+    </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.btl_android_project.presentation.dashboard.DashboardFragment"
@@ -134,7 +155,7 @@
         android:id="@+id/logItemListDialogFragment"
         android:name="com.example.btl_android_project.presentation.LogItemListDialogFragment"
         android:label="fragment_item_list_dialog_list_dialog"
-        tools:layout="@layout/fragment_item_list_dialog_list_dialog" >
+        tools:layout="@layout/fragment_item_list_dialog_list_dialog">
         <action
             android:id="@+id/action_logItemListDialogFragment_to_logAllFragment"
             app:destination="@id/logAllFragment"
@@ -149,9 +170,12 @@
         android:id="@+id/logAllFragment"
         android:name="com.example.btl_android_project.presentation.log_all.LogAllFragment"
         android:label="fragment_log_all"
-        tools:layout="@layout/fragment_log_all" >
+        tools:layout="@layout/fragment_log_all">
         <action
             android:id="@+id/action_logAllFragment_to_createMealFragment"
             app:destination="@id/createMealFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_createFoodInformationFragment"
+            app:destination="@id/createFoodInformationFragment" />
     </fragment>
 </navigation>
