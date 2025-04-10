@@ -39,7 +39,6 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpActionBar()
     }
 
     override fun onDestroyView() {
@@ -47,11 +46,4 @@ class DashboardFragment : Fragment() {
         _binding = null
     }
 
-    private fun setUpActionBar() {
-        (activity as? MainActivity)?.apply {
-            setToolbarTitle(getString(R.string.app_name))
-            showBackButton(false)
-            showMealDropdown(false)
-        }
-    }
 }

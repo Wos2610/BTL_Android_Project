@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogRecipeBinding
+import com.example.btl_android_project.presentation.log_all.LogAllFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +24,10 @@ class LogRecipeFragment : Fragment() {
 
     private val viewModel: LogRecipeViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,15 +38,22 @@ class LogRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.rvRecipes.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = RecipeAdapter(viewModel.recipes)
         }
+
+        binding.btnCreateRecipe.cvLogItem.setOnClickListener {
+            val action = LogAllFragmentDirections.actionLogAllFragmentToNewRecipeFragment()
+            findNavController().navigate(action)
+        }
+
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

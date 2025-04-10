@@ -31,19 +31,10 @@ class CreateMealFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpActionBar()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun setUpActionBar() {
-        (activity as? MainActivity)?.apply {
-            setToolbarTitle(getString(R.string.create_a_meal))
-            showBackButton(true)
-            showMealDropdown(false)
-        }
     }
 }

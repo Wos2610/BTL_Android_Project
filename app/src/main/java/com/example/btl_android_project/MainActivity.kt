@@ -3,8 +3,11 @@ package com.example.btl_android_project
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -20,7 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var mealSpinner: Spinner
+    private var mealSpinner: Spinner? = null
+    private lateinit var endTextView: TextView
     private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +41,11 @@ class MainActivity : AppCompatActivity() {
 
         setUpActionBar()
         setUpBottomNavigation()
+        showBackButton()
+        setToolbarTitle()
         setUpFab()
         initMealDropdown()
+        initEndTextToolbar()
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
@@ -123,39 +130,133 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showBackButton(show: Boolean) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(show)
-    }
-
-    fun setToolbarTitle(title: String) {
-        supportActionBar?.title = title
-    }
-
-    fun showMealDropdown(show: Boolean) {
-        if (show) {
-            if (mealSpinner.parent == null) {
-                binding.toolbar.addView(mealSpinner)
+    fun showBackButton() {
+        var show = false
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            show = when (destination.id) {
+                R.id.dashboardFragment -> false
+                R.id.logAllFragment -> true
+                R.id.logRecipeFragment -> true
+                R.id.logMealFragment -> true
+                R.id.logFoodFragment -> true
+                R.id.newRecipeFragment -> true
+                R.id.createMealFragment -> true
+                else -> false
             }
-        } else {
-            binding.toolbar.removeView(mealSpinner)
+            supportActionBar?.setDisplayHomeAsUpEnabled(show)
+        }
+    }
+
+    fun setToolbarTitle() {
+        var title = ""
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            title = when (destination.id) {
+                R.id.dashboardFragment -> getString(R.string.app_name)
+                R.id.logAllFragment -> ""
+                R.id.logRecipeFragment -> ""
+                R.id.logMealFragment -> ""
+                R.id.logFoodFragment -> ""
+                R.id.newRecipeFragment -> getString(R.string.new_recipe)
+                R.id.createMealFragment -> getString(R.string.create_a_meal)
+                else -> ""
+            }
+            supportActionBar?.title = title
         }
     }
 
     fun initMealDropdown() {
-        mealSpinner = Spinner(this)
-        mealSpinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf(R.string.select_a_meal, R.string.breakfast, R.string.lunch, R.string.dinner, R.string.snack).map { getString(it) }
-        )
+        if (mealSpinner == null) {
+            mealSpinner = Spinner(this).apply {
+                adapter = ArrayAdapter(
+                    this@MainActivity,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    listOf(R.string.select_a_meal, R.string.breakfast, R.string.lunch, R.string.dinner, R.string.snack)
+                        .map { getString(it) }
+                )
 
-        val layoutParams = Toolbar.LayoutParams(
-            Toolbar.LayoutParams.WRAP_CONTENT,
-            Toolbar.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.CENTER
+                val layoutParams = Toolbar.LayoutParams(
+                    Toolbar.LayoutParams.WRAP_CONTENT,
+                    Toolbar.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.CENTER
+                }
+                this.layoutParams = layoutParams
+            }
         }
-        mealSpinner.layoutParams = layoutParams
+
+        val destinationsToShowMealDropdown = setOf(R.id.logAllFragment)
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id in destinationsToShowMealDropdown) {
+                showMealDropdown(true)
+            } else {
+                showMealDropdown(false)
+            }
+        }
+    }
+
+    fun showMealDropdown(show: Boolean) {
+        if (show) {
+            mealSpinner.let {
+                if (it?.parent == null) {
+                    binding.toolbar.addView(it)
+                }
+            }
+        } else {
+            mealSpinner?.let {
+                binding.toolbar.removeView(it)
+            }
+        }
+    }
+
+    fun initEndTextToolbar(
+        defaultText: String? = null,
+        defaultClickListener: View.OnClickListener? = null
+    ) {
+        if (!::endTextView.isInitialized) {
+            endTextView = TextView(this).apply {
+                layoutParams = Toolbar.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.END
+                    marginEnd = 8
+                }
+                textSize = 16f
+                text = defaultText
+                visibility = if (defaultText.isNullOrEmpty()) View.GONE else View.VISIBLE
+                setOnClickListener(defaultClickListener)
+            }
+            binding.toolbar.addView(endTextView)
+        }
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.newRecipeFragment -> {
+                    setEndTextToolbarVisibility(true)
+                    setEndTextToolbarText(getString(R.string.next))
+                }
+                else -> {
+                    setEndTextToolbarVisibility(false)
+                }
+            }
+        }
+    }
+
+    fun setEndTextToolbarText(text: String) {
+        if (::endTextView.isInitialized) {
+            endTextView.text = text
+        }
+    }
+
+    fun setEndTextToolbarVisibility(visible: Boolean) {
+        if (::endTextView.isInitialized) {
+            endTextView.visibility = if (visible) View.VISIBLE else View.GONE
+        }
+    }
+
+    fun setEndTextClickListener(clickListener: View.OnClickListener?) {
+        endTextView.setOnClickListener(clickListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

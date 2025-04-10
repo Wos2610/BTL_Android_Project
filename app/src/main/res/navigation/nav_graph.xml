@@ -153,5 +153,9 @@
         <action
             android:id="@+id/action_logAllFragment_to_createMealFragment"
             app:destination="@id/createMealFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_newRecipeFragment"
+            app:destination="@id/newRecipeFragment"
+            app:popUpTo="@id/logAllFragment" />
     </fragment>
 </navigation>

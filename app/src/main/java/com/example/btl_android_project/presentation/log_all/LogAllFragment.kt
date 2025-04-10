@@ -39,7 +39,6 @@ class LogAllFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpActionBar()
         hideBottomNavigationView()
 
         pagerAdapter = LogPagerAdapter(this)
@@ -62,13 +61,5 @@ class LogAllFragment : Fragment() {
     private fun hideBottomNavigationView() {
         val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.navigation)
         bottomNavigationView.visibility = View.GONE
-    }
-
-    private fun setUpActionBar() {
-        (activity as? MainActivity)?.apply {
-            setToolbarTitle("")
-            showBackButton(true)
-            showMealDropdown(true)
-        }
     }
 }

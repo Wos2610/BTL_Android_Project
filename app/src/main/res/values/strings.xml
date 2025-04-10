@@ -22,4 +22,10 @@
     <string name="snack">Snack</string>
     <string name="select_a_meal">Select a meal</string>
     <string name="create_a_meal">Create a meal</string>
+    <string name="new_recipe">New recipe</string>
+    <string name="new_food">New food</string>
+    <string name="new_exercise">New exercise</string>
+    <string name="new_water">New water</string>
+    <string name="new_weight">New weight</string>
+    <string name="next">Next</string>
 </resources>
