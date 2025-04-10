@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDashboardBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,10 +39,19 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpActionBar()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setUpActionBar() {
+        (activity as? MainActivity)?.apply {
+            setToolbarTitle(getString(R.string.app_name))
+            showBackButton(false)
+            showMealDropdown(false)
+        }
     }
 }

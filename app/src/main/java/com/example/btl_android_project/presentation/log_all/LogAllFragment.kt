@@ -4,10 +4,13 @@ import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogAllBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LogAllFragment : Fragment() {
@@ -35,6 +38,10 @@ class LogAllFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setUpActionBar()
+        hideBottomNavigationView()
+
         pagerAdapter = LogPagerAdapter(this)
         binding.viewPager.adapter = pagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -50,5 +57,18 @@ class LogAllFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun hideBottomNavigationView() {
+        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNavigationView.visibility = View.GONE
+    }
+
+    private fun setUpActionBar() {
+        (activity as? MainActivity)?.apply {
+            setToolbarTitle("")
+            showBackButton(true)
+            showMealDropdown(true)
+        }
     }
 }
