@@ -34,7 +34,11 @@
         android:id="@+id/detailIngredientFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.DetailIngredientFragment"
         android:label="fragment_detail_ingredient"
-        tools:layout="@layout/fragment_detail_ingredient" />
+        tools:layout="@layout/fragment_detail_ingredient" >
+        <argument
+            android:name="ingredientId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/detailRecipeFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.DetailRecipeFragment"
@@ -44,7 +48,12 @@
         android:id="@+id/ingredientsFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.IngredientsFragment"
         android:label="fragment_ingredients"
-        tools:layout="@layout/fragment_ingredients" />
+        tools:layout="@layout/fragment_ingredients" >
+        <action
+            android:id="@+id/action_ingredientsFragment_to_searchIngredientFragment"
+            app:destination="@id/searchIngredientFragment"
+            app:popUpTo="@id/ingredientsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/logExerciseFragment"
         android:name="com.example.btl_android_project.presentation.log_exercise.LogExerciseFragment"
@@ -84,7 +93,12 @@
         android:id="@+id/newRecipeFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.NewRecipeFragment"
         android:label="fragment_new_recipe"
-        tools:layout="@layout/fragment_new_recipe" />
+        tools:layout="@layout/fragment_new_recipe" >
+        <action
+            android:id="@+id/action_newRecipeFragment_to_ingredientsFragment"
+            app:destination="@id/ingredientsFragment"
+            app:popUpTo="@id/newRecipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/reviewIngredientsFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.ReviewIngredientsFragment"
@@ -94,7 +108,12 @@
         android:id="@+id/searchIngredientFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.SearchIngredientFragment"
         android:label="fragment_search_ingredient"
-        tools:layout="@layout/fragment_search_ingredient" />
+        tools:layout="@layout/fragment_search_ingredient" >
+        <action
+            android:id="@+id/action_searchIngredientFragment_to_detailIngredientFragment"
+            app:destination="@id/detailIngredientFragment"
+            app:popUpTo="@id/searchIngredientFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.example.btl_android_project.presentation.sign_in.SignInFragment"

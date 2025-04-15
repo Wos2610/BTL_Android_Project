@@ -1,5 +1,6 @@
 package com.example.btl_android_project.firestore.datasource
 
+import android.annotation.SuppressLint
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
 import com.example.btl_android_project.remote.model.StaticRecipe
@@ -38,6 +39,24 @@ class StaticRecipeIngredientFireStoreDataSourceImpl @Inject constructor(
         val recipeIngredients = firestore.collection(STATIC_RECIPES_INGREDIENTS_COLLECTION).get().await()
         return recipeIngredients.toObjects(StaticRecipeIngredient::class.java)
     }
+
+//    @SuppressLint("TimberArgCount")
+//    override fun getRecipeIngredientById(id: Long): StaticRecipeIngredient? {
+//        val docRef = firestore.collection(STATIC_RECIPES_INGREDIENTS_COLLECTION).document(id.toString())
+//        var recipeIngredient: StaticRecipeIngredient? = null
+//
+//        docRef.get().addOnSuccessListener { document ->
+//            if (document != null) {
+//                recipeIngredient = document.toObject(StaticRecipeIngredient::class.java)
+//            } else {
+//                Timber.Forest.d("No such document")
+//            }
+//        }.addOnFailureListener { exception ->
+//            Timber.Forest.e(exception, "get failed with ")
+//        }
+//
+//        return recipeIngredient
+//    }
 
     companion object{
         private const val STATIC_RECIPES_INGREDIENTS_COLLECTION = "static_recipe_ingredients"

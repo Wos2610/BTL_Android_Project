@@ -2,10 +2,14 @@ package com.example.btl_android_project.repository
 
 import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.remote.domain.StaticRecipeIngredientRemoteDataSource
 import com.example.btl_android_project.remote.onError
 import com.example.btl_android_project.remote.onException
 import com.example.btl_android_project.remote.onSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,6 +42,19 @@ class StaticRecipeIngredientRepository @Inject constructor(
     suspend fun pullStaticRecipeIngredientsFromFireStore() {
         val recipeIngredients = staticRecipeIngredientFireStoreDataSource.pullRecipeIngredients()
         Timber.d("Recipe ingredients from Firestore: $recipeIngredients")
+        staticRecipeIngredientDao.deleteAllIngredients()
         staticRecipeIngredientDao.insertAllIngredients(recipeIngredients)
     }
+
+    fun getAllRecipeIngredients(): Flow<List<StaticRecipeIngredient>> = staticRecipeIngredientDao.getAllIngredientsFlow()
+
+    fun searchRecipeIngredients(query: String): Flow<List<StaticRecipeIngredient>> = staticRecipeIngredientDao.searchIngredients(query)
+
+    suspend fun getIngredientById(id: Int): StaticRecipeIngredient? {
+        return withContext(Dispatchers.IO) {
+            val recipeIngredient = staticRecipeIngredientDao.getIngredientByFdcId(id)
+            recipeIngredient
+        }
+    }
+
 }

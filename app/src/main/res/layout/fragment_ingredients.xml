@@ -7,11 +7,42 @@
     android:background="@color/dark_black"
     tools:context=".presentation.log_recipe.IngredientsFragment">
 
+    <LinearLayout
+        android:id="@+id/ingredientsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/tvTotalCalories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total calories: "
+            android:textColor="@color/white"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ingredientsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="16dp"
+            android:paddingBottom="80dp"
+            android:visibility="gone"
+            android:clipToPadding="false"
+            android:layout_marginBottom="80dp"
+            tools:listitem="@layout/item_ingredient"
+            tools:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/emptyStateContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imgEmptyState"
@@ -19,11 +50,6 @@
             android:layout_height="48dp"
             android:alpha="0.7"
             android:src="@drawable/ic_magnifying_glass"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45"
             app:tint="@color/white" />
 
         <TextView
@@ -31,25 +57,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="No Ingredients"
+            android:text="@string/no_ingredients"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgEmptyState" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvEmptyStateDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Add the list of ingredients in the recipe."
+            android:text="@string/add_the_list_of_ingredients_in_the_recipe"
             android:textColor="@color/light_gray"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmptyStateTitle" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnAddIngredients"
@@ -59,48 +79,11 @@
             android:backgroundTint="@color/blue"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:text="Add Ingredients"
+            android:text="@string/add_ingredients"
             android:textAllCaps="false"
             android:textColor="@color/black"
-            app:cornerRadius="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmptyStateDescription" />
+            app:cornerRadius="24dp" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ingredientsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="16dp"
-            android:paddingBottom="80dp"
-            android:visibility="gone"
-            android:layout_marginBottom="80dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_ingredient"
-            tools:visibility="visible" />
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/blue"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:text="Next"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            app:cornerRadius="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </LinearLayout>
 
 </FrameLayout>

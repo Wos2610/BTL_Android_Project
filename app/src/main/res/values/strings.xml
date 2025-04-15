@@ -28,4 +28,11 @@
     <string name="new_water">New water</string>
     <string name="new_weight">New weight</string>
     <string name="next">Next</string>
+    <string name="search_results">Search Results</string>
+    <string name="add_the_list_of_ingredients_in_the_recipe">Add the list of ingredients in the recipe.</string>
+    <string name="add_ingredients">Add Ingredients</string>
+    <string name="no_ingredients">No Ingredients</string>
+    <string name="ingredient_detail">Ingredient Detail</string>
+    <string name="search_ingredient">Search Ingredient</string>
+    <string name="total_calories">Total calories: %d kcal</string>
 </resources>

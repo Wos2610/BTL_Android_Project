@@ -6,4 +6,5 @@ import com.example.btl_android_project.remote.model.StaticFood
 interface StaticRecipeIngredientFireStoreDataSource {
     fun addAllRecipeIngredients(recipeIngredients: List<StaticRecipeIngredient>)
     suspend fun pullRecipeIngredients(): List<StaticRecipeIngredient>
+//    fun getRecipeIngredientById(id: Long): StaticRecipeIngredient?
 }

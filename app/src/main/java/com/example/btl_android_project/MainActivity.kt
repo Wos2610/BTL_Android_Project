@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -25,27 +26,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var mealSpinner: Spinner? = null
     private lateinit var endTextView: TextView
-    private var navController: NavController? = null
+    private lateinit var saveButton: ImageView
+    private lateinit var addButton: ImageView
 
+    private var navController: NavController? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
-        setUpActionBar()
         setUpBottomNavigation()
-        showBackButton()
-        setToolbarTitle()
+        setUpActionBar()
         setUpFab()
-        initMealDropdown()
-        initEndTextToolbar()
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
@@ -102,7 +101,18 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     private fun setUpActionBar() {
+        binding.toolbar.setBackgroundColor(getColor(R.color.dark_black))
+        binding.toolbar.setTitleTextColor(getColor(R.color.white))
+        binding.toolbar.setNavigationIcon(R.drawable.ic_back)
+
         setSupportActionBar(binding.toolbar)
+
+        showBackButton()
+        setToolbarTitle()
+        initMealDropdown()
+        initEndTextToolbar()
+        initSaveButton()
+        initAddButton()
     }
 
     private fun setUpBottomNavigation() {
@@ -110,6 +120,17 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         navController?.let {
             binding.navigation.setupWithNavController(it)
+        }
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.dashboardFragment-> {
+                    binding.navigation.visibility = View.VISIBLE
+                }
+                else -> {
+                    binding.navigation.visibility = View.GONE
+                }
+            }
         }
     }
 
@@ -135,13 +156,7 @@ class MainActivity : AppCompatActivity() {
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             show = when (destination.id) {
                 R.id.dashboardFragment -> false
-                R.id.logAllFragment -> true
-                R.id.logRecipeFragment -> true
-                R.id.logMealFragment -> true
-                R.id.logFoodFragment -> true
-                R.id.newRecipeFragment -> true
-                R.id.createMealFragment -> true
-                else -> false
+                else -> true
             }
             supportActionBar?.setDisplayHomeAsUpEnabled(show)
         }
@@ -149,6 +164,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setToolbarTitle() {
         var title = ""
+
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             title = when (destination.id) {
                 R.id.dashboardFragment -> getString(R.string.app_name)
@@ -157,7 +173,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.logMealFragment -> ""
                 R.id.logFoodFragment -> ""
                 R.id.newRecipeFragment -> getString(R.string.new_recipe)
+                R.id.ingredientsFragment -> getString(R.string.new_recipe)
                 R.id.createMealFragment -> getString(R.string.create_a_meal)
+                R.id.detailIngredientFragment -> getString(R.string.ingredient_detail)
+                R.id.ingredientsFragment-> getString(R.string.search_ingredient)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -165,14 +184,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initMealDropdown() {
+        val mealOptions = listOf(
+            R.string.select_a_meal,
+            R.string.breakfast,
+            R.string.lunch,
+            R.string.dinner,
+            R.string.snack
+        ).map { getString(it) }
+
         if (mealSpinner == null) {
             mealSpinner = Spinner(this).apply {
-                adapter = ArrayAdapter(
+                adapter = object : ArrayAdapter<String>(
                     this@MainActivity,
                     android.R.layout.simple_spinner_dropdown_item,
-                    listOf(R.string.select_a_meal, R.string.breakfast, R.string.lunch, R.string.dinner, R.string.snack)
-                        .map { getString(it) }
-                )
+                    mealOptions
+                ){
+                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val view = super.getView(position, convertView, parent)
+                        (view as? TextView)?.setTextColor(getColor(R.color.white))
+                        return view
+                    }
+
+                    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val view = super.getDropDownView(position, convertView, parent)
+                        return view
+                    }
+                }
 
                 val layoutParams = Toolbar.LayoutParams(
                     Toolbar.LayoutParams.WRAP_CONTENT,
@@ -222,6 +259,7 @@ class MainActivity : AppCompatActivity() {
                     gravity = Gravity.END
                     marginEnd = 8
                 }
+                setTextColor(getColor(R.color.white))
                 textSize = 16f
                 text = defaultText
                 visibility = if (defaultText.isNullOrEmpty()) View.GONE else View.VISIBLE
@@ -235,12 +273,16 @@ class MainActivity : AppCompatActivity() {
                 R.id.newRecipeFragment -> {
                     setEndTextToolbarVisibility(true)
                     setEndTextToolbarText(getString(R.string.next))
+                    endTextView.setOnClickListener {
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_newRecipeFragment_to_ingredientsFragment)
+                    }
                 }
                 else -> {
                     setEndTextToolbarVisibility(false)
                 }
             }
         }
+
     }
 
     fun setEndTextToolbarText(text: String) {
@@ -259,12 +301,117 @@ class MainActivity : AppCompatActivity() {
         endTextView.setOnClickListener(clickListener)
     }
 
+    fun initCheckEndButton(){
+
+    }
+
+    fun initSaveButton(
+        defaultClickListener: View.OnClickListener? = null,
+    ) {
+        if (!::saveButton.isInitialized) {
+            saveButton = ImageView(this).apply {
+                layoutParams = Toolbar.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.END
+                    marginEnd = 16
+                }
+
+                setImageResource(R.drawable.ic_check)
+
+                val size = 100
+                layoutParams.width = size
+                layoutParams.height = size
+                visibility = View.GONE
+                setOnClickListener(defaultClickListener)
+
+                setPadding(8, 8, 8, 8)
+            }
+            binding.toolbar.addView(saveButton)
+        }
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailIngredientFragment -> {
+                    setSaveButtonVisibility(true)
+                }
+                else -> {
+                    setSaveButtonVisibility(false)
+                }
+            }
+        }
+    }
+
+    fun setSaveButtonVisibility(visible: Boolean) {
+        if (::saveButton.isInitialized) {
+            saveButton.visibility = if (visible) View.VISIBLE else View.GONE
+        }
+    }
+
+    fun setSaveButtonClickListener(listener: View.OnClickListener) {
+        if (::saveButton.isInitialized) {
+            saveButton.setOnClickListener(listener)
+        }
+    }
+
+    fun initAddButton(
+        defaultClickListener: View.OnClickListener? = null,
+    ) {
+        if (!::addButton.isInitialized) {
+            addButton = ImageView(this).apply {
+                layoutParams = Toolbar.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.END
+                    marginEnd = 16
+                }
+
+                setImageResource(R.drawable.ic_add)
+
+                val size = 100
+                layoutParams.width = size
+                layoutParams.height = size
+                visibility = View.GONE
+                setOnClickListener(defaultClickListener)
+
+                setPadding(8, 8, 8, 8)
+            }
+            binding.toolbar.addView(addButton)
+        }
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.ingredientsFragment -> {
+                    setAddButtonVisibility(true)
+                }
+                else -> {
+                    setAddButtonVisibility(false)
+                }
+            }
+        }
+    }
+
+    fun setAddButtonVisibility(visible: Boolean) {
+        if (::addButton.isInitialized) {
+            addButton.visibility = if (visible) View.VISIBLE else View.GONE
+        }
+    }
+
+    fun setAddButtonClickListener(listener: View.OnClickListener) {
+        if (::addButton.isInitialized) {
+            addButton.setOnClickListener(listener)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 findNavController(R.id.nav_host_fragment).navigateUp()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
