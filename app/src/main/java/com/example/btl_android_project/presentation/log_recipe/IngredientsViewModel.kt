@@ -9,6 +9,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IngredientsViewModel @Inject constructor(): ViewModel() {
+    var recipeName: String = ""
+    var servings: Int = 0
     private val _ingredients = MutableStateFlow<List<StaticRecipeIngredient>>(emptyList())
     val ingredients = _ingredients
         .asStateFlow()

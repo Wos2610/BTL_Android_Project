@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.databinding.ItemMealBinding
 import com.example.btl_android_project.local.entity.Recipe
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 
-class RecipeAdapter(private val recipes: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+class RecipeAdapter(private var recipes: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -24,4 +25,15 @@ class RecipeAdapter(private val recipes: List<Recipe>) : RecyclerView.Adapter<Re
     }
 
     override fun getItemCount() = recipes.size
+
+    fun updateData(newRecipes: List<Recipe>) {
+        if(recipes.isNotEmpty()) {
+            (recipes as MutableList).clear()
+            (recipes as MutableList<Recipe>).addAll(newRecipes)
+        }
+        else{
+            recipes = newRecipes
+        }
+        notifyDataSetChanged()
+    }
 }

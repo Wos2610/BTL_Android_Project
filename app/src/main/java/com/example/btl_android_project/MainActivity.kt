@@ -155,7 +155,8 @@ class MainActivity : AppCompatActivity() {
         var show = false
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             show = when (destination.id) {
-                R.id.dashboardFragment -> false
+                R.id.dashboardFragment-> false
+                R.id.logItemListDialogFragment -> false
                 else -> true
             }
             supportActionBar?.setDisplayHomeAsUpEnabled(show)
@@ -168,6 +169,7 @@ class MainActivity : AppCompatActivity() {
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             title = when (destination.id) {
                 R.id.dashboardFragment -> getString(R.string.app_name)
+                R.id.logItemListDialogFragment -> getString(R.string.app_name)
                 R.id.logAllFragment -> ""
                 R.id.logRecipeFragment -> ""
                 R.id.logMealFragment -> ""
@@ -177,6 +179,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.createMealFragment -> getString(R.string.create_a_meal)
                 R.id.detailIngredientFragment -> getString(R.string.ingredient_detail)
                 R.id.ingredientsFragment-> getString(R.string.search_ingredient)
+                R.id.detailRecipeFragment -> getString(R.string.recipe_detail)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -273,9 +276,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.newRecipeFragment -> {
                     setEndTextToolbarVisibility(true)
                     setEndTextToolbarText(getString(R.string.next))
-                    endTextView.setOnClickListener {
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_newRecipeFragment_to_ingredientsFragment)
-                    }
+                }
+                R.id.ingredientsFragment -> {
+                    setEndTextToolbarVisibility(true)
+                    setEndTextToolbarText(getString(R.string.next))
                 }
                 else -> {
                     setEndTextToolbarVisibility(false)
@@ -334,6 +338,9 @@ class MainActivity : AppCompatActivity() {
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.detailIngredientFragment -> {
+                    setSaveButtonVisibility(true)
+                }
+                R.id.detailRecipeFragment -> {
                     setSaveButtonVisibility(true)
                 }
                 else -> {
@@ -408,7 +415,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                findNavController(R.id.nav_host_fragment).navigateUp()
+                findNavController(R.id.nav_host_fragment).popBackStack()
                 true
             }
 

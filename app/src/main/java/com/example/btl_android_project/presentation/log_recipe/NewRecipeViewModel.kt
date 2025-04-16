@@ -6,5 +6,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewRecipeViewModel @Inject constructor() : ViewModel() {
-    // TODO: Implement the ViewModel
+    var recipeName: String = ""
+    var servings: Int = 1
 }

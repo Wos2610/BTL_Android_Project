@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
@@ -26,11 +27,14 @@ class IngredientsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var searchAdapter: IngredientAdapter
 
-    companion object {
-        fun newInstance() = IngredientsFragment()
-    }
-
     private val viewModel: IngredientsViewModel by viewModels()
+    private val args: IngredientsFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.recipeName = args.recipeName.toString()
+        viewModel.servings = args.servings
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +48,7 @@ class IngredientsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setAddButtonToolBarOnClickListener()
+        setNextTextToolBarOnClickListener()
 
         binding.btnAddIngredients.setOnClickListener {
             val action = IngredientsFragmentDirections.actionIngredientsFragmentToSearchIngredientFragment()
@@ -55,6 +60,7 @@ class IngredientsFragment : Fragment() {
             ?.observe(viewLifecycleOwner) { recipe ->
                 Log.d("IngredientsFragment", "Received ingredient: $recipe")
                 viewModel.addIngredient(recipe)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<StaticRecipeIngredient>("ingredient")
             }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -109,6 +115,25 @@ class IngredientsFragment : Fragment() {
     private fun setAddButtonToolBarOnClickListener() {
         (requireActivity() as? MainActivity)?.setAddButtonClickListener {
             val action = IngredientsFragmentDirections.actionIngredientsFragmentToSearchIngredientFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun setNextTextToolBarOnClickListener() {
+//        (requireActivity() as? MainActivity)?.setEndTextClickListener {
+//            val controller = findNavController()
+//            controller.previousBackStackEntry?.savedStateHandle?.set(
+//                "ingredients",
+//                viewModel.ingredients.value
+//            )
+//            controller.popBackStack()
+//        }
+        (requireActivity() as? MainActivity)?.setEndTextClickListener {
+            val action = IngredientsFragmentDirections.actionIngredientsFragmentToDetailRecipeFragment(
+                recipeName = viewModel.recipeName,
+                servings = viewModel.servings,
+                ingredients = viewModel.ingredients.value.toTypedArray()
+            )
             findNavController().navigate(action)
         }
     }

@@ -43,7 +43,20 @@
         android:id="@+id/detailRecipeFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.DetailRecipeFragment"
         android:label="fragment_detail_recipe"
-        tools:layout="@layout/fragment_detail_recipe" />
+        tools:layout="@layout/fragment_detail_recipe" >
+        <argument
+            android:name="recipe_name"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="servings"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="ingredients"
+            app:argType="com.example.btl_android_project.local.entity.StaticRecipeIngredient[]" />
+
+    </fragment>
     <fragment
         android:id="@+id/ingredientsFragment"
         android:name="com.example.btl_android_project.presentation.log_recipe.IngredientsFragment"
@@ -53,6 +66,18 @@
             android:id="@+id/action_ingredientsFragment_to_searchIngredientFragment"
             app:destination="@id/searchIngredientFragment"
             app:popUpTo="@id/ingredientsFragment" />
+        <action
+            android:id="@+id/action_ingredientsFragment_to_detailRecipeFragment"
+            app:destination="@id/detailRecipeFragment"
+            app:popUpTo="@id/ingredientsFragment" />
+        <argument
+            android:name="recipe_name"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="servings"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/logExerciseFragment"
@@ -97,6 +122,10 @@
         <action
             android:id="@+id/action_newRecipeFragment_to_ingredientsFragment"
             app:destination="@id/ingredientsFragment"
+            app:popUpTo="@id/newRecipeFragment" />
+        <action
+            android:id="@+id/action_newRecipeFragment_to_detailRecipeFragment"
+            app:destination="@id/detailRecipeFragment"
             app:popUpTo="@id/newRecipeFragment" />
     </fragment>
     <fragment

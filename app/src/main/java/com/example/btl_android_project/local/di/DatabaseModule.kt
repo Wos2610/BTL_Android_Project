@@ -31,6 +31,11 @@ class DatabaseModule {
         return appDatabase.staticFoodDao()
     }
 
+    @Provides
+    fun provideRecipeDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.RecipeDao {
+        return appDatabase.recipeDao()
+    }
+
     @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context) : AppDatabase {
