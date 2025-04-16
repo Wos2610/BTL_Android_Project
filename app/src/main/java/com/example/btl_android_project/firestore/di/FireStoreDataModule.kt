@@ -28,4 +28,9 @@ abstract class FireStoreDataModule {
     abstract fun bindStaticFoodFireStoreDataSource(
         staticFoodFireStoreDataSourceImpl: StaticFoodFireStoreDataSourceImpl
     ): StaticFoodFireStoreDataSource
+
+    @Binds
+    abstract fun bindRecipeFireStoreDataSource(
+        recipeFireStoreDataSourceImpl: com.example.btl_android_project.firestore.datasource.RecipeFireStoreDataSourceImpl
+    ): com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
 }
