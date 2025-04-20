@@ -45,4 +45,16 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
+    override fun deleteRecipe(recipeId: Int) {
+        val docRef = firestore.collection(RECIPES_COLLECTION).document(recipeId.toString())
+        docRef.delete()
+            .addOnSuccessListener {
+                Timber.Forest.d("Recipe with ID $recipeId deleted successfully")
+            }
+            .addOnFailureListener { e ->
+                Timber.Forest.e("Failed to delete recipe with ID $recipeId: ${e.message}")
+            }
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.btl_android_project.presentation.log_recipe
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Recipe
@@ -18,6 +19,10 @@ class DetailRecipeViewModel @Inject constructor(
 ): ViewModel() {
     var recipeName: String = ""
     var servings: Int = 1
+    var recipeId: Int = 0
+
+    var recipe: Recipe? = null
+
     private val _totalCalories = MutableStateFlow(0)
     val totalCalories = _totalCalories
         .asStateFlow()
@@ -76,19 +81,42 @@ class DetailRecipeViewModel @Inject constructor(
         fatAmount = ((totalFat.toDouble() / sum) * 100).roundToInt()
     }
 
-    fun insertRecipe(
+    fun insertOrUpdateRecipe(
         navigateToLogAllFragment: () -> Unit
     ) {
         viewModelScope.launch {
+            Log.d("DetailRecipeViewModel", "insertOrUpdateRecipe: $recipeId, $recipeName, $servings, ${_ingredients.value}")
             val newRecipe = Recipe(
+                id = recipeId,
                 name = recipeName,
                 servings = servings,
                 ingredients = _ingredients.value
             )
-            recipeRepository.insertRecipe(
+            recipeRepository.insertOrUpdateRecipe(
                 newRecipe
             )
             navigateToLogAllFragment()
+        }
+    }
+
+    fun deleteRecipe(
+        recipeId: Int,
+        navigateToLogAllFragment: () -> Unit
+    ) {
+        viewModelScope.launch {
+            recipeRepository.deleteRecipe(recipeId)
+            navigateToLogAllFragment()
+        }
+    }
+
+    fun getRecipeById(
+        recipeId: Int,
+    ) {
+        viewModelScope.launch {
+            val recipe = recipeRepository.getRecipeById(recipeId)
+            if (recipe != null) {
+//                setRecipe(recipe)
+            }
         }
     }
 }

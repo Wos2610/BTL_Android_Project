@@ -57,9 +57,9 @@ class IngredientsFragment : Fragment() {
 
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<StaticRecipeIngredient>("ingredient")
-            ?.observe(viewLifecycleOwner) { recipe ->
-                Log.d("IngredientsFragment", "Received ingredient: $recipe")
-                viewModel.addIngredient(recipe)
+            ?.observe(viewLifecycleOwner) { ingredient ->
+                Log.d("IngredientsFragment", "Received ingredient: $ingredient")
+                viewModel.addIngredient(ingredient)
                 navController.currentBackStackEntry?.savedStateHandle?.remove<StaticRecipeIngredient>("ingredient")
             }
 

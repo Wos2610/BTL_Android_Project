@@ -3,10 +3,12 @@ package com.example.btl_android_project.presentation.log_recipe
 import android.app.AlertDialog
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDetailRecipeBinding
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -32,6 +35,11 @@ class DetailRecipeFragment : Fragment() {
         viewModel.recipeName = args.recipeName.toString()
         viewModel.servings = args.servings
         viewModel.setIngredients(args.ingredients.toList())
+        viewModel.recipeId = args.recipeId
+
+        if (args.recipeId != 0) {
+            viewModel.getRecipeById(args.recipeId)
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +53,27 @@ class DetailRecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setSaveButtonToolBarOnClickListener()
+        setAddButtonToolBarOnClickListener()
+        setDeleteButtonToolBarOnClickListener()
+
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<StaticRecipeIngredient>("ingredient")
+            ?.observe(viewLifecycleOwner) { ingredient ->
+                Log.d("IngredientsFragment", "Received ingredient: $ingredient")
+                viewModel.addIngredient(ingredient)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<StaticRecipeIngredient>("ingredient")
+            }
 
         binding.etRecipeName.setText(viewModel.recipeName)
         binding.etServings.setText(viewModel.servings.toString())
+
+        binding.etRecipeName.doOnTextChanged { text, _, _, _ ->
+            viewModel.recipeName = text.toString()
+        }
+
+        binding.etServings.doOnTextChanged { text, _, _, _ ->
+            viewModel.servings = text.toString().toIntOrNull() ?: 1
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -119,11 +145,36 @@ class DetailRecipeFragment : Fragment() {
                     findNavController().popBackStack(R.id.logAllFragment, false)
                 }
                 .setNegativeButton("Just Create") { _, _ ->
-                    viewModel.insertRecipe {
+                    viewModel.insertOrUpdateRecipe {
                         findNavController().popBackStack(R.id.logAllFragment, false)
                     }
                 }
                 .setNeutralButton("Cancel", null)
+                .show()
+        }
+    }
+
+    private fun setAddButtonToolBarOnClickListener() {
+        (requireActivity() as? MainActivity)?.setAddButtonClickListener {
+            val action = DetailRecipeFragmentDirections.actionDetailRecipeFragmentToSearchIngredientFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun setDeleteButtonToolBarOnClickListener() {
+        (requireActivity() as? MainActivity)?.setDeleteButtonClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Delete Recipe")
+                .setMessage("Are you sure you want to delete this recipe?")
+                .setPositiveButton("Delete") { _, _ ->
+                    viewModel.deleteRecipe(
+                        recipeId = viewModel.recipeId,
+                        navigateToLogAllFragment = {
+                            findNavController().popBackStack(R.id.logAllFragment, false)
+                        },
+                    )
+                }
+                .setNegativeButton("Cancel", null)
                 .show()
         }
     }

@@ -17,11 +17,11 @@ class RecipeRepository @Inject constructor(
 
     suspend fun getRecipeById(id: Int): Recipe? = recipeDao.getRecipeById(id)
 
-    suspend fun insertRecipe(recipe: Recipe){
+    suspend fun insertOrUpdateRecipe(recipe: Recipe){
         val newRecipe = recipe.copy(
             calories = recipe.ingredients.sumOf { it.foodNutrients.firstOrNull{ it.name.contains("Energy") }?.amount?.toInt() ?: 0 },
         )
-        recipeFireStoreDataSource.addRecipe(newRecipe)
+//        recipeFireStoreDataSource.addRecipe(newRecipe)
         recipeDao.insertRecipe(newRecipe)
     }
 
@@ -29,7 +29,10 @@ class RecipeRepository @Inject constructor(
 
     suspend fun updateRecipe(recipe: Recipe) = recipeDao.updateRecipe(recipe)
 
-    suspend fun deleteRecipe(recipe: Recipe) = recipeDao.deleteRecipe(recipe)
+    suspend fun deleteRecipe(recipeId: Int){
+//        recipeFireStoreDataSource.deleteRecipe(recipe.id)
+        recipeDao.deleteRecipeById(recipeId)
+    }
 
     suspend fun deleteAllRecipes() = recipeDao.deleteAllRecipes()
 

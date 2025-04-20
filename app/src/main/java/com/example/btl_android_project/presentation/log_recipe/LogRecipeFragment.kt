@@ -65,7 +65,16 @@ class LogRecipeFragment : Fragment() {
     private fun setupRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         recipeAdapter = RecipeAdapter(
-            emptyList(),
+            recipes = emptyList(),
+            onItemClick = {recipe ->
+                val action = LogAllFragmentDirections.actionLogAllFragmentToDetailRecipeFragment(
+                    recipeId = recipe.id,
+                    recipeName = recipe.name,
+                    servings = recipe.servings,
+                    ingredients = recipe.ingredients.toTypedArray()
+                )
+                findNavController().navigate(action)
+            }
         )
 
         binding.rvRecipes.apply {

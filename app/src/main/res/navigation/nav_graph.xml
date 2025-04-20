@@ -55,6 +55,14 @@
         <argument
             android:name="ingredients"
             app:argType="com.example.btl_android_project.local.entity.StaticRecipeIngredient[]" />
+        <argument
+            android:name="recipe_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_detailRecipeFragment_to_searchIngredientFragment"
+            app:destination="@id/searchIngredientFragment"
+            app:popUpTo="@id/detailRecipeFragment" />
 
     </fragment>
     <fragment
@@ -204,6 +212,10 @@
         <action
             android:id="@+id/action_logAllFragment_to_newRecipeFragment"
             app:destination="@id/newRecipeFragment"
+            app:popUpTo="@id/logAllFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_detailRecipeFragment"
+            app:destination="@id/detailRecipeFragment"
             app:popUpTo="@id/logAllFragment" />
     </fragment>
 </navigation>

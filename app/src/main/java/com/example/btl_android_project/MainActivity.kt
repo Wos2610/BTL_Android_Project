@@ -19,6 +19,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.btl_android_project.databinding.ActivityMainBinding
+import com.example.btl_android_project.presentation.log_recipe.DetailIngredientFragmentDirections
+import com.example.btl_android_project.presentation.log_recipe.DetailRecipeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var endTextView: TextView
     private lateinit var saveButton: ImageView
     private lateinit var addButton: ImageView
+    private lateinit var deleteButton: ImageView
 
     private var navController: NavController? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         initEndTextToolbar()
         initSaveButton()
         initAddButton()
+        initDeleteButton()
     }
 
     private fun setUpBottomNavigation() {
@@ -393,6 +397,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.ingredientsFragment -> {
                     setAddButtonVisibility(true)
                 }
+                R.id.detailRecipeFragment -> {
+                    setAddButtonVisibility(true)
+                }
                 else -> {
                     setAddButtonVisibility(false)
                 }
@@ -409,6 +416,55 @@ class MainActivity : AppCompatActivity() {
     fun setAddButtonClickListener(listener: View.OnClickListener) {
         if (::addButton.isInitialized) {
             addButton.setOnClickListener(listener)
+        }
+    }
+
+    fun initDeleteButton(
+        defaultClickListener: View.OnClickListener? = null,
+    ) {
+        if (!::deleteButton.isInitialized) {
+            deleteButton = ImageView(this).apply {
+                layoutParams = Toolbar.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.END
+                }
+
+                setImageResource(R.drawable.ic_delete)
+
+                val size = 100
+                layoutParams.width = size
+                layoutParams.height = size
+                visibility = View.GONE
+                setOnClickListener(defaultClickListener)
+
+                setPadding(8, 8, 8, 8)
+            }
+            binding.toolbar.addView(deleteButton)
+        }
+
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailRecipeFragment -> {
+                    setDeleteButtonVisibility(true)
+                }
+                else -> {
+                    setDeleteButtonVisibility(false)
+                }
+            }
+        }
+    }
+
+    fun setDeleteButtonVisibility(visible: Boolean) {
+        if (::deleteButton.isInitialized) {
+            deleteButton.visibility = if (visible) View.VISIBLE else View.GONE
+        }
+    }
+
+    fun setDeleteButtonClickListener(listener: View.OnClickListener) {
+        if (::deleteButton.isInitialized) {
+            deleteButton.setOnClickListener(listener)
         }
     }
 
