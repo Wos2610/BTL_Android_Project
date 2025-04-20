@@ -14,11 +14,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDetailRecipeBinding
-import com.example.btl_android_project.local.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.RecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -57,11 +59,11 @@ class DetailRecipeFragment : Fragment() {
         setDeleteButtonToolBarOnClickListener()
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<StaticRecipeIngredient>("ingredient")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<RecipeIngredient>("ingredient")
             ?.observe(viewLifecycleOwner) { ingredient ->
                 Log.d("IngredientsFragment", "Received ingredient: $ingredient")
                 viewModel.addIngredient(ingredient)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<StaticRecipeIngredient>("ingredient")
+                navController.currentBackStackEntry?.savedStateHandle?.remove<RecipeIngredient>("ingredient")
             }
 
         binding.etRecipeName.setText(viewModel.recipeName)
@@ -74,6 +76,8 @@ class DetailRecipeFragment : Fragment() {
         binding.etServings.doOnTextChanged { text, _, _, _ ->
             viewModel.servings = text.toString().toIntOrNull() ?: 1
         }
+
+        setItemTouchHelper()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -124,7 +128,7 @@ class DetailRecipeFragment : Fragment() {
     private fun setupRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         ingredientAdapter = IngredientAdapter(
-            ingredients = emptyList(),
+            ingredients = mutableListOf(),
             onItemClick = { ingredient ->
 
             },
@@ -177,5 +181,31 @@ class DetailRecipeFragment : Fragment() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+    }
+
+    private fun setItemTouchHelper() {
+        val itemTouchHelperCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val ingredientToRemove = viewModel.ingredients.value?.getOrNull(position)
+
+                if (ingredientToRemove != null) {
+                    viewModel.removeIngredient(ingredientToRemove)
+                } else {
+                    ingredientAdapter.notifyItemChanged(position)
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.rvIngredients)
     }
 }

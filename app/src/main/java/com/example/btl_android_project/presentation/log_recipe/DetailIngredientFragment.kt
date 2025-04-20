@@ -68,8 +68,8 @@ class DetailIngredientFragment : Fragment() {
 
                 binding.apply {
                     tvRecipeIngredientName.text = ingredient?.description
-                    tvNumberOfServings.text = "1"
-                    tvServingSize.text = "100g"
+                    etNumberOfServings.setText(ingredient?.numberOfServings.toString())
+                    etServingSize.setText(ingredient?.servingSize.toString())
 
                     tvCalories.text = "${calories?.toInt() ?: 0}"
                     tvProteinAmount.text = "$protein g"
@@ -100,13 +100,36 @@ class DetailIngredientFragment : Fragment() {
 
     private fun setSaveButtonToolBarOnClickListener() {
         (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
+            val numberOfServings = binding.etNumberOfServings.text.toString().trim()
+            val servingSize = binding.etServingSize.text.toString().trim()
+
+            if (numberOfServings.isEmpty()) {
+                binding.etNumberOfServings.error = "Please enter number of servings"
+                return@setSaveButtonClickListener
+            }
+
+            if (servingSize.isEmpty()) {
+                binding.etServingSize.error = "Please enter serving size"
+                return@setSaveButtonClickListener
+            }
+
+            val servingsValid = numberOfServings.toIntOrNull()
+
+            if (servingsValid == null) {
+                binding.etNumberOfServings.error = "Enter a valid number"
+                return@setSaveButtonClickListener
+            }
+
             val controller = findNavController()
             controller.previousBackStackEntry?.savedStateHandle?.set(
                 "ingredient",
-                viewModel.ingredient.value
+                viewModel.ingredient.value?.copy(
+                    numberOfServings = numberOfServings.toInt(),
+                    servingSize = servingSize
+                )
             )
             controller.popBackStack()
-
         }
     }
+
 }

@@ -32,8 +32,8 @@
             android:text="Number of Servings"
             android:textColor="@android:color/white"/>
 
-        <TextView
-            android:id="@+id/tv_number_of_servings"
+        <EditText
+            android:id="@+id/et_number_of_servings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1"
@@ -54,8 +54,8 @@
             android:text="Serving Size"
             android:textColor="@android:color/white"/>
 
-        <TextView
-            android:id="@+id/tv_serving_size"
+        <EditText
+            android:id="@+id/et_serving_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1.0 cup"

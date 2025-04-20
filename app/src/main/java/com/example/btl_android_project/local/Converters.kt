@@ -1,6 +1,7 @@
 package com.example.btl_android_project.local
 import androidx.room.TypeConverter
 import com.example.btl_android_project.local.entity.Nutrition
+import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -38,6 +39,17 @@ class Converters {
     @TypeConverter
     fun toIngredientList(value: String): List<StaticRecipeIngredient> {
         val listType = object : TypeToken<List<StaticRecipeIngredient>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromRecipeIngredientList(value: List<RecipeIngredient>): String {
+        return Gson().toJson(value)
+    }
+
+    @TypeConverter
+    fun toRecipeIngredientList(value: String): List<RecipeIngredient> {
+        val listType = object : TypeToken<List<RecipeIngredient>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

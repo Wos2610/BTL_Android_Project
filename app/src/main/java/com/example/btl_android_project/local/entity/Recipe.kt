@@ -13,6 +13,6 @@ data class Recipe(
     val instructions: String = "",
     val calories: Int = 0,
     val userId: Int = 0,
-    val ingredients: List<StaticRecipeIngredient> = emptyList(),
+    val ingredients: List<RecipeIngredient> = emptyList(),
     val servings: Int = 0,
 ) : Serializable

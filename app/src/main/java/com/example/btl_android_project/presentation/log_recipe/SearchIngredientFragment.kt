@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.databinding.FragmentSearchIngredientBinding
+import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ class SearchIngredientFragment : Fragment() {
     private var _binding: FragmentSearchIngredientBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var searchAdapter: IngredientAdapter
+    private lateinit var searchAdapter: StaticIngredientAdapter
 
     companion object {
         fun newInstance() = SearchIngredientFragment()
@@ -44,7 +45,7 @@ class SearchIngredientFragment : Fragment() {
         setupRecyclerView()
 
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<StaticRecipeIngredient>("ingredient")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<RecipeIngredient>("ingredient")
             ?.observe(viewLifecycleOwner) { ingredient ->
                 Log.d("SearchIngredientFragment", "Received ingredient: $ingredient")
                 val controller = findNavController()
@@ -75,7 +76,7 @@ class SearchIngredientFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
-        searchAdapter = IngredientAdapter(
+        searchAdapter = StaticIngredientAdapter(
             emptyList(),
             onItemClick = { ingredient ->
                 val action = SearchIngredientFragmentDirections.actionSearchIngredientFragmentToDetailIngredientFragment(ingredient.fdcId)

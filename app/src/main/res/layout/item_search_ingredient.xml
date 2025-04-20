@@ -45,7 +45,6 @@
             tools:text="122" />
     </LinearLayout>
 
-    <!-- Dòng chi tiết -->
     <TextView
         android:id="@+id/tvFoodDetails"
         android:layout_width="match_parent"

@@ -12,12 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentIngredientsBinding
 import com.example.btl_android_project.local.entity.Recipe
-import com.example.btl_android_project.local.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.RecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,12 +57,14 @@ class IngredientsFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        setItemTouchHelper()
+
         val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<StaticRecipeIngredient>("ingredient")
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<RecipeIngredient>("ingredient")
             ?.observe(viewLifecycleOwner) { ingredient ->
                 Log.d("IngredientsFragment", "Received ingredient: $ingredient")
                 viewModel.addIngredient(ingredient)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<StaticRecipeIngredient>("ingredient")
+                navController.currentBackStackEntry?.savedStateHandle?.remove<RecipeIngredient>("ingredient")
             }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -100,7 +104,7 @@ class IngredientsFragment : Fragment() {
     private fun setupRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         searchAdapter = IngredientAdapter(
-            emptyList(),
+            mutableListOf(),
             onItemClick = { ingredient ->
 
             }
@@ -136,5 +140,31 @@ class IngredientsFragment : Fragment() {
             )
             findNavController().navigate(action)
         }
+    }
+
+    private fun setItemTouchHelper() {
+        val itemTouchHelperCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val ingredientToRemove = viewModel.ingredients.value?.getOrNull(position)
+
+                if (ingredientToRemove != null) {
+                    viewModel.removeIngredient(ingredientToRemove)
+                } else {
+                    searchAdapter.notifyItemChanged(position)
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.ingredientsRecyclerView)
     }
 }
