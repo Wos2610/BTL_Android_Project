@@ -11,13 +11,16 @@ import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
 import com.example.btl_android_project.local.entity.Recipe
+import com.example.btl_android_project.local.entity.*
+import com.example.btl_android_project.local.dao.*
 
 @Database(
     entities = [
         StaticRecipeIngredient::class,
         StaticRecipesEntity::class,
         StaticFoodEntity::class,
-        Recipe::class],
+        Recipe::class,
+        Food::class],
     version = 2,
     exportSchema = false
 )
@@ -26,5 +29,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun staticRecipeIngredientDao(): StaticRecipeIngredientDao
     abstract fun staticRecipeDao(): StaticRecipeDao
     abstract fun staticFoodDao(): StaticFoodDao
+    abstract fun foodDao(): FoodDao
     abstract fun recipeDao(): RecipeDao
 }

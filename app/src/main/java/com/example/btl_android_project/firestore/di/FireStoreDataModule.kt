@@ -1,8 +1,10 @@
 package com.example.btl_android_project.firestore.di
 
+import com.example.btl_android_project.firestore.datasource.FoodFireStoreDataSourceImpl
 import com.example.btl_android_project.firestore.datasource.StaticFoodFireStoreDataSourceImpl
 import com.example.btl_android_project.firestore.datasource.StaticRecipeFireStoreDataSourceImpl
 import com.example.btl_android_project.firestore.datasource.StaticRecipeIngredientFireStoreDataSourceImpl
+import com.example.btl_android_project.firestore.domain.FoodFireStoreDataSource
 import com.example.btl_android_project.firestore.domain.StaticFoodFireStoreDataSource
 import com.example.btl_android_project.firestore.domain.StaticRecipeFireStoreDataSource
 import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
@@ -28,6 +30,11 @@ abstract class FireStoreDataModule {
     abstract fun bindStaticFoodFireStoreDataSource(
         staticFoodFireStoreDataSourceImpl: StaticFoodFireStoreDataSourceImpl
     ): StaticFoodFireStoreDataSource
+
+    @Binds
+    abstract fun bindFoodFireStoreDataSource(
+        foodFireStoreDataSourceImpl: FoodFireStoreDataSourceImpl
+    ): FoodFireStoreDataSource
 
     @Binds
     abstract fun bindRecipeFireStoreDataSource(

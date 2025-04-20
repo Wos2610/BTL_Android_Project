@@ -3,6 +3,7 @@ package com.example.btl_android_project.local.di
 import android.content.Context
 import androidx.room.Room
 import com.example.btl_android_project.local.AppDatabase
+import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
@@ -29,6 +30,11 @@ class DatabaseModule {
     @Provides
     fun provideStaticFoodDao(appDatabase: AppDatabase) : StaticFoodDao {
         return appDatabase.staticFoodDao()
+    }
+
+    @Provides
+    fun provideFoodDao(appDatabase: AppDatabase): FoodDao {
+        return appDatabase.foodDao()
     }
 
     @Provides
