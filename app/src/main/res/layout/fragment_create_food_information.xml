@@ -14,19 +14,6 @@
         android:orientation="vertical"
         android:paddingVertical="24dp">
 
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="back" />
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="next" />
-
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -184,6 +184,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.detailIngredientFragment -> getString(R.string.ingredient_detail)
                 R.id.ingredientsFragment-> getString(R.string.search_ingredient)
                 R.id.detailRecipeFragment -> getString(R.string.recipe_detail)
+                R.id.createFoodInformationFragment -> getString(R.string.create_food)
+                R.id.createFoodNutritionFragment -> getString(R.string.create_food)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -285,6 +287,10 @@ class MainActivity : AppCompatActivity() {
                     setEndTextToolbarVisibility(true)
                     setEndTextToolbarText(getString(R.string.next))
                 }
+                R.id.createFoodInformationFragment -> {
+                    setEndTextToolbarVisibility(true)
+                    setEndTextToolbarText(getString(R.string.next))
+                }
                 else -> {
                     setEndTextToolbarVisibility(false)
                 }
@@ -341,12 +347,9 @@ class MainActivity : AppCompatActivity() {
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.detailIngredientFragment -> {
-                    setSaveButtonVisibility(true)
-                }
-                R.id.detailRecipeFragment -> {
-                    setSaveButtonVisibility(true)
-                }
+                R.id.detailIngredientFragment -> setSaveButtonVisibility(true)
+                R.id.detailRecipeFragment -> setSaveButtonVisibility(true)
+                R.id.createFoodNutritionFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }

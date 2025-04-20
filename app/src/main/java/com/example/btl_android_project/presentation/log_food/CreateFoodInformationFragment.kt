@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.databinding.FragmentCreateFoodInformationBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -54,14 +55,36 @@ class CreateFoodInformationFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.btnNext.setOnClickListener {
+        setEndTextClickListener()
+    }
+
+    private fun validateInput(): Boolean {
+        val name = binding.etBrandName.text.toString().trim()
+        val description = binding.etDescription.text.toString().trim()
+        val servingsSizeStr = binding.etServingSize.text.toString().trim()
+        val servingsUnit = binding.etUnit.text.toString().trim()
+        val servingsPerContainerStr = binding.etServingPerContainer.text.toString().trim()
+
+        if (name.isEmpty() || description.isEmpty() || servingsUnit.isEmpty()) return false
+        val servingsSize = servingsSizeStr.toIntOrNull() ?: return false
+        val servingsPerContainer = servingsPerContainerStr.toIntOrNull() ?: return false
+        if (servingsSize <= 0 || servingsPerContainer <= 0) return false
+        return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setEndTextClickListener() {
+        (requireActivity() as? MainActivity)?.setEndTextClickListener {
             if (validateInput()) {
                 val name = binding.etBrandName.text.toString().trim()
                 val description = binding.etDescription.text.toString().trim()
                 val servingsSize = binding.etServingSize.text.toString().toIntOrNull() ?: 0
                 val servingsUnit = binding.etUnit.text.toString().trim()
-                val servingsPerContainer =
-                    binding.etServingPerContainer.text.toString().toIntOrNull() ?: 0
+                val servingsPerContainer = binding.etServingPerContainer.text.toString().toIntOrNull() ?: 0
 
                 if (foodId != -1) {
                     val action =
@@ -90,25 +113,5 @@ class CreateFoodInformationFragment : Fragment() {
                     .show()
             }
         }
-        binding.btnBack.setOnClickListener { findNavController().navigateUp() }
-    }
-
-    private fun validateInput(): Boolean {
-        val name = binding.etBrandName.text.toString().trim()
-        val description = binding.etDescription.text.toString().trim()
-        val servingsSizeStr = binding.etServingSize.text.toString().trim()
-        val servingsUnit = binding.etUnit.text.toString().trim()
-        val servingsPerContainerStr = binding.etServingPerContainer.text.toString().trim()
-
-        if (name.isEmpty() || description.isEmpty() || servingsUnit.isEmpty()) return false
-        val servingsSize = servingsSizeStr.toIntOrNull() ?: return false
-        val servingsPerContainer = servingsPerContainerStr.toIntOrNull() ?: return false
-        if (servingsSize <= 0 || servingsPerContainer <= 0) return false
-        return true
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

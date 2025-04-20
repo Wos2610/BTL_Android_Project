@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.databinding.FragmentCreateFoodNutritionBinding
-import com.example.btl_android_project.local.entity.Nutrition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,7 +25,6 @@ class CreateFoodNutritionFragment : Fragment() {
     private lateinit var nutritionAdapter: NutritionAdapter
 
     private var foodId = -1
-    private lateinit var nutritions: MutableList<Nutrition>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,17 +71,7 @@ class CreateFoodNutritionFragment : Fragment() {
 
 
     private fun setupListeners() {
-        binding.btnSave.setOnClickListener {
-            if (foodId != -1) {
-                viewModel.updateFood(foodId)
-            } else {
-                viewModel.saveFood()
-            }
-        }
-
-        binding.btnBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        setSaveButtonToolBarOnClickListener()
     }
 
     private fun observeViewModel() {
@@ -109,7 +98,6 @@ class CreateFoodNutritionFragment : Fragment() {
             viewModel.nutritions.collect { nutritions ->
 
                 val isValid = nutritions.all { it.amount >= 0 }
-                binding.btnSave.isEnabled = isValid
 
                 if (!isValid) {
                     Toast.makeText(
@@ -126,5 +114,15 @@ class CreateFoodNutritionFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setSaveButtonToolBarOnClickListener() {
+        (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
+            if (foodId != -1) {
+                viewModel.updateFood(foodId)
+            } else {
+                viewModel.saveFood()
+            }
+        }
     }
 }
