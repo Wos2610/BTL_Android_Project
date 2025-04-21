@@ -22,7 +22,13 @@
         android:id="@+id/createMealFragment"
         android:name="com.example.btl_android_project.presentation.log_meal.CreateMealFragment"
         android:label="fragment_create_meal"
-        tools:layout="@layout/fragment_create_meal" />
+        tools:layout="@layout/fragment_create_meal" >
+        <action
+            android:id="@+id/action_createMealFragment_to_logAllFragment"
+            app:destination="@id/logAllFragment"
+            app:popUpTo="@id/createMealFragment" >
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/createFoodNutritionFragment"
         android:name="com.example.btl_android_project.presentation.log_food.CreateFoodNutritionFragment"
@@ -92,6 +98,10 @@
             android:id="@+id/action_detailRecipeFragment_to_searchIngredientFragment"
             app:destination="@id/searchIngredientFragment"
             app:popUpTo="@id/detailRecipeFragment" />
+        <argument
+            android:name="isFromCreateMeal"
+            app:argType="boolean"
+            android:defaultValue="false" />
 
     </fragment>
     <fragment
@@ -249,5 +259,27 @@
             android:id="@+id/action_logAllFragment_to_detailRecipeFragment"
             app:destination="@id/detailRecipeFragment"
             app:popUpTo="@id/logAllFragment" />
+        <argument
+            android:name="isFromCreateMeal"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_logAllFragment_to_logRecipeDiaryFragment"
+            app:destination="@id/logRecipeDiaryFragment"
+            app:popUpTo="@id/logAllFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/logRecipeDiaryFragment"
+        android:name="com.example.btl_android_project.presentation.log_recipe.LogRecipeDiaryFragment"
+        android:label="fragment_log_recipe_diary"
+        tools:layout="@layout/fragment_log_recipe_diary" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="isFromCreateMeal"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 </navigation>

@@ -30,8 +30,23 @@ class LogFoodFragment : Fragment() {
     private val viewModel: LogFoodViewModel by viewModels()
     private lateinit var foodAdapter: FoodAdapter
 
+    private var isFromCreateMeal: Boolean = false
+
     companion object {
-        fun newInstance() = LogFoodFragment()
+        private const val ARG_IS_FROM_CREATE_MEAL = "isFromCreateMeal"
+
+        fun newInstance(isFromCreateMeal: Boolean = false): LogFoodFragment {
+            val fragment = LogFoodFragment()
+            val args = Bundle()
+            args.putBoolean(ARG_IS_FROM_CREATE_MEAL, isFromCreateMeal)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
     }
 
     override fun onCreateView(

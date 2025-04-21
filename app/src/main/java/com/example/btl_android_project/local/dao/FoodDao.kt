@@ -29,4 +29,7 @@ interface FoodDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllFoods(foods: List<Food>)
+
+    @Query("SELECT * FROM foods WHERE id IN (:ids)")
+    suspend fun getFoodsByIds(ids: List<Int>): List<Food>
 }

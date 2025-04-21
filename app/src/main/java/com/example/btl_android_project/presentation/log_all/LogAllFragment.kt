@@ -1,31 +1,33 @@
 package com.example.btl_android_project.presentation.log_all
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.example.btl_android_project.MainActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogAllBinding
+import com.example.btl_android_project.local.entity.Recipe
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LogAllFragment : Fragment() {
     private var _binding: FragmentLogAllBinding? = null
     private val binding get() = _binding!!
     private lateinit var pagerAdapter: LogPagerAdapter
-    companion object {
-        fun newInstance() = LogAllFragment()
-    }
 
     private val viewModel: LogAllViewModel by viewModels()
+    private val args: LogAllFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Use the ViewModel
+        viewModel.isFromCreateMeal = args.isFromCreateMeal
     }
 
     override fun onCreateView(
@@ -41,7 +43,11 @@ class LogAllFragment : Fragment() {
 
         hideBottomNavigationView()
 
-        pagerAdapter = LogPagerAdapter(this)
+        pagerAdapter = LogPagerAdapter(
+            this,
+            isFromCreateMealList = listOf(viewModel.isFromCreateMeal, viewModel.isFromCreateMeal, viewModel.isFromCreateMeal),
+        )
+
         binding.viewPager.adapter = pagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when(position){
@@ -51,6 +57,15 @@ class LogAllFragment : Fragment() {
                 else -> getString(R.string.my_meals)
             }
         }.attach()
+
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")
+            ?.observe(viewLifecycleOwner) { recipe ->
+                Log.d("LogAllFragment", "Received recipe: $recipe")
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("recipe", recipe)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<Recipe>("recipe")
+                findNavController().popBackStack()
+            }
     }
 
     override fun onDestroyView() {

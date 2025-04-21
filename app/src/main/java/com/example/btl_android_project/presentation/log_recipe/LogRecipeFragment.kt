@@ -2,6 +2,7 @@ package com.example.btl_android_project.presentation.log_recipe
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,8 +26,12 @@ class LogRecipeFragment : Fragment() {
 
     private lateinit var recipeAdapter: RecipeAdapter
 
+    private var isFromCreateMeal: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
+        Log.d("LogRecipeFragment", "isFromCreateMeal: $isFromCreateMeal")
     }
 
     override fun onCreateView(
@@ -67,13 +72,35 @@ class LogRecipeFragment : Fragment() {
         recipeAdapter = RecipeAdapter(
             recipes = emptyList(),
             onItemClick = {recipe ->
-                val action = LogAllFragmentDirections.actionLogAllFragmentToDetailRecipeFragment(
-                    recipeId = recipe.id,
-                    recipeName = recipe.name,
-                    servings = recipe.servings,
-                    ingredients = recipe.ingredients.toTypedArray()
-                )
-                findNavController().navigate(action)
+                if(isFromCreateMeal){
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogRecipeDiaryFragment(
+                        recipeId = recipe.id,
+                        isFromCreateMeal = isFromCreateMeal
+                    )
+                    findNavController().navigate(action)
+                }
+                else{
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToDetailRecipeFragment(
+                        recipeId = recipe.id,
+                        recipeName = recipe.name,
+                        servings = recipe.servings,
+                        ingredients = recipe.ingredients.toTypedArray(),
+                        isFromCreateMeal = isFromCreateMeal
+                    )
+                    findNavController().navigate(action)
+                }
+
+            },
+            onAddToDiaryClick = { recipe ->
+                if(isFromCreateMeal) {
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogRecipeDiaryFragment(
+                        recipeId = recipe.id,
+                        isFromCreateMeal = isFromCreateMeal
+                    )
+                    findNavController().navigate(action)
+                }else{
+
+                }
             }
         )
 
@@ -83,7 +110,16 @@ class LogRecipeFragment : Fragment() {
         }
     }
 
-    companion object{
-        fun newInstance() = LogRecipeFragment()
+
+    companion object {
+        private const val ARG_IS_FROM_CREATE_MEAL = "isFromCreateMeal"
+
+        fun newInstance(isFromCreateMeal: Boolean = false): LogRecipeFragment {
+            val fragment = LogRecipeFragment()
+            val args = Bundle()
+            args.putBoolean(ARG_IS_FROM_CREATE_MEAL, isFromCreateMeal)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

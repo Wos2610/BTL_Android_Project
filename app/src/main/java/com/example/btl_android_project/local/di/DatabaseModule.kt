@@ -42,6 +42,11 @@ class DatabaseModule {
         return appDatabase.recipeDao()
     }
 
+    @Provides
+    fun provideMealDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.MealDao {
+        return appDatabase.mealDao()
+    }
+
     @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context) : AppDatabase {

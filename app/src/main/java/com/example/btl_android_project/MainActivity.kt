@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.detailRecipeFragment -> getString(R.string.recipe_detail)
                 R.id.createFoodInformationFragment -> getString(R.string.create_food)
                 R.id.createFoodNutritionFragment -> getString(R.string.create_food)
+                R.id.logRecipeDiaryFragment -> getString(R.string.add_recipe)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -350,6 +351,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.detailIngredientFragment -> setSaveButtonVisibility(true)
                 R.id.detailRecipeFragment -> setSaveButtonVisibility(true)
                 R.id.createFoodNutritionFragment -> setSaveButtonVisibility(true)
+                R.id.createMealFragment -> setSaveButtonVisibility(true)
+                R.id.logRecipeDiaryFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }
@@ -397,15 +400,10 @@ class MainActivity : AppCompatActivity() {
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.ingredientsFragment -> {
-                    setAddButtonVisibility(true)
-                }
-                R.id.detailRecipeFragment -> {
-                    setAddButtonVisibility(true)
-                }
-                else -> {
-                    setAddButtonVisibility(false)
-                }
+                R.id.ingredientsFragment -> setAddButtonVisibility(true)
+                R.id.detailRecipeFragment -> setAddButtonVisibility(true)
+                R.id.createMealFragment -> setAddButtonVisibility(true)
+                else -> setAddButtonVisibility(false)
             }
         }
     }

@@ -37,4 +37,7 @@
     <string name="total_calories">Total calories: %d kcal</string>
     <string name="recipe_detail">Recipe Detail</string>
     <string name="create_food">Create Food</string>
+    <string name="number_of_servings">Number of Servings</string>
+    <string name="servings_size">Servings Size</string>
+    <string name="add_recipe">Add Recipe</string>
 </resources>

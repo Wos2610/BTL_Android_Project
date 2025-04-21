@@ -31,6 +31,7 @@ class DetailRecipeFragment : Fragment() {
     private val args: DetailRecipeFragmentArgs by navArgs()
     private lateinit var ingredientAdapter: IngredientAdapter
     private val viewModel: DetailRecipeViewModel by viewModels()
+    private var isFromCreateMeal: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,7 @@ class DetailRecipeFragment : Fragment() {
         viewModel.servings = args.servings
         viewModel.setIngredients(args.ingredients.toList())
         viewModel.recipeId = args.recipeId
+        isFromCreateMeal = args.isFromCreateMeal
 
         if (args.recipeId != 0) {
             viewModel.getRecipeById(args.recipeId)
@@ -141,20 +143,24 @@ class DetailRecipeFragment : Fragment() {
     }
 
     private fun setSaveButtonToolBarOnClickListener() {
-        (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Save Recipe")
-                .setMessage("Do you want to add this recipe to your diary as well?")
-                .setPositiveButton("Add to Diary") { _, _ ->
-                    findNavController().popBackStack(R.id.logAllFragment, false)
-                }
-                .setNegativeButton("Just Create") { _, _ ->
-                    viewModel.insertOrUpdateRecipe {
+        if(isFromCreateMeal){
+
+        }else{
+            (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Save Recipe")
+                    .setMessage("Do you want to add this recipe to your diary as well?")
+                    .setPositiveButton("Add to Diary") { _, _ ->
                         findNavController().popBackStack(R.id.logAllFragment, false)
                     }
-                }
-                .setNeutralButton("Cancel", null)
-                .show()
+                    .setNegativeButton("Just Create") { _, _ ->
+                        viewModel.insertOrUpdateRecipe {
+                            findNavController().popBackStack(R.id.logAllFragment, false)
+                        }
+                    }
+                    .setNeutralButton("Cancel", null)
+                    .show()
+            }
         }
     }
 

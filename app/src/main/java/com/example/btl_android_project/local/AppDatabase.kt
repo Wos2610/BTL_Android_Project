@@ -20,8 +20,11 @@ import com.example.btl_android_project.local.dao.*
         StaticRecipesEntity::class,
         StaticFoodEntity::class,
         Recipe::class,
-        Food::class],
-    version = 1,
+        Food::class,
+        Meal::class,
+        MealFoodCrossRef::class,
+        MealRecipeCrossRef::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class, RecipeTypeConverters::class)
@@ -31,4 +34,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun staticFoodDao(): StaticFoodDao
     abstract fun foodDao(): FoodDao
     abstract fun recipeDao(): RecipeDao
+    abstract fun mealDao(): MealDao
 }

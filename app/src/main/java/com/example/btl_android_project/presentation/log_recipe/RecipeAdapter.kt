@@ -10,7 +10,8 @@ import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 
 class RecipeAdapter(
     private var recipes: List<Recipe>,
-    private val onItemClick: (Recipe) -> Unit
+    private val onItemClick: (Recipe) -> Unit,
+    private val onAddToDiaryClick: (Recipe) -> Unit,
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -25,6 +26,9 @@ class RecipeAdapter(
         val binding = ItemMealBinding.bind(holder.itemView)
         binding.tvMealName.text = meal.name
         binding.tvMealInfo.text = meal.calories.toString()
+        binding.btnAddMeal.setOnClickListener {
+            onAddToDiaryClick(meal)
+        }
         binding.root.setOnClickListener {
             onItemClick(meal)
         }

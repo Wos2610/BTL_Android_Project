@@ -92,9 +92,7 @@ class DetailRecipeViewModel @Inject constructor(
                 servings = servings,
                 ingredients = _ingredients.value
             )
-            recipeRepository.insertOrUpdateRecipe(
-                newRecipe
-            )
+            recipeRepository.insertOrUpdateRecipe(newRecipe)
             navigateToLogAllFragment()
         }
     }
