@@ -3,8 +3,10 @@ package com.example.btl_android_project.repository
 import com.example.btl_android_project.firestore.domain.FoodFireStoreDataSource
 import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.entity.Food
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -109,6 +111,12 @@ class FoodRepository @Inject constructor(
             Timber.d("Synced ${firestoreFoods.size} foods from Firestore")
         } catch (e: Exception) {
             Timber.e("Error syncing foods from Firestore: ${e.message}")
+        }
+    }
+
+    suspend fun getFoodByFoodId(id: Int) : Food? {
+        return withContext(Dispatchers.IO){
+            foodDao.getFoodById(id)
         }
     }
 }

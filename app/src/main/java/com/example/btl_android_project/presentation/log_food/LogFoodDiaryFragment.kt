@@ -1,4 +1,4 @@
-package com.example.btl_android_project.presentation.log_recipe
+package com.example.btl_android_project.presentation.log_food
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,40 +12,37 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.MainActivity
-import com.example.btl_android_project.databinding.FragmentLogRecipeDiaryBinding
+import com.example.btl_android_project.databinding.FragmentLogFoodDiaryBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LogRecipeDiaryFragment : Fragment() {
-    private var _binding: FragmentLogRecipeDiaryBinding? = null
+class LogFoodDiaryFragment : Fragment() {
+    private var _binding: FragmentLogFoodDiaryBinding? = null
     private val binding get() = _binding!!
-    private val args: LogRecipeDiaryFragmentArgs by navArgs()
-    private lateinit var ingredientAdapter: IngredientAdapter
-    private val viewModel: LogRecipeDiaryViewModel by viewModels()
+    private val args: LogFoodDiaryFragmentArgs by navArgs()
+    private val viewModel: LogFoodDiaryViewModel by viewModels()
     private var isFromCreateMeal: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = args.isFromCreateMeal
 
-        if (args.recipeId != 0) {
-            viewModel.getRecipeById(args.recipeId)
+        if (args.foodId != 0) {
+            viewModel.getFoodById(args.foodId)
         }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLogRecipeDiaryBinding.inflate(inflater, container, false)
+        _binding = FragmentLogFoodDiaryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
         setUpSpinner()
         setSaveButtonToolBarOnClickListener()
         binding.etServings.setText(viewModel.servings.toString())
@@ -57,43 +54,20 @@ class LogRecipeDiaryFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.recipe.collect { recipe ->
-                        recipe?.let {
+                    viewModel.food.collect { food ->
+                        food?.let {
                             binding.tvTitle.text = it.name
                             binding.etServings.setText(it.servings.toString())
-                            ingredientAdapter.updateData(recipe.ingredients)
+                            binding.tvCalories.text = it.calories.toString()
+                            binding.tvCarbs.text = it.carbs.toString()
+                            binding.tvProtein.text = it.protein.toString()
+                            binding.tvFat.text = it.fat.toString()
+                            binding.tvCarbsAmount.text = viewModel.carbsAmount.toString() + "%"
+                            binding.tvProteinAmount.text = viewModel.proteinAmount.toString() + "%"
+                            binding.tvFatAmount.text = viewModel.fatAmount.toString() + "%"
                         }
                     }
                 }
-
-                launch {
-                    viewModel.totalCalories.collect { totalCalories ->
-                        binding.tvCalories.text = totalCalories.toString()
-                    }
-                }
-
-                launch {
-                    viewModel.totalCarbs.collect { totalCarbs ->
-                        binding.tvCarbs.text = totalCarbs.toString()
-                        binding.tvCarbsAmount.text = viewModel.carbsAmount.toString() + "%"
-                    }
-                }
-
-                launch {
-                    viewModel.totalProteinFlow.collect { totalProtein ->
-                        binding.tvProtein.text = totalProtein.toString()
-                        binding.tvProteinAmount.text = viewModel.proteinAmount.toString() + "%"
-                    }
-                }
-
-                launch {
-                    viewModel.totalFatFlow.collect { totalFat ->
-                        binding.tvFat.text = totalFat.toString()
-                        binding.tvFatAmount.text = viewModel.fatAmount.toString() + "%"
-                    }
-                }
-
-
             }
         }
     }
@@ -101,21 +75,6 @@ class LogRecipeDiaryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun setupRecyclerView() {
-        val linearLayoutManager = LinearLayoutManager(requireContext())
-        ingredientAdapter = IngredientAdapter(
-            ingredients = mutableListOf(),
-            onItemClick = { ingredient ->
-
-            },
-        )
-
-        binding.rvIngredients.apply {
-            layoutManager = linearLayoutManager
-            adapter = ingredientAdapter
-        }
     }
 
     private fun setUpSpinner() {
@@ -156,8 +115,8 @@ class LogRecipeDiaryFragment : Fragment() {
     private fun setSaveButtonToolBarOnClickListener() {
         if(isFromCreateMeal){
             (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
-                val sendRecipe = viewModel.sendRecipe()
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("recipe", sendRecipe)
+                val sendFood = viewModel.sendFood()
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("food", sendFood)
                 findNavController().popBackStack()
             }
 

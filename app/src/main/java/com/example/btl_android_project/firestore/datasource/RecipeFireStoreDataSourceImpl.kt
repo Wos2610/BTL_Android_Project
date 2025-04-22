@@ -3,6 +3,7 @@ package com.example.btl_android_project.firestore.datasource
 import com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
 import com.example.btl_android_project.local.entity.Recipe
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -56,5 +57,12 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
+    override suspend fun getAllRecipesByUser(userId: Int): List<Recipe> {
+        val snapshot = firestore.collection(RECIPES_COLLECTION)
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
 
+        return snapshot.documents.mapNotNull { it.toObject(Recipe::class.java) }
+    }
 }

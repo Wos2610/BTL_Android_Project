@@ -9,7 +9,11 @@ import com.example.btl_android_project.databinding.ItemMealBinding
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.presentation.log_all.LogAllFragmentDirections
 
-class FoodAdapter(private var foods: List<Food>) :
+class FoodAdapter(
+    private var foods: List<Food>,
+    private val onItemClick: (Food) -> Unit,
+    private val onAddToDiaryClick: (Food) -> Unit,
+) :
     RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -25,12 +29,12 @@ class FoodAdapter(private var foods: List<Food>) :
         binding.tvMealName.text = food.name
         binding.tvMealInfo.text = food.calories.toString()
 
-        holder.itemView.setOnClickListener {
-            val action =
-                LogAllFragmentDirections.actionLogAllFragmentToCreateFoodInformationFragment(food.id)
-            it.findNavController().navigate(action)
+        binding.root.setOnClickListener {
+            onItemClick(food)
         }
-
+        binding.btnAddMeal.setOnClickListener {
+            onAddToDiaryClick(food)
+        }
     }
 
     fun updateFoods(newFoods: List<Food>) {

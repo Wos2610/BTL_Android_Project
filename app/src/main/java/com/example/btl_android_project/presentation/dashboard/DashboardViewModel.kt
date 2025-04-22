@@ -4,6 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.example.btl_android_project.repository.StaticRecipeIngredientRepository
 import com.example.btl_android_project.repository.UserRepository
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.repository.FoodRepository
+import com.example.btl_android_project.repository.MealFoodCrossRefRepository
+import com.example.btl_android_project.repository.MealRecipeCrossRefRepository
+import com.example.btl_android_project.repository.MealRepository
+import com.example.btl_android_project.repository.RecipeRepository
 import com.example.btl_android_project.repository.StaticFoodsRepository
 import com.example.btl_android_project.repository.StaticRecipesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,11 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val staticRecipeIngredientRepository: StaticRecipeIngredientRepository,
+    private val staticRecipesRepository: StaticRecipesRepository,
+    private val staticFoodRepository: StaticFoodsRepository,
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
+    private val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
+    private val foodRepository: FoodRepository,
+    private val recipeRepository: RecipeRepository,
+    private val mealRepository: MealRepository,
+
 ) : ViewModel() {
-    val userRepository = UserRepository()
-    @Inject lateinit var staticRecipeIngredientRepository: StaticRecipeIngredientRepository
-    @Inject lateinit var staticRecipesRepository: StaticRecipesRepository
-    @Inject lateinit var staticFoodRepository: StaticFoodsRepository
 
     fun pullStaticRecipeIngredients() {
         viewModelScope.launch {
@@ -47,6 +58,11 @@ class DashboardViewModel @Inject constructor(
             staticFoodRepository.pullFromFireStore()
             staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore()
             staticRecipesRepository.pullStaticRecipesFromFireStore()
+            foodRepository.syncFoodsFromFirestore(userId = 0)
+            recipeRepository.pullFromFireStore(userId = 0)
+            mealRepository.pullFromFireStore(userId = 0)
+            mealFoodCrossRefRepository.pullFromFireStore(userId = 0)
+            mealRecipeCrossRefRepository.pullFromFireStore(userId = 0)
         }
     }
 

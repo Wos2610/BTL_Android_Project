@@ -21,6 +21,7 @@ data class Food(
     val servingsSize: Int = 0,
     val servingsUnit: String = "",
     val servingsPerContainer: Int = 0,
+    val servings: Int = 1,
 
     val nutritions: List<Nutrition> = emptyList(),
     val userId: Int = 0,

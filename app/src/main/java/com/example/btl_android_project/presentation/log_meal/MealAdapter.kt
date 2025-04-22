@@ -77,17 +77,15 @@ class MealAdapter(private var items: MutableList<MealItem>) : RecyclerView.Adapt
             val binding = ItemSearchIngredientBinding.bind(itemView)
             binding.tvFoodName.text = food.name
             binding.tvCalories.text = food.calories.toString()
-            binding.tvFoodDetails.text = "${food.servingsUnit} x ${food.servingsSize}"
+            binding.tvFoodDetails.text = "${food.servings} servings"
         }
     }
 
     fun updateData(newItems: List<MealItem>) {
         if (items.isNotEmpty()) {
             items.clear()
-            items.addAll(newItems)
-        } else {
-            items = mutableListOf()
         }
+        items.addAll(newItems)
         notifyDataSetChanged()
     }
 }

@@ -2,8 +2,6 @@ package com.example.btl_android_project.presentation.log_meal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.btl_android_project.local.entity.Food
-import com.example.btl_android_project.local.entity.Recipe
 import com.example.btl_android_project.repository.MealRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,10 +56,8 @@ class CreateMealViewModel @Inject constructor(
                 name = mealName,
                 mealType = mealType,
                 userId = userId,
-                selectedFoodIds = _mealItems.value.filterIsInstance<MealItem.FoodItem>()
-                    .map { it.food.id },
-                selectedRecipeIds = _mealItems.value.filterIsInstance<MealItem.RecipeItem>()
-                    .map { it.recipe.id }
+                selectedFoodItems = _mealItems.value.filterIsInstance<MealItem.FoodItem>(),
+                selectedRecipeItems = _mealItems.value.filterIsInstance<MealItem.RecipeItem>()
             )
             onSaveSuccess()
         }

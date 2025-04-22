@@ -267,6 +267,10 @@
             android:id="@+id/action_logAllFragment_to_logRecipeDiaryFragment"
             app:destination="@id/logRecipeDiaryFragment"
             app:popUpTo="@id/logAllFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_logFoodDiaryFragment"
+            app:destination="@id/logFoodDiaryFragment"
+            app:popUpTo="@id/logAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/logRecipeDiaryFragment"
@@ -281,5 +285,19 @@
             android:name="isFromCreateMeal"
             app:argType="boolean"
             android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/logFoodDiaryFragment"
+        android:name="com.example.btl_android_project.presentation.log_food.LogFoodDiaryFragment"
+        android:label="fragment_log_food_diary"
+        tools:layout="@layout/fragment_log_food_diary" >
+        <argument
+            android:name="isFromCreateMeal"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="foodId"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

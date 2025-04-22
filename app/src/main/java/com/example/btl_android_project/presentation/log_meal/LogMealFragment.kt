@@ -42,6 +42,7 @@ class LogMealFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
+        viewModel.loadMealFoodCrossRef(0)
     }
 
     override fun onCreateView(

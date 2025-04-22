@@ -35,4 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun foodDao(): FoodDao
     abstract fun recipeDao(): RecipeDao
     abstract fun mealDao(): MealDao
+    abstract fun mealFoodCrossRefDao(): MealFoodCrossRefDao
+    abstract fun mealRecipeCrossRefDao(): MealRecipeCrossRefDao
 }

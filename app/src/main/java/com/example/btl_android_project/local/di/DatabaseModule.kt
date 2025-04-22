@@ -47,6 +47,16 @@ class DatabaseModule {
         return appDatabase.mealDao()
     }
 
+    @Provides
+    fun provideMealFoodCrossRefDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.MealFoodCrossRefDao {
+        return appDatabase.mealFoodCrossRefDao()
+    }
+
+    @Provides
+    fun provideMealRecipeCrossRefDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.MealRecipeCrossRefDao {
+        return appDatabase.mealRecipeCrossRefDao()
+    }
+
     @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context) : AppDatabase {

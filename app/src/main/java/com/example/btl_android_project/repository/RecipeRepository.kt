@@ -21,7 +21,7 @@ class RecipeRepository @Inject constructor(
         val newRecipe = recipe.copy(
             calories = recipe.ingredients.sumOf { it.foodNutrients.firstOrNull{ it.name.contains("Energy") }?.amount?.toInt() ?: 0 },
         )
-//        recipeFireStoreDataSource.addRecipe(newRecipe)
+        recipeFireStoreDataSource.addRecipe(newRecipe)
         recipeDao.insertRecipe(newRecipe)
     }
 
@@ -35,5 +35,10 @@ class RecipeRepository @Inject constructor(
     }
 
     suspend fun deleteAllRecipes() = recipeDao.deleteAllRecipes()
+
+    suspend fun pullFromFireStore(userId: Int = 0) {
+        val recipes = recipeFireStoreDataSource.getAllRecipesByUser(userId)
+        recipeDao.insertRecipes(recipes)
+    }
 
 }

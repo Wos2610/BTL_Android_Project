@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +48,9 @@ class LogFoodFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
+
+        viewModel.syncFoodsFromFirestore()
+        viewModel.loadFoods()
     }
 
     override fun onCreateView(
@@ -67,7 +71,34 @@ class LogFoodFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        foodAdapter = FoodAdapter(emptyList())
+        foodAdapter = FoodAdapter(
+            foods = emptyList(),
+            onItemClick = { food ->
+                if(isFromCreateMeal){
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogFoodDiaryFragment(
+                        foodId = food.id,
+                        isFromCreateMeal = isFromCreateMeal
+                    )
+                    findNavController().navigate(action)
+                }
+                else{
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToCreateFoodInformationFragment(food.id)
+                    findNavController().navigate(action)
+                }
+            },
+            onAddToDiaryClick = { food ->
+                if(isFromCreateMeal){
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogFoodDiaryFragment(
+                        foodId = food.id,
+                        isFromCreateMeal = isFromCreateMeal
+                    )
+                    findNavController().navigate(action)
+                }
+                else{
+
+                }
+            }
+        )
         binding.rvFoods.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = foodAdapter
@@ -77,8 +108,7 @@ class LogFoodFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.foods.collectLatest { foods ->
-                foodAdapter = FoodAdapter(foods)
-                binding.rvFoods.adapter = foodAdapter
+                foodAdapter.updateFoods(foods)
             }
         }
     }

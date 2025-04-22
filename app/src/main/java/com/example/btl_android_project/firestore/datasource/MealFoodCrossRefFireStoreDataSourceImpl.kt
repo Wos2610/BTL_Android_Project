@@ -1,0 +1,63 @@
+package com.example.btl_android_project.firestore.datasource
+
+import com.example.btl_android_project.firestore.domain.MealFoodCrossRefFireStoreDataSource
+import com.example.btl_android_project.local.entity.MealFoodCrossRef
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import timber.log.Timber
+import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+
+class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
+    private val firestore: FirebaseFirestore
+) : MealFoodCrossRefFireStoreDataSource {
+
+    override suspend fun insertMealFoodCrossRef(food: MealFoodCrossRef) {
+        val docId = "${food.mealId}_${food.foodId}"
+        val docRef = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION).document(docId)
+
+        docRef.set(food)
+            .addOnSuccessListener {
+                Timber.d("MealFoodCrossRef added: mealId=${food.mealId}, foodId=${food.foodId}")
+            }
+            .addOnFailureListener { e ->
+                Timber.e(e, "Failed to add MealFoodCrossRef: mealId=${food.mealId}, foodId=${food.foodId}")
+            }
+    }
+
+    override suspend fun updateMealFoodCrossRef(food: MealFoodCrossRef) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteMealFoodCrossRef(foodId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getMealFoodCrossRefById(foodId: String): MealFoodCrossRef? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllMealFoodCrossRefsByUser(userId: Int): List<MealFoodCrossRef> {
+        val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { it.toObject(MealFoodCrossRef::class.java) }
+    }
+
+
+    override suspend fun searchMealFoodCrossRefs(
+        query: String,
+        userId: Int
+    ): List<MealFoodCrossRef> {
+        TODO("Not yet implemented")
+    }
+
+    companion object {
+        private const val MEAL_FOOD_CROSS_REF_COLLECTION = "meal_food_cross_ref"
+        private const val MAX_BATCH_SIZE = 500
+    }
+}

@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 interface MealDao {
 
     // Insert Meal
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMeal(meal: Meal): Long
 
     // Update Meal
@@ -29,7 +29,7 @@ interface MealDao {
     suspend fun deleteMeal(meal: Meal)
 
     // Insert Food relation
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMealFoodCrossRef(ref: MealFoodCrossRef)
 
     // Insert Recipe relation
@@ -63,4 +63,7 @@ interface MealDao {
 
     @Query("SELECT * FROM meals")
     fun getMeals(): Flow<List<Meal>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllMeals(meals: List<Meal>)
 }

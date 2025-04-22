@@ -1,0 +1,19 @@
+package com.example.btl_android_project.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.example.btl_android_project.local.entity.MealRecipeCrossRef
+
+@Dao
+interface MealRecipeCrossRefDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMealRecipeCrossRef(food: MealRecipeCrossRef)
+
+    @Query("SELECT * FROM meal_recipe_cross_ref")
+    suspend fun getAllMealRecipeCrossRefs(): List<MealRecipeCrossRef>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllMealRecipeCrossRefs(mealRecipeCrossRefs: List<MealRecipeCrossRef>)
+}

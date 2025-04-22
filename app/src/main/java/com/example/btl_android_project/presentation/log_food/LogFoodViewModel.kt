@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.repository.FoodRepository
+import com.example.btl_android_project.repository.MealFoodCrossRefRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LogFoodViewModel @Inject constructor(
-    private val foodRepository: FoodRepository
+    private val foodRepository: FoodRepository,
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
 ) : ViewModel() {
     private val _foods = MutableStateFlow<List<Food>>(emptyList())
     val foods: StateFlow<List<Food>> = _foods
@@ -23,14 +25,9 @@ class LogFoodViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = _searchQuery
 
     // Temporary hardcoded user ID
-    private val userId = 1
+    private val userId = 0
 
-    init {
-        loadFoods()
-        syncFoodsFromFirestore()
-    }
-
-    private fun loadFoods() {
+    fun loadFoods() {
         viewModelScope.launch {
             foodRepository.getAllFoodsByUser(userId).collectLatest { foodsList ->
                 _foods.value = foodsList
@@ -87,10 +84,11 @@ class LogFoodViewModel @Inject constructor(
         return foodRepository.getFoodById(foodId)
     }
 
-    private fun syncFoodsFromFirestore() {
+    fun syncFoodsFromFirestore() {
         viewModelScope.launch {
             try {
                 foodRepository.syncFoodsFromFirestore(userId)
+                mealFoodCrossRefRepository.pullFromFireStore(userId)
             } catch (e: Exception) {
                 Timber.e("Error syncing foods from Firestore: ${e.message}")
             }

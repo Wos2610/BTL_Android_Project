@@ -6,4 +6,5 @@ interface RecipeFireStoreDataSource {
     fun addAllRecipes(recipes: List<Recipe>)
     fun addRecipe(recipe: Recipe)
     fun deleteRecipe(recipeId: Int)
+    suspend fun getAllRecipesByUser(userId: Int): List<Recipe>
 }

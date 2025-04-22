@@ -1,6 +1,5 @@
 package com.example.btl_android_project.presentation.log_meal
 
-import android.health.connect.datatypes.MealType
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
@@ -13,12 +12,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
-import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentCreateMealBinding
+import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.Recipe
-import com.example.btl_android_project.local.entity.RecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -50,6 +50,7 @@ class CreateMealFragment : Fragment() {
         setAddButtonToolBarOnClickListener()
         setSaveButtonToolBarOnClickListener()
         setupRecyclerView()
+        setItemTouchHelper()
 
         binding.etMealName.setText(viewModel.mealName)
 
@@ -66,10 +67,20 @@ class CreateMealFragment : Fragment() {
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Recipe>("recipe")
             }
 
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Food>("food")
+            ?.observe(viewLifecycleOwner) { food ->
+                Log.d("CreateMealFragment", "Received food: $food")
+                val mealItem = MealItem.FoodItem(food = food)
+                viewModel.addMealItem(mealItem)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
+            }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.mealItems.collect { mealItems ->
                     Log.d("CreateMealFragment", "Received meal items: $mealItems")
+                    if (mealItems.isEmpty()) binding.tvMealItems.visibility = View.INVISIBLE
+                    else binding.tvMealItems.visibility = View.VISIBLE
                     mealAdapter?.updateData(mealItems)
                 }
             }
@@ -83,12 +94,7 @@ class CreateMealFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.rvMealItems.layoutManager = LinearLayoutManager(requireContext())
-        val testItems: MutableList<MealItem> = mutableListOf(
-            MealItem.RecipeItem(Recipe(id = 1, name = "Test Recipe 1")),
-            MealItem.RecipeItem(Recipe(id = 2, name = "Test Recipe 2"))
-        )
-
-        mealAdapter = MealAdapter(testItems)
+        mealAdapter = MealAdapter(mutableListOf<MealItem>())
         binding.rvMealItems.adapter = mealAdapter
     }
 
@@ -109,6 +115,32 @@ class CreateMealFragment : Fragment() {
                 }
             )
         }
+    }
+
+    private fun setItemTouchHelper() {
+        val itemTouchHelperCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val mealItemToRemove = viewModel.mealItems.value.getOrNull(position)
+
+                if (mealItemToRemove != null) {
+                    viewModel.removeMealItem(mealItemToRemove)
+                } else {
+                    mealAdapter?.notifyItemChanged(position)
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.rvMealItems)
     }
 
 }
