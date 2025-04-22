@@ -75,6 +75,15 @@ class CreateMealFragment : Fragment() {
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
             }
 
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<MealItem>>("mealItems")
+            ?.observe(viewLifecycleOwner) { mealItems ->
+                Log.d("LogAllFragment", "Received meal items: $mealItems")
+                mealItems.forEach { mealItem ->
+                    viewModel.addMealItem(mealItem)
+                }
+                navController.currentBackStackEntry?.savedStateHandle?.remove<List<MealItem>>("mealItems")
+            }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.mealItems.collect { mealItems ->

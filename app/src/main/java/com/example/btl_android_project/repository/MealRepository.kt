@@ -75,7 +75,7 @@ class MealRepository @Inject constructor(
         mealDao.deleteMeal(meal)
     }
 
-    suspend fun getMeal(mealId: Int): MealWithFoodsAndRecipes {
+    suspend fun getMealWithFoodsAndRecipes(mealId: Int): MealWithFoodsAndRecipes {
         return mealDao.getMealWithFoodsAndRecipes(mealId)
     }
 

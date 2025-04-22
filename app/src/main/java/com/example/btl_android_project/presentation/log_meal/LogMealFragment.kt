@@ -78,10 +78,21 @@ class LogMealFragment : Fragment() {
         mealAdapter = MealItemAdapter(
             meals = emptyList(),
             onItemClick = { meal ->
+                if(isFromCreateMeal){
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogMealDiaryFragment(
+                        mealId = meal.id
+                    )
+                    findNavController().navigate(action)
+                }
+                else{
 
+                }
             },
             onAddToDiaryClick = { meal ->
-
+                val action = LogAllFragmentDirections.actionLogAllFragmentToLogMealDiaryFragment(
+                    mealId = meal.id
+                )
+                findNavController().navigate(action)
             }
 
         )

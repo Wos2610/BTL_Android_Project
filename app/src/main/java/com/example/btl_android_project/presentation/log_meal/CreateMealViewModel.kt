@@ -52,12 +52,39 @@ class CreateMealViewModel @Inject constructor(
         onSaveSuccess: () -> Unit
     ) {
         viewModelScope.launch {
+            val rawFoodItems = _mealItems.value
+                .filterIsInstance<MealItem.FoodItem>()
+
+            val mergedFoodItems = rawFoodItems
+                .groupBy { it.food.id }
+                .map { (_, duplicates) ->
+                    // Lấy một Food mẫu rồi copy với servings = tổng servings
+                    val any = duplicates.first().food
+                    val totalServings = duplicates.sumOf { it.food.servings }
+                    MealItem.FoodItem(
+                        food = any.copy(servings = totalServings)
+                    )
+                }
+
+            val rawRecipeItems = _mealItems.value
+                .filterIsInstance<MealItem.RecipeItem>()
+
+            val mergedRecipeItems = rawRecipeItems
+                .groupBy { it.recipe.id }
+                .map { (_, duplicates) ->
+                    val any = duplicates.first().recipe
+                    val totalServings = duplicates.sumOf { it.recipe.servings }
+                    MealItem.RecipeItem(
+                        recipe = any.copy(servings = totalServings)
+                    )
+                }
+
             mealRepository.createMeal(
                 name = mealName,
                 mealType = mealType,
                 userId = userId,
-                selectedFoodItems = _mealItems.value.filterIsInstance<MealItem.FoodItem>(),
-                selectedRecipeItems = _mealItems.value.filterIsInstance<MealItem.RecipeItem>()
+                selectedFoodItems = mergedFoodItems,
+                selectedRecipeItems = mergedRecipeItems
             )
             onSaveSuccess()
         }

@@ -1,5 +1,6 @@
 package com.example.btl_android_project.repository
 
+import android.util.Log
 import com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
 import com.example.btl_android_project.local.dao.RecipeDao
 import com.example.btl_android_project.local.entity.Recipe
@@ -21,8 +22,9 @@ class RecipeRepository @Inject constructor(
         val newRecipe = recipe.copy(
             calories = recipe.ingredients.sumOf { it.foodNutrients.firstOrNull{ it.name.contains("Energy") }?.amount?.toInt() ?: 0 },
         )
-        recipeFireStoreDataSource.addRecipe(newRecipe)
-        recipeDao.insertRecipe(newRecipe)
+        val recipeId = recipeDao.insertRecipe(newRecipe)
+        val updatedRecipe = newRecipe.copy(id = recipeId.toInt())
+        recipeFireStoreDataSource.addRecipe(updatedRecipe)
     }
 
     suspend fun insertRecipes(recipes: List<Recipe>) = recipeDao.insertRecipes(recipes)
@@ -38,6 +40,10 @@ class RecipeRepository @Inject constructor(
 
     suspend fun pullFromFireStore(userId: Int = 0) {
         val recipes = recipeFireStoreDataSource.getAllRecipesByUser(userId)
+        Log.d("RecipeRepository", "Pulled ${recipes.size} recipes from Firestore")
+        recipes.forEach { recipe ->
+            Log.d("RecipeRepository", "Recipe: ${recipe.id}")
+        }
         recipeDao.insertRecipes(recipes)
     }
 

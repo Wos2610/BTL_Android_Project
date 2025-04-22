@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.createFoodNutritionFragment -> getString(R.string.create_food)
                 R.id.logRecipeDiaryFragment -> getString(R.string.add_recipe)
                 R.id.logFoodDiaryFragment -> getString(R.string.add_food)
+                R.id.logMealDiaryFragment -> getString(R.string.add_meal)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -355,6 +356,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.createMealFragment -> setSaveButtonVisibility(true)
                 R.id.logRecipeDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.logFoodDiaryFragment -> setSaveButtonVisibility(true)
+                R.id.logMealDiaryFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }

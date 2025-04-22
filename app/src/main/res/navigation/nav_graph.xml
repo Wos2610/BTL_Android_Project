@@ -271,6 +271,10 @@
             android:id="@+id/action_logAllFragment_to_logFoodDiaryFragment"
             app:destination="@id/logFoodDiaryFragment"
             app:popUpTo="@id/logAllFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_logMealDiaryFragment"
+            app:destination="@id/logMealDiaryFragment"
+            app:popUpTo="@id/logAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/logRecipeDiaryFragment"
@@ -297,6 +301,16 @@
             android:defaultValue="false" />
         <argument
             android:name="foodId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/logMealDiaryFragment"
+        android:name="com.example.btl_android_project.presentation.log_meal.LogMealDiaryFragment"
+        android:label="fragment_log_meal_diary"
+        tools:layout="@layout/fragment_log_meal_diary" >
+        <argument
+            android:name="mealId"
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>

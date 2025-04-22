@@ -41,4 +41,7 @@
     <string name="servings_size">Servings Size</string>
     <string name="add_recipe">Add Recipe</string>
     <string name="add_food">Add Food</string>
+    <string name="add_meal">Add Meal</string>
+    <string name="my_meal">My Meal</string>
+
 </resources>

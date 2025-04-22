@@ -1,5 +1,6 @@
 package com.example.btl_android_project.firestore.datasource
 
+import android.util.Log
 import com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
 import com.example.btl_android_project.local.entity.Recipe
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,6 +37,7 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
     }
 
     override fun addRecipe(recipe: Recipe) {
+        Log.d("RecipeFireStoreDataSourceImpl", "Adding recipe: ${recipe.id}")
         val docRef = firestore.collection(RECIPES_COLLECTION).document(recipe.id.toString())
         docRef.set(recipe)
             .addOnSuccessListener {
@@ -58,11 +60,15 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getAllRecipesByUser(userId: Int): List<Recipe> {
-        val snapshot = firestore.collection(RECIPES_COLLECTION)
-            .whereEqualTo("userId", userId)
-            .get()
-            .await()
-
-        return snapshot.documents.mapNotNull { it.toObject(Recipe::class.java) }
+        return try {
+            val result = firestore.collection(RECIPES_COLLECTION)
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+            result.toObjects(Recipe::class.java)
+        } catch (e: Exception) {
+            Timber.e("Error getting foods by user ID: ${e.message}")
+            emptyList()
+        }
     }
 }

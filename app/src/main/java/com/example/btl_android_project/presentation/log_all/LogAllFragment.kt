@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogAllBinding
 import com.example.btl_android_project.local.entity.Food
+import com.example.btl_android_project.local.entity.MealItem
 import com.example.btl_android_project.local.entity.Recipe
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
@@ -73,6 +74,14 @@ class LogAllFragment : Fragment() {
                 Log.d("LogAllFragment", "Received food: $food")
                 findNavController().previousBackStackEntry?.savedStateHandle?.set("food", food)
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
+                findNavController().popBackStack()
+            }
+
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<MealItem>>("mealItems")
+            ?.observe(viewLifecycleOwner) { mealItems ->
+                Log.d("LogAllFragment", "Received meal items: $mealItems")
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("mealItems", mealItems)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<List<MealItem>>("mealItems")
                 findNavController().popBackStack()
             }
     }
