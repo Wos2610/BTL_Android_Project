@@ -14,7 +14,7 @@ interface RecipeDao {
     suspend fun getRecipeById(id: Int): Recipe?
 
     @Query("SELECT * FROM recipes WHERE userId = :userId ORDER BY id DESC")
-    fun getRecipesByUserId(userId: Int): Flow<List<Recipe>>
+    fun getRecipesByUserId(userId: Int): List<Recipe>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipe: Recipe): Long
@@ -36,4 +36,7 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE id IN (:ids)")
     suspend fun getRecipesByIds(ids: List<Int>): List<Recipe>
+
+    @Query("SELECT * FROM recipes WHERE name LIKE '%' || :query || '%' AND userId = :userId")
+    suspend fun searchRecipes(query: String, userId: Int): List<Recipe>
 }

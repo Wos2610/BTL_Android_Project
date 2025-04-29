@@ -67,6 +67,6 @@ interface MealDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMeals(meals: List<Meal>)
 
-    @Query("SELECT * FROM meals WHERE name LIKE '%' || :query || '%'")
-    suspend fun searchMeals(query: String): List<Meal>
+    @Query("SELECT * FROM meals WHERE name LIKE '%' || :query || '%' AND userId = :userId")
+    suspend fun searchMeals(query: String, userId: Int): List<Meal>
 }

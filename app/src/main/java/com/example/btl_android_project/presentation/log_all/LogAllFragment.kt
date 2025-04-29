@@ -124,5 +124,21 @@ class LogAllFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val query = binding.etSearch.text.toString()
+                val currentPosition = binding.viewPager.currentItem
+                val currentFragment = pagerAdapter.getFragmentAtPosition(currentPosition)
+                if (currentFragment is LogMealFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                } else if (currentFragment is LogRecipeFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                } else if (currentFragment is LogFoodFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                }
+            }
+        })
     }
 }

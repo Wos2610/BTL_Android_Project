@@ -29,7 +29,7 @@ class LogRecipeFragment : Fragment() {
     private var isFromCreateMeal: Boolean = false
 
     val onSearchQueryChanged : (String) -> Unit = { query ->
-//        viewModel.searchMeals(query)
+        viewModel.searchRecipes(query = query)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,8 @@ class LogRecipeFragment : Fragment() {
         isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
         Log.d("LogRecipeFragment", "isFromCreateMeal: $isFromCreateMeal")
 
-        viewModel.pullRecipesFromFireStore(userId = 0)
+        viewModel.pullRecipesFromFireStore()
+        viewModel.loadRecipes()
     }
 
     override fun onCreateView(

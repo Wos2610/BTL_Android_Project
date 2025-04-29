@@ -19,14 +19,15 @@ class LogMealViewModel @Inject constructor(
 ): ViewModel() {
     private val _meals = MutableStateFlow<List<Meal>>(emptyList())
     val meals = _meals.asStateFlow()
+    var userId: Int = 0
 
-    fun loadMealFoodCrossRef(userId: Int) {
+    fun loadMealFoodCrossRef() {
         viewModelScope.launch {
             mealFoodCrossRefRepository.pullFromFireStore(userId)
         }
     }
 
-    fun loadMeals(userId: Int) {
+    fun loadMeals() {
         viewModelScope.launch {
             val allMeals = mealRepository.getMealsByUserId(userId)
             _meals.value = allMeals
@@ -35,7 +36,7 @@ class LogMealViewModel @Inject constructor(
 
     fun searchMeals(query: String) {
         viewModelScope.launch {
-            val meals = mealRepository.searchMeals(query)
+            val meals = mealRepository.searchMeals(query, userId)
             _meals.value = meals
         }
     }

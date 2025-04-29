@@ -223,8 +223,8 @@ class MealRepository @Inject constructor(
         }
     }
 
-    suspend fun searchMeals(query: String): List<Meal> {
-        return mealDao.searchMeals(query)
+    suspend fun searchMeals(query: String, userId: Int): List<Meal> {
+        return mealDao.searchMeals(query, userId)
     }
 
     suspend fun getMealsByUserId(userId: Int): List<Meal> {
