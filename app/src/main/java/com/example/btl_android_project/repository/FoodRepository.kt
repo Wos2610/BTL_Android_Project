@@ -96,12 +96,14 @@ class FoodRepository @Inject constructor(
         }
     }
 
-    fun searchFoods(query: String): Flow<List<Food>> {
-        return try {
-            foodDao.searchFoods(query)
-        } catch (e: Exception) {
-            Timber.e("Error searching foods: ${e.message}")
-            flowOf(emptyList())
+    suspend fun searchFoods(query: String, userId: Int): List<Food> {
+        return withContext(Dispatchers.IO) {
+            try {
+                foodDao.searchFoods(query, userId)
+            } catch (e: Exception) {
+                Timber.e("Error searching foods: ${e.message}")
+                emptyList()
+            }
         }
     }
 

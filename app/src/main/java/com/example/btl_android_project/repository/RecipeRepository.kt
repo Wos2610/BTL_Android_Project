@@ -16,7 +16,7 @@ class RecipeRepository @Inject constructor(
 
     fun getAllRecipes(): Flow<List<Recipe>> = recipeDao.getAllRecipes()
 
-    suspend fun getRecipesByUserId(userId: Int): List<Recipe>{
+    suspend fun getRecipesByUserId(userId: Int): Flow<List<Recipe>>{
         return withContext(Dispatchers.IO) {
             recipeDao.getRecipesByUserId(userId)
         }

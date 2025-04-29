@@ -51,7 +51,7 @@ interface MealDao {
 
     // Get all meals of a user (with basic info)
     @Query("SELECT * FROM meals WHERE userId = :userId ORDER BY id DESC")
-    suspend fun getMealsByUserId(userId: Int): List<Meal>
+    fun getMealsByUserId(userId: Int): Flow<List<Meal>>
 
     // Get all meals of a user with Foods and Recipes
     @Transaction

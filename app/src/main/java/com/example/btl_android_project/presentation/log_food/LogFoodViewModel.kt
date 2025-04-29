@@ -1,5 +1,6 @@
 package com.example.btl_android_project.presentation.log_food
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Food
@@ -31,20 +32,6 @@ class LogFoodViewModel @Inject constructor(
         viewModelScope.launch {
             foodRepository.getAllFoodsByUser(userId).collectLatest { foodsList ->
                 _foods.value = foodsList
-            }
-        }
-    }
-
-    fun searchFoods(query: String) {
-        _searchQuery.value = query
-
-        viewModelScope.launch {
-            if (query.isBlank()) {
-                loadFoods()
-            } else {
-                foodRepository.searchFoods(query).collectLatest { results ->
-                    _foods.value = results
-                }
             }
         }
     }
@@ -92,6 +79,14 @@ class LogFoodViewModel @Inject constructor(
             } catch (e: Exception) {
                 Timber.e("Error syncing foods from Firestore: ${e.message}")
             }
+        }
+    }
+
+    fun searchFoods(query: String){
+        Log.d("LogFoodViewModel", "Searching foods with query: $query")
+        viewModelScope.launch {
+            val result = foodRepository.searchFoods(query, userId)
+            _foods.value = result
         }
     }
 }

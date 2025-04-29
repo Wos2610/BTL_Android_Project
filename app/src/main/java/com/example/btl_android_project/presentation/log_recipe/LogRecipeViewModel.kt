@@ -1,5 +1,6 @@
 package com.example.btl_android_project.presentation.log_recipe
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Recipe
@@ -29,12 +30,14 @@ class LogRecipeViewModel @Inject constructor(
 
     fun loadRecipes() {
         viewModelScope.launch {
-            val allRecipes = recipeRepository.getRecipesByUserId(userId)
-            _recipes.value = allRecipes
+            recipeRepository.getRecipesByUserId(userId).collect { allRecipes ->
+                _recipes.value = allRecipes
+            }
         }
     }
 
     fun searchRecipes(query: String) {
+        Log.d("LogRecipeViewModel", "Searching recipes with query: $query")
         viewModelScope.launch {
             val results = recipeRepository.searchRecipes(query, userId)
             _recipes.value = results

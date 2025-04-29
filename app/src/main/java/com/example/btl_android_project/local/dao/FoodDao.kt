@@ -21,8 +21,8 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE userId = :userId")
     fun getAllFoodsByUser(userId: Int): Flow<List<Food>>
 
-    @Query("SELECT * FROM foods WHERE name LIKE '%' || :query || '%'")
-    fun searchFoods(query: String): Flow<List<Food>>
+    @Query("SELECT * FROM foods WHERE name LIKE '%' || :query || '%' AND userId = :userId")
+    fun searchFoods(query: String, userId: Int): List<Food>
 
     @Query("DELETE FROM foods WHERE id = :foodId")
     suspend fun deleteFoodById(foodId: Int)

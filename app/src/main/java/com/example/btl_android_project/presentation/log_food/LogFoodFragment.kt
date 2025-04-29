@@ -46,7 +46,7 @@ class LogFoodFragment : Fragment() {
     }
 
     val onSearchQueryChanged : (String) -> Unit = { query ->
-//        viewModel.searchMeals(query)
+        viewModel.searchFoods(query)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

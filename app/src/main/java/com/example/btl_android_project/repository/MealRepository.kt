@@ -227,7 +227,9 @@ class MealRepository @Inject constructor(
         return mealDao.searchMeals(query, userId)
     }
 
-    suspend fun getMealsByUserId(userId: Int): List<Meal> {
-        return mealDao.getMealsByUserId(userId)
+    suspend fun getMealsByUserId(userId: Int): Flow<List<Meal>> {
+        return withContext(Dispatchers.IO) {
+            mealDao.getMealsByUserId(userId)
+        }
     }
 }

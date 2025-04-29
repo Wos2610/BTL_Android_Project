@@ -52,31 +52,7 @@ class LogAllFragment : Fragment() {
         hideBottomNavigationView()
         setUpViewPager()
         setUpSearchView()
-
-        val navController = findNavController()
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")
-            ?.observe(viewLifecycleOwner) { recipe ->
-                Log.d("LogAllFragment", "Received recipe: $recipe")
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("recipe", recipe)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<Recipe>("recipe")
-                findNavController().popBackStack()
-            }
-
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Food>("food")
-            ?.observe(viewLifecycleOwner) { food ->
-                Log.d("LogAllFragment", "Received food: $food")
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("food", food)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
-                findNavController().popBackStack()
-            }
-
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<MealItem>>("mealItems")
-            ?.observe(viewLifecycleOwner) { mealItems ->
-                Log.d("LogAllFragment", "Received meal items: $mealItems")
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("mealItems", mealItems)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<List<MealItem>>("mealItems")
-                findNavController().popBackStack()
-            }
+        setupNavigationObservers()
     }
 
     override fun onDestroyView() {
@@ -104,23 +80,19 @@ class LogAllFragment : Fragment() {
                 else -> getString(R.string.my_meals)
             }
         }.attach()
+
+        binding.viewPager.isSaveFromParentEnabled = false
     }
 
     private fun setUpSearchView() {
+        Log.d("LogAllFragment", "Setting up search view")
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("LogAllFragment", "Search query changed: ${s?.toString()}")
                 val query = s?.toString() ?: ""
-                val currentPosition = binding.viewPager.currentItem
-                val currentFragment = pagerAdapter.getFragmentAtPosition(currentPosition)
-                if (currentFragment is LogMealFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                } else if (currentFragment is LogRecipeFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                } else if (currentFragment is LogFoodFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                }
+                pagerAdapter.updateSearchQuery(query)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -129,16 +101,35 @@ class LogAllFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 val query = binding.etSearch.text.toString()
-                val currentPosition = binding.viewPager.currentItem
-                val currentFragment = pagerAdapter.getFragmentAtPosition(currentPosition)
-                if (currentFragment is LogMealFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                } else if (currentFragment is LogRecipeFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                } else if (currentFragment is LogFoodFragment) {
-                    currentFragment.onSearchQueryChanged(query)
-                }
+                pagerAdapter.updateSearchQuery(query)
             }
         })
+    }
+
+    private fun setupNavigationObservers() {
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")
+            ?.observe(viewLifecycleOwner) { recipe ->
+                Log.d("LogAllFragment", "Received recipe: $recipe")
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("recipe", recipe)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<Recipe>("recipe")
+                findNavController().popBackStack()
+            }
+
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Food>("food")
+            ?.observe(viewLifecycleOwner) { food ->
+                Log.d("LogAllFragment", "Received food: $food")
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("food", food)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
+                findNavController().popBackStack()
+            }
+
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<MealItem>>("mealItems")
+            ?.observe(viewLifecycleOwner) { mealItems ->
+                Log.d("LogAllFragment", "Received meal items: $mealItems")
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("mealItems", mealItems)
+                navController.currentBackStackEntry?.savedStateHandle?.remove<List<MealItem>>("mealItems")
+                findNavController().popBackStack()
+            }
     }
 }

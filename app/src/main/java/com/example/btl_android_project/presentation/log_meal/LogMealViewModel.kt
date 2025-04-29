@@ -1,5 +1,6 @@
 package com.example.btl_android_project.presentation.log_meal
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Meal
@@ -9,6 +10,7 @@ import com.example.btl_android_project.repository.MealRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,12 +31,14 @@ class LogMealViewModel @Inject constructor(
 
     fun loadMeals() {
         viewModelScope.launch {
-            val allMeals = mealRepository.getMealsByUserId(userId)
-            _meals.value = allMeals
+            mealRepository.getMealsByUserId(userId).collectLatest {meals ->
+                _meals.value = meals
+            }
         }
     }
 
     fun searchMeals(query: String) {
+        Log.d("LogMealViewModel", "Searching meals with query: $query")
         viewModelScope.launch {
             val meals = mealRepository.searchMeals(query, userId)
             _meals.value = meals

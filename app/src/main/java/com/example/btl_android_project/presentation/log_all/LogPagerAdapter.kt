@@ -1,5 +1,6 @@
 package com.example.btl_android_project.presentation.log_all
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.btl_android_project.presentation.log_food.LogFoodFragment
@@ -28,6 +29,26 @@ class LogPagerAdapter(
 
     fun getFragmentAtPosition(position: Int): Fragment? {
         return fragments[position]
+    }
+
+    fun updateSearchQuery(query: String) {
+        Log.d("LogPagerAdapter", "Updating search query: $query")
+        fragments.forEach { (_, fragment) ->
+            when (fragment) {
+                is LogMealFragment -> {
+                    Log.d("LogPagerAdapter", "Updating search query for LogMealFragment")
+                    fragment.onSearchQueryChanged(query)
+                }
+                is LogRecipeFragment -> {
+                    Log.d("LogPagerAdapter", "Updating search query for LogRecipeFragment")
+                    fragment.onSearchQueryChanged(query)
+                }
+                is LogFoodFragment -> {
+                    Log.d("LogPagerAdapter", "Updating search query for LogFoodFragment")
+                    fragment.onSearchQueryChanged(query)
+                }
+            }
+        }
     }
 
     companion object {
