@@ -46,6 +46,8 @@ class LogRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnCreateRecipe.tvLogItem.text = "Create New Recipe"
+
         setupRecyclerView()
 
         binding.btnCreateRecipe.cvLogItem.setOnClickListener {

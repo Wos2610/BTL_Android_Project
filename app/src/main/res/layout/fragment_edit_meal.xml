@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".presentation.log_meal.CreateMealFragment"
+    tools:context=".presentation.log_meal.EditMealFragment"
     android:background="@color/dark_gray"
     android:padding="16dp">
 
@@ -218,24 +218,24 @@
             android:paddingTop="8dp"/>
     </LinearLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_gravity="bottom"-->
-<!--        android:gravity="bottom"-->
-<!--        android:layout_weight="1">-->
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_gravity="bottom"-->
+    <!--        android:gravity="bottom"-->
+    <!--        android:layout_weight="1">-->
 
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/fabAdd"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:contentDescription="@string/todo"-->
-<!--            android:src="@drawable/baseline_add"-->
-<!--            app:backgroundTint="@color/blue"-->
-<!--            app:maxImageSize="40dp"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_margin="16dp"/>-->
-<!--    </RelativeLayout>-->
+    <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--            android:id="@+id/fabAdd"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:contentDescription="@string/todo"-->
+    <!--            android:src="@drawable/baseline_add"-->
+    <!--            app:backgroundTint="@color/blue"-->
+    <!--            app:maxImageSize="40dp"-->
+    <!--            android:layout_alignParentEnd="true"-->
+    <!--            android:layout_margin="16dp"/>-->
+    <!--    </RelativeLayout>-->
 
     <TextView
         android:id="@+id/tvMealItems"

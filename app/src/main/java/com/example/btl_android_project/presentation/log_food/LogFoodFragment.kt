@@ -63,7 +63,7 @@ class LogFoodFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.btnCreateAFood.tvLogItem.text = "Create New Food"
         setupRecyclerView()
         setupSwipeToDelete()
         observeViewModel()

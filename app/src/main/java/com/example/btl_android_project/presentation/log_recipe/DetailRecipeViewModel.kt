@@ -85,12 +85,16 @@ class DetailRecipeViewModel @Inject constructor(
         navigateToLogAllFragment: () -> Unit
     ) {
         viewModelScope.launch {
-            Log.d("DetailRecipeViewModel", "insertOrUpdateRecipe: $recipeId, $recipeName, $servings, ${_ingredients.value}")
+            Log.d("DetailRecipeViewModel", "insertOrUpdateRecipe: $recipeId, $recipeName, $servings, ${_ingredients.value}, ${_totalCalories.value}")
             val newRecipe = Recipe(
                 id = recipeId,
                 name = recipeName,
                 servings = servings,
-                ingredients = _ingredients.value
+                ingredients = _ingredients.value,
+                calories = _totalCalories.value,
+                carbs = _totalCarbs.value,
+                fat = _totalFat.value,
+                protein = _totalProtein.value
             )
             recipeRepository.insertOrUpdateRecipe(newRecipe)
             navigateToLogAllFragment()

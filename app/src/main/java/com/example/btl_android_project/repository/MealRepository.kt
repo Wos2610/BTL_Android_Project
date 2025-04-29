@@ -14,6 +14,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import android.util.Log
 import com.example.btl_android_project.firestore.domain.MealFireStoreDataSource
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class MealRepository @Inject constructor(
     private val mealDao: MealDao,
@@ -29,7 +31,11 @@ class MealRepository @Inject constructor(
         mealType: String,
         userId: Int,
         selectedFoodItems: List<MealItem.FoodItem>,
-        selectedRecipeItems: List<MealItem.RecipeItem>
+        selectedRecipeItems: List<MealItem.RecipeItem>,
+        totalCalories: Int,
+        totalCarbs: Int,
+        totalProtein: Int,
+        totalFat: Int
     ) {
         withContext(Dispatchers.IO) {
             val meal = Meal(
@@ -42,26 +48,42 @@ class MealRepository @Inject constructor(
             Log.d("MealRepository", "Inserted meal with ID: $mealId")
 
             selectedFoodItems.forEach { food ->
-                mealFoodCrossRefRepository.insertMealFoodCrossRef(MealFoodCrossRef(mealId, food.food.id, food.food.servings, meal.userId))
-                Log.d("MealRepository", "Inserted MealFoodCrossRef: mealId=$mealId, foodId=${food.food.id}, servings=${food.food.servings}")
+                mealFoodCrossRefRepository.insertMealFoodCrossRef(
+                    MealFoodCrossRef(
+                        mealId,
+                        food.food.id,
+                        food.food.servings,
+                        meal.userId
+                    )
+                )
+                Log.d(
+                    "MealRepository",
+                    "Inserted MealFoodCrossRef: mealId=$mealId, foodId=${food.food.id}, servings=${food.food.servings}"
+                )
             }
 
             selectedRecipeItems.forEach { recipe ->
-                mealRecipeCrossRefRepository.insertMealRecipeCrossRef(MealRecipeCrossRef(mealId, recipe.recipe.id, recipe.recipe.servings, meal.userId))
+                mealRecipeCrossRefRepository.insertMealRecipeCrossRef(
+                    MealRecipeCrossRef(
+                        mealId,
+                        recipe.recipe.id,
+                        recipe.recipe.servings,
+                        meal.userId
+                    )
+                )
             }
-
-            val totalFoodCalories = selectedFoodItems.sumOf { it.food.calories.toDouble() }
-            val totalRecipeCalories = selectedRecipeItems.sumOf { it.recipe.calories.toDouble() }
-
-            val totalCalories = (totalFoodCalories + totalRecipeCalories).toFloat()
 
             val updatedMeal = Meal(
                 id = mealId,
                 name = name,
                 mealType = mealType,
                 userId = userId,
-                totalCalories = totalCalories
+                totalCalories = totalCalories.toFloat(),
+                totalCarbs = totalCarbs.toFloat(),
+                totalProtein = totalProtein.toFloat(),
+                totalFat = totalFat.toFloat()
             )
+
             mealDao.updateMeal(updatedMeal)
             mealFireStoreDataSource.addMeal(updatedMeal)
         }
@@ -76,14 +98,38 @@ class MealRepository @Inject constructor(
     }
 
     suspend fun getMealWithFoodsAndRecipes(mealId: Int): MealWithFoodsAndRecipes {
-        return mealDao.getMealWithFoodsAndRecipes(mealId)
+        return withContext(Dispatchers.IO) {
+            val meal = mealDao.getMealById(mealId)
+            val mealFoodCrossRefs = mealFoodCrossRefRepository.getMealFoodCrossRefById(mealId)
+            val mealRecipeCrossRefs = mealRecipeCrossRefRepository.getMealRecipeCrossRefById(mealId)
+
+            // Use async to parallelize the food fetching
+            val foods = mealFoodCrossRefs?.map { crossRef ->
+                async {
+                    foodDao.getFoodById(crossRef.foodId)?.copy(servings = crossRef.servings)
+                }
+            }?.awaitAll()
+
+            // Use async to parallelize the recipe fetching
+            val recipes = mealRecipeCrossRefs?.map { crossRef ->
+                async {
+                    recipeDao.getRecipeById(crossRef.recipeId)?.copy(servings = crossRef.servings)
+                }
+            }?.awaitAll()
+
+            MealWithFoodsAndRecipes(
+                meal = meal,
+                foods = foods.orEmpty().filterNotNull(),
+                recipes = recipes.orEmpty().filterNotNull()
+            )
+        }
     }
 
     suspend fun initMeal(
         name: String,
         mealType: String,
         userId: Int
-    ) : Int {
+    ): Int {
         return withContext(Dispatchers.IO) {
             val meal = Meal(
                 name = name,
@@ -102,5 +148,78 @@ class MealRepository @Inject constructor(
         val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
         Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore")
         mealDao.insertAllMeals(meals)
+    }
+
+    suspend fun editMeal(
+        mealId: Int,
+        name: String,
+        mealType: String,
+        userId: Int,
+        selectedFoodItems: List<MealItem.FoodItem>,
+        selectedRecipeItems: List<MealItem.RecipeItem>,
+        totalCalories: Int,
+        totalCarbs: Int,
+        totalProtein: Int,
+        totalFat: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            // Cập nhật thông tin bữa ăn
+            val updatedMeal = Meal(
+                id = mealId,
+                name = name,
+                mealType = mealType,
+                userId = userId,
+                totalCalories = totalCalories.toFloat(),
+                totalCarbs = totalCarbs.toFloat(),
+                totalProtein = totalProtein.toFloat(),
+                totalFat = totalFat.toFloat()
+            )
+
+            Log.d("MealRepository", "Updated meal: $updatedMeal")
+
+            // Cập nhật bữa ăn trong cơ sở dữ liệu cục bộ
+            mealDao.updateMeal(updatedMeal)
+
+            // Xóa tất cả các mối quan hệ tham chiếu hiện có
+            mealFoodCrossRefRepository.deleteMealFoodCrossRefByMealId(mealId)
+            mealRecipeCrossRefRepository.deleteMealRecipeCrossRefByMealId(mealId)
+
+            Log.d("MealRepository", "Updating meal with ID: $mealId")
+
+            // Thêm lại các mối quan hệ thực phẩm mới
+            selectedFoodItems.forEach { food ->
+                mealFoodCrossRefRepository.insertMealFoodCrossRef(
+                    MealFoodCrossRef(
+                        mealId,
+                        food.food.id,
+                        food.food.servings,
+                        userId
+                    )
+                )
+                Log.d(
+                    "MealRepository",
+                    "Updated MealFoodCrossRef: mealId=$mealId, foodId=${food.food.id}, servings=${food.food.servings}"
+                )
+            }
+
+            // Thêm lại các mối quan hệ công thức nấu ăn mới
+            selectedRecipeItems.forEach { recipe ->
+                mealRecipeCrossRefRepository.insertMealRecipeCrossRef(
+                    MealRecipeCrossRef(
+                        mealId,
+                        recipe.recipe.id,
+                        recipe.recipe.servings,
+                        userId
+                    )
+                )
+                Log.d(
+                    "MealRepository",
+                    "Updated MealRecipeCrossRef: mealId=$mealId, recipeId=${recipe.recipe.id}, servings=${recipe.recipe.servings}"
+                )
+            }
+
+            // Cập nhật dữ liệu trên Firestore
+            mealFireStoreDataSource.updateMeal(updatedMeal)
+        }
     }
 }

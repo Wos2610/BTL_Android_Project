@@ -1,13 +1,13 @@
 package com.example.btl_android_project.presentation.log_meal
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,29 +17,28 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
-import com.example.btl_android_project.databinding.FragmentCreateMealBinding
+import com.example.btl_android_project.databinding.FragmentEditMealBinding
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.Recipe
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 @AndroidEntryPoint
-class CreateMealFragment : Fragment() {
-    private var _binding: FragmentCreateMealBinding? = null
+class EditMealFragment : Fragment() {
+
+    private var _binding: FragmentEditMealBinding? = null
     private val binding get() = _binding!!
     var mealAdapter: MealAdapter? = null
 
     companion object {
-        fun newInstance() = CreateMealFragment()
+        fun newInstance() = EditMealFragment()
     }
 
-    private val viewModel: CreateMealViewModel by viewModels()
-    private val args : CreateMealFragmentArgs by navArgs()
+    private val viewModel: EditMealViewModel by viewModels()
+    private val args : EditMealFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.getMealById(args.mealId)
     }
 
@@ -47,7 +46,7 @@ class CreateMealFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCreateMealBinding.inflate(inflater, container, false)
+        _binding = FragmentEditMealBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -58,10 +57,14 @@ class CreateMealFragment : Fragment() {
         setupRecyclerView()
         setItemTouchHelper()
 
+        binding.etMealName.doOnTextChanged { text, _, _, _ ->
+            viewModel.mealName = text.toString()
+        }
+
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")
             ?.observe(viewLifecycleOwner) { recipe ->
-                Log.d("CreateMealFragment", "Received recipe: $recipe")
+                Log.d("EditMealFragment", "Received recipe: $recipe")
                 val mealItem = MealItem.RecipeItem(recipe = recipe)
                 viewModel.addMealItem(mealItem)
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Recipe>("recipe")
@@ -69,7 +72,7 @@ class CreateMealFragment : Fragment() {
 
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Food>("food")
             ?.observe(viewLifecycleOwner) { food ->
-                Log.d("CreateMealFragment", "Received food: $food")
+                Log.d("EditMealFragment", "Received food: $food")
                 val mealItem = MealItem.FoodItem(food = food)
                 viewModel.addMealItem(mealItem)
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Food>("food")
@@ -88,7 +91,7 @@ class CreateMealFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.mealItems.collect { mealItems ->
-                        Log.d("CreateMealFragment", "Received meal items: $mealItems")
+                        Log.d("EditMealFragment", "Received meal items: $mealItems")
                         if (mealItems.isEmpty()) binding.tvMealItems.visibility = View.INVISIBLE
                         else binding.tvMealItems.visibility = View.VISIBLE
                         mealAdapter?.updateData(mealItems)
@@ -147,8 +150,10 @@ class CreateMealFragment : Fragment() {
 
     private fun setAddButtonToolBarOnClickListener() {
         (activity as MainActivity).setAddButtonClickListener {
-            val action = CreateMealFragmentDirections
-                .actionCreateMealFragmentToLogAllFragment(isFromCreateMeal = true)
+            val action = EditMealFragmentDirections
+                .actionEditMealFragmentToLogAllFragment(
+                    isFromCreateMeal = true
+                )
 
             findNavController().navigate(action)
         }

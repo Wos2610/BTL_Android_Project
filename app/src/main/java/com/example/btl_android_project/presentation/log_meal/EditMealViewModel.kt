@@ -10,10 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.plus
 import kotlin.math.roundToInt
 
 @HiltViewModel
-class CreateMealViewModel @Inject constructor(
+class EditMealViewModel @Inject constructor(
     val mealRepository: MealRepository,
 ) : ViewModel() {
     var mealId: Int = 0
@@ -25,7 +28,7 @@ class CreateMealViewModel @Inject constructor(
     val mealItems: StateFlow<List<MealItem>> = _mealItems.asStateFlow()
 
     var currentMealId: Int = 0
-    var _meal : MutableStateFlow<Meal?> = MutableStateFlow(null)
+    var _meal: MutableStateFlow<Meal?> = MutableStateFlow(null)
     val meal = _meal.asStateFlow()
 
     private val _totalCalories = MutableStateFlow(0)
@@ -45,18 +48,23 @@ class CreateMealViewModel @Inject constructor(
     var proteinAmount: Int = 0
     var fatAmount: Int = 0
 
+    var isFromEditMeal: Boolean = false
 
     fun calculateTotalNutrition() {
-        val total = _mealItems.value.sumOf { if(it is MealItem.FoodItem) it.food.calories.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.calories.toInt() * it.recipe.servings else 0 }
+        val total =
+            _mealItems.value.sumOf { if (it is MealItem.FoodItem) it.food.calories.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.calories.toInt() * it.recipe.servings else 0 }
         _totalCalories.value = total
 
-        val totalCarbs = _mealItems.value.sumOf { if(it is MealItem.FoodItem) it.food.carbs.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.carbs.toInt() * it.recipe.servings else 0 }
+        val totalCarbs =
+            _mealItems.value.sumOf { if (it is MealItem.FoodItem) it.food.carbs.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.carbs.toInt() * it.recipe.servings else 0 }
         _totalCarbs.value = totalCarbs
 
-        val totalProtein = _mealItems.value.sumOf { if(it is MealItem.FoodItem) it.food.protein.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.protein.toInt() * it.recipe.servings else 0 }
+        val totalProtein =
+            _mealItems.value.sumOf { if (it is MealItem.FoodItem) it.food.protein.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.protein.toInt() * it.recipe.servings else 0 }
         _totalProtein.value = totalProtein
 
-        val totalFat = _mealItems.value.sumOf { if(it is MealItem.FoodItem) it.food.fat.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.fat.toInt() * it.recipe.servings else 0 }
+        val totalFat =
+            _mealItems.value.sumOf { if (it is MealItem.FoodItem) it.food.fat.toInt() * it.food.servings else if (it is MealItem.RecipeItem) it.recipe.fat.toInt() * it.recipe.servings else 0 }
         _totalFat.value = totalFat
 
         val sum = totalCarbs + totalProtein + totalFat
@@ -123,7 +131,8 @@ class CreateMealViewModel @Inject constructor(
                     )
                 }
 
-            mealRepository.createMeal(
+            mealRepository.editMeal(
+                mealId = currentMealId,
                 name = mealName,
                 mealType = mealType,
                 userId = userId,

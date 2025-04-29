@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@color/white"
-            android:text="Log"
+            android:text="Create New"
             android:textAlignment="center"/>
     </LinearLayout>
 

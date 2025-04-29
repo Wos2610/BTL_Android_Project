@@ -15,14 +15,12 @@ import com.example.btl_android_project.local.entity.Recipe
 class MealAdapter(private var items: MutableList<MealItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val TYPE_HEADER = 0
         private const val TYPE_RECIPE = 1
         private const val TYPE_FOOD = 2
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is MealItem.Header -> TYPE_HEADER
             is MealItem.RecipeItem -> TYPE_RECIPE
             is MealItem.FoodItem -> TYPE_FOOD
         }
@@ -31,10 +29,6 @@ class MealAdapter(private var items: MutableList<MealItem>) : RecyclerView.Adapt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TYPE_HEADER -> {
-                val binding = ItemHeaderBinding.inflate(inflater, parent, false)
-                HeaderViewHolder(binding.root)
-            }
             TYPE_RECIPE -> {
                 val binding = ItemSearchIngredientBinding.inflate(inflater, parent, false)
                 RecipeViewHolder(binding.root)
@@ -48,20 +42,12 @@ class MealAdapter(private var items: MutableList<MealItem>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
-            is MealItem.Header -> (holder as HeaderViewHolder).bind(item)
             is MealItem.RecipeItem -> (holder as RecipeViewHolder).bind(item.recipe)
             is MealItem.FoodItem -> (holder as FoodViewHolder).bind(item.food)
         }
     }
 
     override fun getItemCount(): Int = items.size
-
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(header: MealItem.Header) {
-            val binding = ItemHeaderBinding.bind(itemView)
-            binding.tvHeader.text = header.title
-        }
-    }
 
     class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(recipe: Recipe) {

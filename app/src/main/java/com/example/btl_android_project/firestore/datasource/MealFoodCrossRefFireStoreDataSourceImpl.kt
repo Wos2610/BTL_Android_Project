@@ -6,9 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
@@ -31,8 +28,24 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+
     override suspend fun deleteMealFoodCrossRef(foodId: String) {
-        TODO("Not yet implemented")
+        // Query for all documents where recipeId matches the given value
+        val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
+            .whereEqualTo("recipeId", foodId)
+            .get()
+            .await()
+
+        // Delete each matching document
+        val batch = firestore.batch()
+        snapshot.documents.forEach { document ->
+            batch.delete(document.reference)
+        }
+
+        // Commit the batch
+        if (snapshot.documents.isNotEmpty()) {
+            batch.commit().await()
+        }
     }
 
     override suspend fun getMealFoodCrossRefById(foodId: String): MealFoodCrossRef? {
@@ -54,6 +67,25 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
         userId: Int
     ): List<MealFoodCrossRef> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteMealFoodCrossRefByMealId(mealId: Int) {
+        // Query for all documents where recipeId matches the given value
+        val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
+            .whereEqualTo("mealId", mealId)
+            .get()
+            .await()
+
+        // Delete each matching document
+        val batch = firestore.batch()
+        snapshot.documents.forEach { document ->
+            batch.delete(document.reference)
+        }
+
+        // Commit the batch
+        if (snapshot.documents.isNotEmpty()) {
+            batch.commit().await()
+        }
     }
 
     companion object {

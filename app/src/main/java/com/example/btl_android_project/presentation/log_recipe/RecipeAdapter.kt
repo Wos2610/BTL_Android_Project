@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.databinding.ItemMealBinding
 import com.example.btl_android_project.local.entity.Recipe
-import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 
 class RecipeAdapter(
     private var recipes: List<Recipe>,
@@ -22,15 +21,15 @@ class RecipeAdapter(
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        val meal = recipes[position]
+        val recipe = recipes[position]
         val binding = ItemMealBinding.bind(holder.itemView)
-        binding.tvMealName.text = meal.name
-        binding.tvMealInfo.text = meal.calories.toString()
+        binding.tvMealName.text = recipe.name
+        binding.tvMealInfo.text = recipe.calories.toString()
         binding.btnAddMeal.setOnClickListener {
-            onAddToDiaryClick(meal)
+            onAddToDiaryClick(recipe)
         }
         binding.root.setOnClickListener {
-            onItemClick(meal)
+            onItemClick(recipe)
         }
     }
 

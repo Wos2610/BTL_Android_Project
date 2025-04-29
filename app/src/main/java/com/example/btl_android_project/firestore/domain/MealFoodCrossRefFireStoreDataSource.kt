@@ -10,4 +10,5 @@ interface MealFoodCrossRefFireStoreDataSource {
     suspend fun getMealFoodCrossRefById(foodId: String): MealFoodCrossRef?
     suspend fun getAllMealFoodCrossRefsByUser(userId: Int): List<MealFoodCrossRef>
     suspend fun searchMealFoodCrossRefs(query: String, userId: Int): List<MealFoodCrossRef>
+    suspend fun deleteMealFoodCrossRefByMealId(mealId: Int)
 }

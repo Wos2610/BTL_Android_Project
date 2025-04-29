@@ -28,6 +28,14 @@
             app:destination="@id/logAllFragment"
             app:popUpTo="@id/createMealFragment" >
         </action>
+        <argument
+            android:name="mealId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="isFromEditMeal"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/createFoodNutritionFragment"
@@ -275,6 +283,10 @@
             android:id="@+id/action_logAllFragment_to_logMealDiaryFragment"
             app:destination="@id/logMealDiaryFragment"
             app:popUpTo="@id/logAllFragment" />
+        <action
+            android:id="@+id/action_logAllFragment_to_editMealFragment"
+            app:destination="@id/editMealFragment"
+            app:popUpTo="@id/logAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/logRecipeDiaryFragment"
@@ -309,6 +321,20 @@
         android:name="com.example.btl_android_project.presentation.log_meal.LogMealDiaryFragment"
         android:label="fragment_log_meal_diary"
         tools:layout="@layout/fragment_log_meal_diary" >
+        <argument
+            android:name="mealId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMealFragment"
+        android:name="com.example.btl_android_project.presentation.log_meal.EditMealFragment"
+        android:label="fragment_edit_meal"
+        tools:layout="@layout/fragment_edit_meal" >
+        <action
+            android:id="@+id/action_editMealFragment_to_logAllFragment"
+            app:destination="@id/logAllFragment"
+            app:popUpTo="@id/editMealFragment" />
         <argument
             android:name="mealId"
             app:argType="integer"

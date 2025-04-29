@@ -44,7 +44,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
     var servingsSize: Int = 0
     var servingsUnit: String = ""
     var servingsPerContainer: Int = 0
-    private val userId = 1
+    private val userId = 0
 
     // Hàm cập nhật
     fun updateNutrition(index: Int, amount: Float) {

@@ -19,11 +19,8 @@ class RecipeRepository @Inject constructor(
     suspend fun getRecipeById(id: Int): Recipe? = recipeDao.getRecipeById(id)
 
     suspend fun insertOrUpdateRecipe(recipe: Recipe){
-        val newRecipe = recipe.copy(
-            calories = recipe.ingredients.sumOf { it.foodNutrients.firstOrNull{ it.name.contains("Energy") }?.amount?.toInt() ?: 0 },
-        )
-        val recipeId = recipeDao.insertRecipe(newRecipe)
-        val updatedRecipe = newRecipe.copy(id = recipeId.toInt())
+        val recipeId = recipeDao.insertRecipe(recipe)
+        val updatedRecipe = recipe.copy(id = recipeId.toInt())
         recipeFireStoreDataSource.addRecipe(updatedRecipe)
     }
 

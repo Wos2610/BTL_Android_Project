@@ -65,4 +65,15 @@ class MealFireStoreDataSourceImpl @Inject constructor(
 
         return snapshot.documents.mapNotNull { it.toObject(Meal::class.java) }
     }
+
+    override suspend fun updateMeal(meal: Meal) {
+        val docRef = firestore.collection(MEALS_COLLECTION).document(meal.id.toString())
+        docRef.set(meal)
+            .addOnSuccessListener {
+                Timber.Forest.d("Meal ${meal.name} updated successfully")
+            }
+            .addOnFailureListener { e ->
+                Timber.Forest.e("Failed to update Meal ${meal.name}: ${e.message}")
+            }
+    }
 }

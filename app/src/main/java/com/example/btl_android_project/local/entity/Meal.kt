@@ -11,5 +11,8 @@ data class Meal(
     val userId: Int = 0,
     val name: String = "",
     val mealType: String = "",
-    val totalCalories: Float = 0f
+    var totalCalories: Float = 0f,
+    var totalCarbs: Float = 0f,
+    var totalProtein: Float = 0f,
+    var totalFat: Float = 0f,
 ) : Serializable

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
@@ -120,6 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpBottomNavigation() {
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         navController?.let {
@@ -189,6 +190,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logRecipeDiaryFragment -> getString(R.string.add_recipe)
                 R.id.logFoodDiaryFragment -> getString(R.string.add_food)
                 R.id.logMealDiaryFragment -> getString(R.string.add_meal)
+                R.id.editMealFragment -> getString(R.string.edit_meal)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -357,6 +359,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logRecipeDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.logFoodDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.logMealDiaryFragment -> setSaveButtonVisibility(true)
+                R.id.editMealFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }
@@ -407,6 +410,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ingredientsFragment -> setAddButtonVisibility(true)
                 R.id.detailRecipeFragment -> setAddButtonVisibility(true)
                 R.id.createMealFragment -> setAddButtonVisibility(true)
+                R.id.editMealFragment -> setAddButtonVisibility(true)
                 else -> setAddButtonVisibility(false)
             }
         }

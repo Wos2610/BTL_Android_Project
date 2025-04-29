@@ -31,4 +31,21 @@ class MealFoodCrossRefRepository @Inject constructor(
         mealFoodCrossRefDao.insertMealFoodCrossRef(mealFoodCrossRef)
         pushToFireStore(mealFoodCrossRef)
     }
+
+    suspend fun deleteMealFoodCrossRefByFoodId(foodId: String) {
+        Timber.d("Deleting meal food cross ref with food ID: $foodId")
+        mealFoodCrossRefDao.deleteMealFoodCrossRefByFoodId(foodId)
+        mealFoodCrossRefFireStoreDataSource.deleteMealFoodCrossRef(foodId)
+    }
+
+    suspend fun getMealFoodCrossRefById(mealId: Int): List<MealFoodCrossRef>? {
+        Timber.d("Getting meal food cross ref with ID: $mealId")
+        return mealFoodCrossRefDao.getMealFoodCrossRefById(mealId)
+    }
+
+    suspend fun deleteMealFoodCrossRefByMealId(mealId: Int) {
+        Timber.d("Deleting meal food cross ref with meal ID: $mealId")
+        mealFoodCrossRefDao.deleteMealFoodCrossRefByMealId(mealId)
+        mealFoodCrossRefFireStoreDataSource.deleteMealFoodCrossRefByMealId(mealId)
+    }
 }

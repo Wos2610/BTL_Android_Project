@@ -106,7 +106,6 @@ class LogMealDiaryFragment : Fragment() {
 
                         mealItem.copy(recipe = mealItem.recipe.copy(servings = mealItem.recipe.servings * servingsValid))
                     }
-                    else -> mealItem
                 }
             }
 

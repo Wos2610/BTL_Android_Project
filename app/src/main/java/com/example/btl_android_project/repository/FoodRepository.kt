@@ -12,7 +12,8 @@ import javax.inject.Inject
 
 class FoodRepository @Inject constructor(
     private val foodDao: FoodDao,
-    private val foodFireStoreDataSource: FoodFireStoreDataSource
+    private val foodFireStoreDataSource: FoodFireStoreDataSource,
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
 ) {
     // Local operations
     suspend fun insertFood(food: Food): Long {
@@ -48,7 +49,8 @@ class FoodRepository @Inject constructor(
 
     suspend fun deleteFood(food: Food) {
         try {
-            // Delete from local database
+            mealFoodCrossRefRepository.deleteMealFoodCrossRefByFoodId(food.id.toString())
+
             foodDao.deleteFood(food)
 
             // Sync deletion to Firestore

@@ -16,4 +16,13 @@ interface MealRecipeCrossRefDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMealRecipeCrossRefs(mealRecipeCrossRefs: List<MealRecipeCrossRef>)
+
+    @Query("DELETE FROM meal_recipe_cross_ref WHERE recipeId = :recipeId")
+    suspend fun deleteMealRecipeCrossRefByRecipeId(recipeId: String)
+
+    @Query("SELECT * FROM meal_recipe_cross_ref WHERE mealId = :mealId")
+    suspend fun getMealRecipeCrossRefById(mealId: Int): List<MealRecipeCrossRef>?
+
+    @Query("DELETE FROM meal_recipe_cross_ref WHERE mealId = :mealId")
+    suspend fun deleteMealRecipeCrossRefByMealId(mealId: Int)
 }

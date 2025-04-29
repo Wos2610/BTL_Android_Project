@@ -7,4 +7,5 @@ interface MealFireStoreDataSource {
     fun addMeal(meal: Meal)
     fun deleteMeal(mealId: Int)
     suspend fun getAllMealsByUser(userId: Int): List<Meal>
+    suspend fun updateMeal(meal: Meal)
 }

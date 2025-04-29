@@ -57,6 +57,7 @@ class LogMealFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
+        binding.btnCreateMeal.tvLogItem.text = "Create New Meal"
         binding.btnCreateMeal.cvLogItem.setOnClickListener {
             val action = LogAllFragmentDirections.actionLogAllFragmentToCreateMealFragment()
             findNavController().navigate(action)
@@ -85,7 +86,10 @@ class LogMealFragment : Fragment() {
                     findNavController().navigate(action)
                 }
                 else{
-
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToEditMealFragment(
+                        mealId = meal.id,
+                    )
+                    findNavController().navigate(action)
                 }
             },
             onAddToDiaryClick = { meal ->

@@ -30,7 +30,22 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteMealRecipeCrossRef(recipeId: String) {
-        TODO("Not yet implemented")
+        // Query for all documents where recipeId matches the given value
+        val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
+            .whereEqualTo("recipeId", recipeId)
+            .get()
+            .await()
+
+        // Delete each matching document
+        val batch = firestore.batch()
+        snapshot.documents.forEach { document ->
+            batch.delete(document.reference)
+        }
+
+        // Commit the batch
+        if (snapshot.documents.isNotEmpty()) {
+            batch.commit().await()
+        }
     }
 
     override suspend fun getMealRecipeCrossRefById(recipeId: String): MealRecipeCrossRef? {
@@ -54,6 +69,24 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun deleteMealRecipeCrossRefByMealId(mealId: Int) {
+        // Query for all documents where recipeId matches the given value
+        val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
+            .whereEqualTo("mealId", mealId)
+            .get()
+            .await()
+
+        // Delete each matching document
+        val batch = firestore.batch()
+        snapshot.documents.forEach { document ->
+            batch.delete(document.reference)
+        }
+
+        // Commit the batch
+        if (snapshot.documents.isNotEmpty()) {
+            batch.commit().await()
+        }
+    }
     companion object {
         private const val MEAL_RECIPE_CROSS_REF_COLLECTION = "meal_recipe_cross_ref"
         private const val MAX_BATCH_SIZE = 500
