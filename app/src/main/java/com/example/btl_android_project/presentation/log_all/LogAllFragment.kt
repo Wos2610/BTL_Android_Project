@@ -1,6 +1,8 @@
 package com.example.btl_android_project.presentation.log_all
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,10 @@ import com.example.btl_android_project.local.entity.Recipe
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.viewpager2.widget.ViewPager2
+import com.example.btl_android_project.presentation.log_food.LogFoodFragment
+import com.example.btl_android_project.presentation.log_meal.LogMealFragment
+import com.example.btl_android_project.presentation.log_recipe.LogRecipeFragment
 
 @AndroidEntryPoint
 class LogAllFragment : Fragment() {
@@ -44,21 +50,8 @@ class LogAllFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         hideBottomNavigationView()
-
-        pagerAdapter = LogPagerAdapter(
-            this,
-            isFromCreateMealList = listOf(viewModel.isFromCreateMeal, viewModel.isFromCreateMeal, viewModel.isFromCreateMeal),
-        )
-
-        binding.viewPager.adapter = pagerAdapter
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when(position){
-                0 -> getString(R.string.my_meals)
-                1 -> getString(R.string.my_recipes)
-                2 -> getString(R.string.my_foods)
-                else -> getString(R.string.my_meals)
-            }
-        }.attach()
+        setUpViewPager()
+        setUpSearchView()
 
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")
@@ -94,5 +87,42 @@ class LogAllFragment : Fragment() {
     private fun hideBottomNavigationView() {
         val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.navigation)
         bottomNavigationView.visibility = View.GONE
+    }
+
+    private fun setUpViewPager() {
+        pagerAdapter = LogPagerAdapter(
+            this,
+            isFromCreateMealList = listOf(viewModel.isFromCreateMeal, viewModel.isFromCreateMeal, viewModel.isFromCreateMeal),
+        )
+
+        binding.viewPager.adapter = pagerAdapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when(position){
+                0 -> getString(R.string.my_meals)
+                1 -> getString(R.string.my_recipes)
+                2 -> getString(R.string.my_foods)
+                else -> getString(R.string.my_meals)
+            }
+        }.attach()
+    }
+
+    private fun setUpSearchView() {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                val currentPosition = binding.viewPager.currentItem
+                val currentFragment = pagerAdapter.getFragmentAtPosition(currentPosition)
+                if (currentFragment is LogMealFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                } else if (currentFragment is LogRecipeFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                } else if (currentFragment is LogFoodFragment) {
+                    currentFragment.onSearchQueryChanged(query)
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 }

@@ -51,7 +51,7 @@ interface MealDao {
 
     // Get all meals of a user (with basic info)
     @Query("SELECT * FROM meals WHERE userId = :userId ORDER BY id DESC")
-    suspend fun getMealsByUser(userId: Int): List<Meal>
+    suspend fun getMealsByUserId(userId: Int): List<Meal>
 
     // Get all meals of a user with Foods and Recipes
     @Transaction
@@ -66,4 +66,7 @@ interface MealDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMeals(meals: List<Meal>)
+
+    @Query("SELECT * FROM meals WHERE name LIKE '%' || :query || '%'")
+    suspend fun searchMeals(query: String): List<Meal>
 }

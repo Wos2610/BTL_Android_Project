@@ -222,4 +222,12 @@ class MealRepository @Inject constructor(
             mealFireStoreDataSource.updateMeal(updatedMeal)
         }
     }
+
+    suspend fun searchMeals(query: String): List<Meal> {
+        return mealDao.searchMeals(query)
+    }
+
+    suspend fun getMealsByUserId(userId: Int): List<Meal> {
+        return mealDao.getMealsByUserId(userId)
+    }
 }
