@@ -46,7 +46,8 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 "diaryId" to crossRef.diaryId,
                 "mealId" to crossRef.mealId,
                 "servings" to crossRef.servings,
-                "mealType" to crossRef.mealType?.name
+                "mealType" to crossRef.mealType?.name,
+                "userId" to crossRef.userId
             )
             
             val documentId = "${crossRef.diaryId}_${crossRef.mealId}"
@@ -69,7 +70,8 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 "diaryId" to crossRef.diaryId,
                 "mealId" to crossRef.mealId,
                 "servings" to crossRef.servings,
-                "mealType" to crossRef.mealType?.name
+                "mealType" to crossRef.mealType?.name,
+                "userId" to crossRef.userId
             )
             
             val documentId = "${crossRef.diaryId}_${crossRef.mealId}"

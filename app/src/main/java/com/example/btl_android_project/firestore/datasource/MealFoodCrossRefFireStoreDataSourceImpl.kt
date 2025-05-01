@@ -87,6 +87,15 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
+    suspend fun getMealFoodCrossRefByMealId(mealId: Int): List<MealFoodCrossRef> {
+        val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
+            .whereEqualTo("mealId", mealId)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { it.toObject(MealFoodCrossRef::class.java) }
+    }
+
     companion object {
         private const val MEAL_FOOD_CROSS_REF_COLLECTION = "meal_food_cross_ref"
         private const val MAX_BATCH_SIZE = 500

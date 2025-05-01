@@ -33,4 +33,7 @@ interface DiaryRecipeCrossRefDao {
 
     @Query("DELETE FROM diary_recipe_cross_ref WHERE diaryId = :diaryId")
     suspend fun deleteDiaryRecipeCrossRefsByDiaryId(diaryId: Int): Int
+
+    @Query("DELETE FROM diary_recipe_cross_ref")
+    suspend fun deleteAllDiaryRecipeCrossRefs(): Int
 }

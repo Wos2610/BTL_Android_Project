@@ -25,4 +25,7 @@ interface MealRecipeCrossRefDao {
 
     @Query("DELETE FROM meal_recipe_cross_ref WHERE mealId = :mealId")
     suspend fun deleteMealRecipeCrossRefByMealId(mealId: Int)
+
+    @Query("DELETE FROM meal_recipe_cross_ref")
+    suspend fun deleteAllMealRecipeCrossRefs()
 }

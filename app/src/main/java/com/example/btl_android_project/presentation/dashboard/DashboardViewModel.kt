@@ -3,6 +3,7 @@ package com.example.btl_android_project.presentation.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.repository.DailyDiaryRepository
+import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.FoodRepository
 import com.example.btl_android_project.repository.MealFoodCrossRefRepository
 import com.example.btl_android_project.repository.MealRecipeCrossRefRepository
@@ -27,7 +28,10 @@ class DashboardViewModel @Inject constructor(
     private val foodRepository: FoodRepository,
     private val recipeRepository: RecipeRepository,
     private val mealRepository: MealRepository,
-    private val dailyDiaryRepository: DailyDiaryRepository
+    private val dailyDiaryRepository: DailyDiaryRepository,
+    private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
+    private val diaryRecipeCrossRefRepository: DiaryFoodCrossRefRepository,
+    private val diaryMealCrossRefRepository: DiaryFoodCrossRefRepository,
 
 ) : ViewModel() {
 
@@ -62,10 +66,8 @@ class DashboardViewModel @Inject constructor(
             staticRecipesRepository.pullStaticRecipesFromFireStore()
             foodRepository.syncFoodsFromFirestore(userId = 0)
             recipeRepository.pullFromFireStore(userId = 0)
-            mealRepository.pullFromFireStore(userId = 0)
-            mealFoodCrossRefRepository.pullFromFireStore(userId = 0)
-            mealRecipeCrossRefRepository.pullFromFireStore(userId = 0)
-            dailyDiaryRepository.pullFromFireStore(userId = 0)
+            mealRepository.pullFromFireStoreByUserId(userId = 0)
+            dailyDiaryRepository.pullFromFireStoreByUserId(userId = 0)
         }
     }
 

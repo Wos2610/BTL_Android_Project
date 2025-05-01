@@ -12,7 +12,10 @@ import javax.inject.Inject
 
 class DailyDiaryRepository @Inject constructor(
     private val dailyDiaryDao: DailyDiaryDao,
-    private val diaryFireStoreDataSource: DailyDiaryFireStoreDataSourceImpl
+    private val diaryFireStoreDataSource: DailyDiaryFireStoreDataSourceImpl,
+    private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
+    private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
+    private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository
 ) {
     private val TAG = "DailyDiaryRepository"
     
@@ -195,6 +198,25 @@ class DailyDiaryRepository @Inject constructor(
 
             // Update in Firestore
             diaryFireStoreDataSource.updateDailyDiary(dailyDiary)
+        }
+    }
+
+    suspend fun pullFromFireStoreByUserId(userId: Int) {
+        withContext(Dispatchers.IO) {
+            Log.d(TAG, "Pulling daily diaries from Firestore for user ID: $userId")
+            val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
+            Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore for user ID: $userId")
+            dailyDiaryDao.deleteAllDailyDiaries()
+            dailyDiaryDao.insertAllDailyDiaries(diaries)
+
+            diaries.forEach { diary ->
+                val diaryId = diary.id
+                Log.d(TAG, "Processing daily diary with ID: $diaryId")
+
+                diaryFoodCrossRefRepository.pullFromFireStore(diaryId)
+                diaryRecipeCrossRefRepository.pullFromFireStore(diaryId)
+                diaryMealCrossRefRepository.pullFromFireStore(diaryId)
+            }
         }
     }
 }

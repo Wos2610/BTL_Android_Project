@@ -3,6 +3,8 @@ package com.example.btl_android_project.repository
 import com.example.btl_android_project.firestore.datasource.MealRecipeCrossRefFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
 import com.example.btl_android_project.local.entity.MealRecipeCrossRef
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,6 +41,16 @@ class MealRecipeCrossRefRepository @Inject constructor(
         Timber.d("Deleting meal food cross ref with meal ID: $mealId")
         mealRecipeCrossRefDao.deleteMealRecipeCrossRefByMealId(mealId)
         mealRecipeCrossRefFireStoreDataSource.deleteMealRecipeCrossRefByMealId(mealId)
+    }
+
+    suspend fun pullFromFireStoreByMealId(mealId: Int) {
+        withContext(Dispatchers.IO) {
+            Timber.d("Pulling meal recipe cross ref from Firestore with meal ID: $mealId")
+            val recipes = mealRecipeCrossRefFireStoreDataSource.getMealRecipeCrossRefsByMealId(mealId)
+            Timber.d("Pulled ${recipes.size} recipes from Firestore")
+            mealRecipeCrossRefDao.insertAllMealRecipeCrossRefs(recipes)
+
+        }
     }
 
 }

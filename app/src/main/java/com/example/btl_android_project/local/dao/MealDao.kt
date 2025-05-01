@@ -69,4 +69,7 @@ interface MealDao {
 
     @Query("SELECT * FROM meals WHERE name LIKE '%' || :query || '%' AND userId = :userId")
     suspend fun searchMeals(query: String, userId: Int): List<Meal>
+
+    @Query("DELETE FROM meals")
+    suspend fun deleteAllMeals(): Int
 }

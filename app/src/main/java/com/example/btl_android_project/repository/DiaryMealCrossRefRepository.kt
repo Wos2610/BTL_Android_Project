@@ -90,20 +90,12 @@ class DiaryMealCrossRefRepository @Inject constructor(
      * Pull diary-meal cross references from Firestore
      */
     suspend fun pullFromFireStore(diaryId: Int) {
-        Log.d(TAG, "Pulling diary-meal cross references from Firestore for diaryId=$diaryId")
-        val crossRefs = diaryMealCrossRefFireStoreDataSource.getDiaryMealCrossRefsByDiaryId(diaryId)
-        Log.d(TAG, "Pulled ${crossRefs.size} diary-meal cross references from Firestore")
-        
         withContext(Dispatchers.IO) {
-            crossRefs.forEach { crossRef ->
-                // Check if it already exists
-                val existing = diaryMealCrossRefDao.getDiaryMealCrossRef(crossRef.diaryId, crossRef.mealId)
-                if (existing == null) {
-                    diaryMealCrossRefDao.insertDiaryMealCrossRef(crossRef)
-                } else {
-                    diaryMealCrossRefDao.updateDiaryMealCrossRef(crossRef)
-                }
-            }
+            Log.d(TAG, "Pulling diary-meal cross references from Firestore for diaryId=$diaryId")
+            val crossRefs = diaryMealCrossRefFireStoreDataSource.getDiaryMealCrossRefsByDiaryId(diaryId)
+            Log.d(TAG, "Pulled ${crossRefs.size} diary-meal cross references from Firestore")
+            diaryMealCrossRefDao.deleteAllDiaryMealCrossRefs()
+            diaryMealCrossRefDao.insertAllDiaryMealCrossRefs(crossRefs)
         }
     }
 }

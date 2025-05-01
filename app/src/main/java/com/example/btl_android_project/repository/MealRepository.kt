@@ -238,4 +238,21 @@ class MealRepository @Inject constructor(
             mealDao.getMealById(mealId)
         }
     }
+
+    suspend fun pullFromFireStoreByUserId(userId: Int) {
+        withContext(Dispatchers.IO) {
+            Log.d("MealRepository", "Pulling meals from Firestore by user ID: $userId")
+            val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
+            Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore")
+            mealDao.deleteAllMeals()
+            mealDao.insertAllMeals(meals)
+
+            meals.forEach { meal ->
+                val mealId = meal.id
+                Log.d("MealRepository", "Pulling food and recipe cross refs for meal ID: $mealId")
+                mealFoodCrossRefRepository.pullFromFireStoreByMealId(mealId)
+                mealRecipeCrossRefRepository.pullFromFireStoreByMealId(mealId)
+            }
+        }
+    }
 }

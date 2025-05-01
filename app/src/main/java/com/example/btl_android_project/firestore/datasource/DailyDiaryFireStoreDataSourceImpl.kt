@@ -80,7 +80,10 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 "caloriesRemaining" to dailyDiary.caloriesRemaining,
                 "totalFoodCalories" to dailyDiary.totalFoodCalories,
                 "totalExerciseCalories" to dailyDiary.totalExerciseCalories,
-                "totalWaterMl" to dailyDiary.totalWaterMl
+                "totalWaterMl" to dailyDiary.totalWaterMl,
+                "totalFat" to dailyDiary.totalFat,
+                "totalCarbs" to dailyDiary.totalCarbs,
+                "totalProtein" to dailyDiary.totalProtein
             )
             
             firestore.collection(COLLECTION_NAME)
@@ -104,7 +107,10 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 "caloriesRemaining" to dailyDiary.caloriesRemaining,
                 "totalFoodCalories" to dailyDiary.totalFoodCalories,
                 "totalExerciseCalories" to dailyDiary.totalExerciseCalories,
-                "totalWaterMl" to dailyDiary.totalWaterMl
+                "totalWaterMl" to dailyDiary.totalWaterMl,
+                "totalFat" to dailyDiary.totalFat,
+                "totalCarbs" to dailyDiary.totalCarbs,
+                "totalProtein" to dailyDiary.totalProtein
             )
             
             firestore.collection(COLLECTION_NAME)
@@ -151,7 +157,10 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 caloriesRemaining = (data["caloriesRemaining"] as? Number)?.toFloat() ?: 0f,
                 totalFoodCalories = (data["totalFoodCalories"] as? Number)?.toFloat() ?: 0f,
                 totalExerciseCalories = (data["totalExerciseCalories"] as? Number)?.toFloat() ?: 0f,
-                totalWaterMl = (data["totalWaterMl"] as? Number)?.toInt() ?: 0
+                totalWaterMl = (data["totalWaterMl"] as? Number)?.toInt() ?: 0,
+                totalFat = (data["totalFat"] as? Number)?.toFloat() ?: 0f,
+                totalCarbs = (data["totalCarbs"] as? Number)?.toFloat() ?: 0f,
+                totalProtein = (data["totalProtein"] as? Number)?.toFloat() ?: 0f
             )
         } catch (e: Exception) {
             null
