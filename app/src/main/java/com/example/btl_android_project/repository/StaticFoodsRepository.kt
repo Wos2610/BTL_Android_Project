@@ -1,8 +1,8 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.local.entity.StaticFoodEntity
-import com.example.btl_android_project.firestore.domain.StaticFoodFireStoreDataSource
+import com.example.btl_android_project.firestore.datasource.StaticFoodFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.StaticFoodDao
+import com.example.btl_android_project.local.entity.StaticFoodEntity
 import com.example.btl_android_project.remote.domain.StaticFoodRemoteDataSource
 import com.example.btl_android_project.remote.onError
 import com.example.btl_android_project.remote.onException
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class StaticFoodsRepository @Inject constructor(
     private val staticFoodDao: StaticFoodDao,
     private val staticFoodRemoteDataSource: StaticFoodRemoteDataSource,
-    private val staticFoodFireStoreDataSource: StaticFoodFireStoreDataSource,
+    private val staticFoodFireStoreDataSource: StaticFoodFireStoreDataSourceImpl,
 ) {
     suspend fun pullStaticFoods() {
         val searchExpressions = listOf(

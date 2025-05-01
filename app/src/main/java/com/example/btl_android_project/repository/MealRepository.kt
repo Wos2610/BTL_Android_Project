@@ -1,5 +1,7 @@
 package com.example.btl_android_project.repository
 
+import android.util.Log
+import com.example.btl_android_project.firestore.datasource.MealFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.dao.MealDao
 import com.example.btl_android_project.local.dao.RecipeDao
@@ -9,13 +11,11 @@ import com.example.btl_android_project.local.entity.MealRecipeCrossRef
 import com.example.btl_android_project.local.entity.MealWithFoodsAndRecipes
 import com.example.btl_android_project.presentation.log_meal.MealItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import android.util.Log
-import com.example.btl_android_project.firestore.domain.MealFireStoreDataSource
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
 class MealRepository @Inject constructor(
     private val mealDao: MealDao,
@@ -23,7 +23,7 @@ class MealRepository @Inject constructor(
     private val recipeDao: RecipeDao,
     private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
     private val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
-    private val mealFireStoreDataSource: MealFireStoreDataSource
+    private val mealFireStoreDataSource: MealFireStoreDataSourceImpl
 ) {
 
     suspend fun createMeal(

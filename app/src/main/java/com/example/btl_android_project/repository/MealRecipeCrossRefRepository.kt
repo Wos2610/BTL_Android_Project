@@ -1,16 +1,14 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.firestore.domain.MealRecipeCrossRefFireStoreDataSource
+import com.example.btl_android_project.firestore.datasource.MealRecipeCrossRefFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
-import com.example.btl_android_project.utils.mapToStaticFoodEntityList
-import com.example.btl_android_project.utils.mapToStaticFoodList
+import com.example.btl_android_project.local.entity.MealRecipeCrossRef
 import timber.log.Timber
 import javax.inject.Inject
-import com.example.btl_android_project.local.entity.MealRecipeCrossRef
 
 class MealRecipeCrossRefRepository @Inject constructor(
     private val mealRecipeCrossRefDao: MealRecipeCrossRefDao,
-    private val mealRecipeCrossRefFireStoreDataSource: MealRecipeCrossRefFireStoreDataSource,
+    private val mealRecipeCrossRefFireStoreDataSource: MealRecipeCrossRefFireStoreDataSourceImpl,
 ) {
     suspend fun pushToFireStore(mealRecipeCrossRefs: MealRecipeCrossRef) {
         Timber.d("Pushing meal food cross ref to Firestore with ID: ${mealRecipeCrossRefs.mealId} and food ID: ${mealRecipeCrossRefs.recipeId}")

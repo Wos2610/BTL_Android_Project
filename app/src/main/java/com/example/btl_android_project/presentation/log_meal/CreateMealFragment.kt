@@ -39,8 +39,6 @@ class CreateMealFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel.getMealById(args.mealId)
     }
 
     override fun onCreateView(

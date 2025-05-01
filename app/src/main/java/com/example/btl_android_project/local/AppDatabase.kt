@@ -23,7 +23,12 @@ import com.example.btl_android_project.local.dao.*
         Food::class,
         Meal::class,
         MealFoodCrossRef::class,
-        MealRecipeCrossRef::class],
+        MealRecipeCrossRef::class,
+        DailyDiary::class,
+        DiaryFoodCrossRef::class,
+        DiaryRecipeCrossRef::class,
+        DiaryMealCrossRef::class,
+               ],
     version = 2,
     exportSchema = false
 )
@@ -37,4 +42,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun mealDao(): MealDao
     abstract fun mealFoodCrossRefDao(): MealFoodCrossRefDao
     abstract fun mealRecipeCrossRefDao(): MealRecipeCrossRefDao
+    abstract fun diaryDao(): DailyDiaryDao
+    abstract fun diaryFoodCrossRefDao(): DiaryFoodCrossRefDao
+    abstract fun diaryRecipeCrossRefDao(): DiaryRecipeCrossRefDao
+    abstract fun diaryMealCrossRefDao(): DiaryMealCrossRefDao
 }

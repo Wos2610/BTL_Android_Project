@@ -1,6 +1,6 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
+import com.example.btl_android_project.firestore.datasource.StaticRecipeIngredientFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.remote.domain.StaticRecipeIngredientRemoteDataSource
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class StaticRecipeIngredientRepository @Inject constructor(
     private val staticRecipeIngredientDao: StaticRecipeIngredientDao,
     private val staticRecipeIngredientRemoteDataSource: StaticRecipeIngredientRemoteDataSource,
-    private val staticRecipeIngredientFireStoreDataSource: StaticRecipeIngredientFireStoreDataSource,
+    private val staticRecipeIngredientFireStoreDataSource: StaticRecipeIngredientFireStoreDataSourceImpl,
 ) {
     suspend fun pullStaticRecipeIngredients(){
         for (pageIndex in 1..2) {

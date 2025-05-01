@@ -137,16 +137,4 @@ class CreateMealViewModel @Inject constructor(
             onSaveSuccess()
         }
     }
-
-    fun getMealById(mealId: Int) {
-        viewModelScope.launch {
-            val mealWithFoodsAndRecipes = mealRepository.getMealWithFoodsAndRecipes(mealId)
-            _meal.value = mealWithFoodsAndRecipes.meal
-            val foodItems = mealWithFoodsAndRecipes.foods.map { MealItem.FoodItem(it) }
-            val recipeItems = mealWithFoodsAndRecipes.recipes.map { MealItem.RecipeItem(it) }
-            _mealItems.value = foodItems + recipeItems
-            currentMealId = mealId
-            mealName = mealWithFoodsAndRecipes.meal.name
-        }
-    }
 }

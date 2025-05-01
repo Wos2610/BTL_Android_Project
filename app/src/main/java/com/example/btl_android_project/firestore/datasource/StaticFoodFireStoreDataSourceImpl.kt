@@ -1,5 +1,4 @@
 package com.example.btl_android_project.firestore.datasource
-import com.example.btl_android_project.firestore.domain.StaticFoodFireStoreDataSource
 import com.example.btl_android_project.remote.model.StaticFood
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -10,8 +9,8 @@ import javax.inject.Inject
 
 class StaticFoodFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : StaticFoodFireStoreDataSource {
-    override suspend fun addAllFoods(foods: List<StaticFood>) {
+){
+    suspend fun addAllFoods(foods: List<StaticFood>) {
         var batch = firestore.batch()
         val tasks = mutableListOf<Task<Void>>()
 
@@ -40,7 +39,7 @@ class StaticFoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun pullFoods(): List<StaticFood> {
+    suspend fun pullFoods(): List<StaticFood> {
         val foods = firestore.collection(STATIC_FOODS_COLLECTION).get().await()
         return foods.toObjects(StaticFood::class.java)
     }

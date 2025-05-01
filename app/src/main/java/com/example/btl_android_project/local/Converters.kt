@@ -1,10 +1,13 @@
 package com.example.btl_android_project.local
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.time.LocalDate
 
 class Converters {
     private val gson = Gson()
@@ -51,5 +54,26 @@ class Converters {
     fun toRecipeIngredientList(value: String): List<RecipeIngredient> {
         val listType = object : TypeToken<List<RecipeIngredient>>() {}.type
         return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromLocalDate(date: LocalDate?): String? {
+        return date?.toString()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun toLocalDate(dateString: String?): LocalDate? {
+        return dateString?.let { LocalDate.parse(it) }
+    }
+
+    @TypeConverter
+    fun fromMealType(value: MealType?): String? {
+        return value?.name
+    }
+
+    @TypeConverter
+    fun toMealType(value: String?): MealType? {
+        return value?.let { MealType.valueOf(it) }
     }
 }

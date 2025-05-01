@@ -1,6 +1,5 @@
 package com.example.btl_android_project.firestore.datasource
 
-import com.example.btl_android_project.firestore.domain.MealFireStoreDataSource
 import com.example.btl_android_project.local.entity.Meal
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -9,14 +8,14 @@ import javax.inject.Inject
 
 class MealFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : MealFireStoreDataSource {
+){
 
     companion object {
         private const val MEALS_COLLECTION = "meals"
         private const val MAX_BATCH_SIZE = 500
     }
 
-    override fun addAllMeals(meals: List<Meal>) {
+    fun addAllMeals(meals: List<Meal>) {
         val batchedMeals = meals.chunked(MAX_BATCH_SIZE)
 
         batchedMeals.forEachIndexed { batchIndex, batchList ->
@@ -35,7 +34,7 @@ class MealFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun addMeal(meal: Meal) {
+    fun addMeal(meal: Meal) {
         val docRef = firestore.collection(MEALS_COLLECTION).document(meal.id.toString())
         docRef.set(meal)
             .addOnSuccessListener {
@@ -46,7 +45,7 @@ class MealFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    override fun deleteMeal(mealId: Int) {
+    fun deleteMeal(mealId: Int) {
         val docRef = firestore.collection(MEALS_COLLECTION).document(mealId.toString())
         docRef.delete()
             .addOnSuccessListener {
@@ -57,7 +56,7 @@ class MealFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    override suspend fun getAllMealsByUser(userId: Int): List<Meal> {
+    suspend fun getAllMealsByUser(userId: Int): List<Meal> {
         val snapshot = firestore.collection(MEALS_COLLECTION)
             .whereEqualTo("userId", userId)
             .get()
@@ -66,7 +65,7 @@ class MealFireStoreDataSourceImpl @Inject constructor(
         return snapshot.documents.mapNotNull { it.toObject(Meal::class.java) }
     }
 
-    override suspend fun updateMeal(meal: Meal) {
+    suspend fun updateMeal(meal: Meal) {
         val docRef = firestore.collection(MEALS_COLLECTION).document(meal.id.toString())
         docRef.set(meal)
             .addOnSuccessListener {

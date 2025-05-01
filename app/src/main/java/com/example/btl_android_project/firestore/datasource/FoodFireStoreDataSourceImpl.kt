@@ -1,6 +1,5 @@
 package com.example.btl_android_project.firestore.datasource
 
-import com.example.btl_android_project.firestore.domain.FoodFireStoreDataSource
 import com.example.btl_android_project.local.entity.Food
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -9,9 +8,9 @@ import javax.inject.Inject
 
 class FoodFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : FoodFireStoreDataSource {
+){
 
-    override suspend fun addFood(food: Food): String {
+    suspend fun addFood(food: Food): String {
         try {
             val foodRef = if (food.id != 0) {
                 firestore.collection(FOODS_COLLECTION).document(food.id.toString())
@@ -34,7 +33,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateFood(food: Food) {
+    suspend fun updateFood(food: Food) {
         try {
             val foodRef = firestore.collection(FOODS_COLLECTION).document(food.id.toString())
             val updatedFood = food.copy(updatedAt = System.currentTimeMillis())
@@ -46,7 +45,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteFood(foodId: String) {
+    suspend fun deleteFood(foodId: String) {
         try {
             firestore.collection(FOODS_COLLECTION).document(foodId).delete().await()
             Timber.d("Food deleted with ID: $foodId")
@@ -56,7 +55,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFoodById(foodId: String): Food? {
+    suspend fun getFoodById(foodId: String): Food? {
         return try {
             val document = firestore.collection(FOODS_COLLECTION).document(foodId).get().await()
             document.toObject(Food::class.java)
@@ -66,7 +65,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllFoodsByUser(userId: Int): List<Food> {
+    suspend fun getAllFoodsByUser(userId: Int): List<Food> {
         return try {
             val result = firestore.collection(FOODS_COLLECTION)
                 .whereEqualTo("userId", userId)
@@ -79,7 +78,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchFoods(query: String, userId: Int): List<Food> {
+    suspend fun searchFoods(query: String, userId: Int): List<Food> {
         return try {
             // Firestore doesn't support "LIKE" queries directly, use range queries
             val result = firestore.collection(FOODS_COLLECTION)

@@ -1,6 +1,6 @@
 package com.example.btl_android_project.repository
 
-import com.example.btl_android_project.firestore.domain.FoodFireStoreDataSource
+import com.example.btl_android_project.firestore.datasource.FoodFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.entity.Food
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class FoodRepository @Inject constructor(
     private val foodDao: FoodDao,
-    private val foodFireStoreDataSource: FoodFireStoreDataSource,
+    private val foodFireStoreDataSource: FoodFireStoreDataSourceImpl,
     private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
 ) {
     // Local operations

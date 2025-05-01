@@ -1,7 +1,6 @@
 package com.example.btl_android_project.firestore.datasource
 
 import android.util.Log
-import com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
 import com.example.btl_android_project.local.entity.Recipe
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -10,14 +9,14 @@ import javax.inject.Inject
 
 class RecipeFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : RecipeFireStoreDataSource {
+){
 
     companion object {
         private const val RECIPES_COLLECTION = "recipes"
         private const val MAX_BATCH_SIZE = 500
     }
 
-    override fun addAllRecipes(recipes: List<Recipe>) {
+    fun addAllRecipes(recipes: List<Recipe>) {
         val batchedRecipes = recipes.chunked(MAX_BATCH_SIZE)
 
         batchedRecipes.forEachIndexed { batchIndex, batchList ->
@@ -36,7 +35,7 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun addRecipe(recipe: Recipe) {
+    fun addRecipe(recipe: Recipe) {
         Log.d("RecipeFireStoreDataSourceImpl", "Adding recipe: ${recipe.id}")
         val docRef = firestore.collection(RECIPES_COLLECTION).document(recipe.id.toString())
         docRef.set(recipe)
@@ -48,7 +47,7 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    override fun deleteRecipe(recipeId: Int) {
+    fun deleteRecipe(recipeId: Int) {
         val docRef = firestore.collection(RECIPES_COLLECTION).document(recipeId.toString())
         docRef.delete()
             .addOnSuccessListener {
@@ -59,7 +58,7 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    override suspend fun getAllRecipesByUser(userId: Int): List<Recipe> {
+    suspend fun getAllRecipesByUser(userId: Int): List<Recipe> {
         return try {
             val result = firestore.collection(RECIPES_COLLECTION)
                 .whereEqualTo("userId", userId)

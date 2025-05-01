@@ -1,7 +1,7 @@
 package com.example.btl_android_project.repository
 
 import android.util.Log
-import com.example.btl_android_project.firestore.domain.RecipeFireStoreDataSource
+import com.example.btl_android_project.firestore.datasource.RecipeFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.RecipeDao
 import com.example.btl_android_project.local.entity.Recipe
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
     private val recipeDao: RecipeDao,
-    private val recipeFireStoreDataSource: RecipeFireStoreDataSource,
+    private val recipeFireStoreDataSource: RecipeFireStoreDataSourceImpl,
 ) {
 
     fun getAllRecipes(): Flow<List<Recipe>> = recipeDao.getAllRecipes()

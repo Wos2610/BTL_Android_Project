@@ -1,9 +1,6 @@
 package com.example.btl_android_project.firestore.datasource
 
-import android.annotation.SuppressLint
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
-import com.example.btl_android_project.firestore.domain.StaticRecipeIngredientFireStoreDataSource
-import com.example.btl_android_project.remote.model.StaticRecipe
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -11,8 +8,8 @@ import javax.inject.Inject
 
 class StaticRecipeIngredientFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : StaticRecipeIngredientFireStoreDataSource {
-    override fun addAllRecipeIngredients(recipeIngredients: List<StaticRecipeIngredient>) {
+){
+    fun addAllRecipeIngredients(recipeIngredients: List<StaticRecipeIngredient>) {
         val batch = firestore.batch()
 
         recipeIngredients.forEachIndexed { index, ingredient ->
@@ -35,13 +32,13 @@ class StaticRecipeIngredientFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun pullRecipeIngredients(): List<StaticRecipeIngredient> {
+    suspend fun pullRecipeIngredients(): List<StaticRecipeIngredient> {
         val recipeIngredients = firestore.collection(STATIC_RECIPES_INGREDIENTS_COLLECTION).get().await()
         return recipeIngredients.toObjects(StaticRecipeIngredient::class.java)
     }
 
 //    @SuppressLint("TimberArgCount")
-//    override fun getRecipeIngredientById(id: Long): StaticRecipeIngredient? {
+//    fun getRecipeIngredientById(id: Long): StaticRecipeIngredient? {
 //        val docRef = firestore.collection(STATIC_RECIPES_INGREDIENTS_COLLECTION).document(id.toString())
 //        var recipeIngredient: StaticRecipeIngredient? = null
 //

@@ -3,7 +3,13 @@ package com.example.btl_android_project.local.di
 import android.content.Context
 import androidx.room.Room
 import com.example.btl_android_project.local.AppDatabase
+import com.example.btl_android_project.local.dao.DailyDiaryDao
+import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
+import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
+import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.FoodDao
+import com.example.btl_android_project.local.dao.MealFoodCrossRefDao
+import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
@@ -48,13 +54,33 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideMealFoodCrossRefDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.MealFoodCrossRefDao {
+    fun provideMealFoodCrossRefDao(appDatabase: AppDatabase) : MealFoodCrossRefDao {
         return appDatabase.mealFoodCrossRefDao()
     }
 
     @Provides
-    fun provideMealRecipeCrossRefDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.MealRecipeCrossRefDao {
+    fun provideMealRecipeCrossRefDao(appDatabase: AppDatabase) : MealRecipeCrossRefDao {
         return appDatabase.mealRecipeCrossRefDao()
+    }
+
+    @Provides
+    fun  provideDairyDao(appDatabase: AppDatabase) : DailyDiaryDao {
+        return appDatabase.diaryDao()
+    }
+
+    @Provides
+    fun provideDiaryFoodCrossRefDao(appDatabase: AppDatabase) : DiaryFoodCrossRefDao {
+        return appDatabase.diaryFoodCrossRefDao()
+    }
+
+    @Provides
+    fun provideDiaryRecipeCrossRefDao(appDatabase: AppDatabase) : DiaryRecipeCrossRefDao {
+        return appDatabase.diaryRecipeCrossRefDao()
+    }
+
+    @Provides
+    fun provideDiaryMealCrossRefDao(appDatabase: AppDatabase) : DiaryMealCrossRefDao {
+        return appDatabase.diaryMealCrossRefDao()
     }
 
     @Singleton

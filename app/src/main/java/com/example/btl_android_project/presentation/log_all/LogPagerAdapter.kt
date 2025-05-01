@@ -32,19 +32,15 @@ class LogPagerAdapter(
     }
 
     fun updateSearchQuery(query: String) {
-        Log.d("LogPagerAdapter", "Updating search query: $query")
         fragments.forEach { (_, fragment) ->
             when (fragment) {
                 is LogMealFragment -> {
-                    Log.d("LogPagerAdapter", "Updating search query for LogMealFragment")
                     fragment.onSearchQueryChanged(query)
                 }
                 is LogRecipeFragment -> {
-                    Log.d("LogPagerAdapter", "Updating search query for LogRecipeFragment")
                     fragment.onSearchQueryChanged(query)
                 }
                 is LogFoodFragment -> {
-                    Log.d("LogPagerAdapter", "Updating search query for LogFoodFragment")
                     fragment.onSearchQueryChanged(query)
                 }
             }
