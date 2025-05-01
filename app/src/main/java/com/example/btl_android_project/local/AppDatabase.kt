@@ -3,16 +3,30 @@ package com.example.btl_android_project.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.btl_android_project.local.dao.DailyDiaryDao
+import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
+import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
+import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
+import com.example.btl_android_project.local.dao.FoodDao
+import com.example.btl_android_project.local.dao.MealDao
+import com.example.btl_android_project.local.dao.MealFoodCrossRefDao
+import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.RecipeDao
-import com.example.btl_android_project.local.entity.StaticFoodEntity
-import com.example.btl_android_project.local.entity.StaticRecipeIngredient
-import com.example.btl_android_project.local.entity.StaticRecipesEntity
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
+import com.example.btl_android_project.local.entity.DailyDiary
+import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
+import com.example.btl_android_project.local.entity.DiaryMealCrossRef
+import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
+import com.example.btl_android_project.local.entity.Food
+import com.example.btl_android_project.local.entity.Meal
+import com.example.btl_android_project.local.entity.MealFoodCrossRef
+import com.example.btl_android_project.local.entity.MealRecipeCrossRef
 import com.example.btl_android_project.local.entity.Recipe
-import com.example.btl_android_project.local.entity.*
-import com.example.btl_android_project.local.dao.*
+import com.example.btl_android_project.local.entity.StaticFoodEntity
+import com.example.btl_android_project.local.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.entity.StaticRecipesEntity
 
 @Database(
     entities = [
@@ -29,7 +43,7 @@ import com.example.btl_android_project.local.dao.*
         DiaryRecipeCrossRef::class,
         DiaryMealCrossRef::class,
                ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class, RecipeTypeConverters::class)

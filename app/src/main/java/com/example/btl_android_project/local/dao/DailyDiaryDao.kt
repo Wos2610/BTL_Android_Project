@@ -35,4 +35,7 @@ interface DailyDiaryDao {
 
     @Delete
     suspend fun deleteDailyDiary(dailyDiary: DailyDiary): Int
+
+    @Query("DELETE FROM daily_diary")
+    suspend fun deleteAllDailyDiaries(): Int
 }

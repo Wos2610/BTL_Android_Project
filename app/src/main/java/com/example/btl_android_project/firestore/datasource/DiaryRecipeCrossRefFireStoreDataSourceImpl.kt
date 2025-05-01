@@ -141,7 +141,8 @@ class DiaryRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
                 diaryId = (data["diaryId"] as? Number)?.toInt() ?: 0,
                 recipeId = (data["recipeId"] as? Number)?.toInt() ?: 0,
                 servings = (data["servings"] as? Number)?.toInt() ?: 1,
-                mealType = (data["mealType"] as? String)?.let { MealType.valueOf(it) }
+                mealType = (data["mealType"] as? String)?.let { MealType.valueOf(it) },
+                userId = (data["userId"] as? Number)?.toInt() ?: 0,
             )
         } catch (e: Exception) {
             null

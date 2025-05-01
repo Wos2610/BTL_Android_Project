@@ -1,16 +1,17 @@
 package com.example.btl_android_project.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
-import com.example.btl_android_project.repository.StaticRecipeIngredientRepository
-import com.example.btl_android_project.repository.UserRepository
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.FoodRepository
 import com.example.btl_android_project.repository.MealFoodCrossRefRepository
 import com.example.btl_android_project.repository.MealRecipeCrossRefRepository
 import com.example.btl_android_project.repository.MealRepository
 import com.example.btl_android_project.repository.RecipeRepository
 import com.example.btl_android_project.repository.StaticFoodsRepository
+import com.example.btl_android_project.repository.StaticRecipeIngredientRepository
 import com.example.btl_android_project.repository.StaticRecipesRepository
+import com.example.btl_android_project.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class DashboardViewModel @Inject constructor(
     private val foodRepository: FoodRepository,
     private val recipeRepository: RecipeRepository,
     private val mealRepository: MealRepository,
+    private val dailyDiaryRepository: DailyDiaryRepository
 
 ) : ViewModel() {
 
@@ -63,6 +65,7 @@ class DashboardViewModel @Inject constructor(
             mealRepository.pullFromFireStore(userId = 0)
             mealFoodCrossRefRepository.pullFromFireStore(userId = 0)
             mealRecipeCrossRefRepository.pullFromFireStore(userId = 0)
+            dailyDiaryRepository.pullFromFireStore(userId = 0)
         }
     }
 

@@ -25,6 +25,7 @@ import com.example.btl_android_project.local.MealType
 data class DiaryRecipeCrossRef(
     val diaryId: Int,
     val recipeId: Int,
+    val userId: Int,
     val servings: Int = 1,
     val mealType: MealType? = null,
 )

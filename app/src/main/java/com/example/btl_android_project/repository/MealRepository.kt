@@ -232,4 +232,10 @@ class MealRepository @Inject constructor(
             mealDao.getMealsByUserId(userId)
         }
     }
+
+    suspend fun getMealById(mealId: Int): Meal? {
+        return withContext(Dispatchers.IO) {
+            mealDao.getMealById(mealId)
+        }
+    }
 }

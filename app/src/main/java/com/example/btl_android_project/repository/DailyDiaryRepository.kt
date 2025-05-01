@@ -128,21 +128,12 @@ class DailyDiaryRepository @Inject constructor(
      * Pull diary data from Firestore for a specific user
      */
     suspend fun pullFromFireStore(userId: Int) {
-        Log.d(TAG, "Pulling daily diaries from Firestore")
-        val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
-        Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore")
-        
         withContext(Dispatchers.IO) {
-            diaries.forEach { diary ->
-                // Check if diary already exists locally
-                val existingDiary = dailyDiaryDao.getDailyDiaryByDate(userId, diary.logDate!!)
-                if (existingDiary == null) {
-                    dailyDiaryDao.insertDailyDiary(diary)
-                } else {
-                    // Update if it exists
-                    dailyDiaryDao.updateDailyDiary(diary)
-                }
-            }
+            Log.d(TAG, "Pulling daily diaries from Firestore")
+            val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
+            Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore")
+            dailyDiaryDao.deleteAllDailyDiaries()
+            dailyDiaryDao.insertAllDailyDiaries(diaries)
         }
     }
     
@@ -194,6 +185,16 @@ class DailyDiaryRepository @Inject constructor(
                 // Update in Firestore
                 diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
             }
+        }
+    }
+
+    suspend fun updateDailyDiary(dailyDiary: DailyDiary) {
+        withContext(Dispatchers.IO) {
+            dailyDiaryDao.updateDailyDiary(dailyDiary)
+            Log.d(TAG, "Updated daily diary with ID: ${dailyDiary.id}")
+
+            // Update in Firestore
+            diaryFireStoreDataSource.updateDailyDiary(dailyDiary)
         }
     }
 }

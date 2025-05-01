@@ -2,7 +2,6 @@ package com.example.btl_android_project.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import com.example.btl_android_project.local.MealType
 
 @Entity(
@@ -26,6 +25,7 @@ import com.example.btl_android_project.local.MealType
 data class DiaryMealCrossRef(
     val diaryId: Int,
     val mealId: Int,
+    val userId: Int,
     val servings: Int = 1,
     val mealType: MealType? = null,
 )

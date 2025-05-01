@@ -15,5 +15,8 @@ data class DailyDiary(
     val caloriesRemaining: Float = 0f,
     val totalFoodCalories: Float = 0f,
     val totalExerciseCalories: Float = 0f,
-    val totalWaterMl: Int = 0
+    val totalWaterMl: Int = 0,
+    val totalFat: Float = 0f,
+    val totalCarbs: Float = 0f,
+    val totalProtein: Float = 0f,
 ) : Serializable
