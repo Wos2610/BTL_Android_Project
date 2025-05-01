@@ -3,7 +3,10 @@ package com.example.btl_android_project.presentation.log_food
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.Food
+import com.example.btl_android_project.repository.DailyDiaryRepository
+import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.FoodRepository
 import com.example.btl_android_project.repository.MealFoodCrossRefRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,12 +15,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class LogFoodViewModel @Inject constructor(
     private val foodRepository: FoodRepository,
-    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
+    private val dailyDiaryRepository: DailyDiaryRepository,
+    private val dailyDiaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
+
 ) : ViewModel() {
     private val _foods = MutableStateFlow<List<Food>>(emptyList())
     val foods: StateFlow<List<Food>> = _foods
@@ -27,6 +34,7 @@ class LogFoodViewModel @Inject constructor(
 
     // Temporary hardcoded user ID
     private val userId = 0
+    val logDate : LocalDate = LocalDate.now()
 
     fun loadFoods() {
         viewModelScope.launch {
@@ -87,6 +95,34 @@ class LogFoodViewModel @Inject constructor(
         viewModelScope.launch {
             val result = foodRepository.searchFoods(query, userId)
             _foods.value = result
+        }
+    }
+
+    fun addFoodToDiary(
+        foodId: Int,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val dailyDiary = dailyDiaryRepository.getOrCreateDailyDiary(userId, logDate)
+            val dairyFoodCrossRef = DiaryFoodCrossRef(
+                foodId = foodId,
+                diaryId = dailyDiary.id,
+                userId = userId,
+                servings = 1,
+                mealType = null,
+            )
+            dailyDiaryFoodCrossRefRepository.insertDiaryFoodCrossRef(dairyFoodCrossRef)
+
+            val food = foodRepository.getFoodById(foodId)
+            val updatedDailyDiary = dailyDiary.copy(
+                totalFoodCalories = dailyDiary.totalFoodCalories + (food?.calories ?: 0f),
+                totalCarbs = dailyDiary.totalCarbs + (food?.carbs ?: 0f),
+                totalProtein = dailyDiary.totalProtein + (food?.protein ?: 0f),
+                totalFat = dailyDiary.totalFat + (food?.fat ?: 0f),
+            )
+
+            dailyDiaryRepository.updateDailyDiary(updatedDailyDiary)
+            onSuccess()
         }
     }
 }

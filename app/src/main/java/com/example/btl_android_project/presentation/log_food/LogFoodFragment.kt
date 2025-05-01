@@ -5,14 +5,14 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -92,14 +92,15 @@ class LogFoodFragment : Fragment() {
             },
             onAddToDiaryClick = { food ->
                 if(isFromCreateMeal){
-                    val action = LogAllFragmentDirections.actionLogAllFragmentToLogFoodDiaryFragment(
-                        foodId = food.id,
-                        isFromCreateMeal = isFromCreateMeal
-                    )
-                    findNavController().navigate(action)
+
                 }
                 else{
-
+                    viewModel.addFoodToDiary(
+                        foodId = food.id,
+                        onSuccess = {
+                            Toast.makeText(requireContext(), "Food added to diary", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
             }
         )

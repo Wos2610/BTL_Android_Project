@@ -54,7 +54,6 @@ class LogMealViewModel @Inject constructor(
 
     fun addMealToDiary(
         mealId: Int,
-        userId: Int,
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch {
@@ -63,6 +62,8 @@ class LogMealViewModel @Inject constructor(
                 mealId = mealId,
                 diaryId = dailyDiary.id,
                 userId = userId,
+                servings = 1,
+                mealType = null,
             )
             dailyDiaryMealCrossRefRepository.insertDiaryMealCrossRef(dairyMealCrossRef)
 
