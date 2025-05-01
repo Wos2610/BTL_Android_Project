@@ -1,12 +1,13 @@
 package com.example.btl_android_project.presentation.sign_up
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.btl_android_project.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.btl_android_project.databinding.FragmentSignUpBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +33,36 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.btnCreateAccount.setOnClickListener {
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+            val confirmPassword = binding.etPasswordConfirmation.text.toString()
+
+            viewModel.registerUser(
+                email = email,
+                password = password,
+                confirmPassword = confirmPassword,
+                onSuccess = {
+                    val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(
+                        email = email,
+                        password = password
+                    )
+                    findNavController().navigate(action)
+                },
+                onFailure = { exception ->
+                    Toast.makeText(requireContext(), exception.message, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+
+        binding.btnLogIn.setOnClickListener {
+            val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment(
+                email = "",
+                password = "",
+            )
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {

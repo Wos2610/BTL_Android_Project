@@ -19,8 +19,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.btl_android_project.databinding.ActivityMainBinding
-import com.example.btl_android_project.presentation.log_recipe.DetailIngredientFragmentDirections
-import com.example.btl_android_project.presentation.log_recipe.DetailRecipeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -162,6 +160,8 @@ class MainActivity : AppCompatActivity() {
             show = when (destination.id) {
                 R.id.dashboardFragment-> false
                 R.id.logItemListDialogFragment -> false
+                R.id.signInFragment -> false
+                R.id.signUpFragment -> false
                 else -> true
             }
             supportActionBar?.setDisplayHomeAsUpEnabled(show)
@@ -191,6 +191,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.logFoodDiaryFragment -> getString(R.string.add_food)
                 R.id.logMealDiaryFragment -> getString(R.string.add_meal)
                 R.id.editMealFragment -> getString(R.string.edit_meal)
+                R.id.signInFragment -> getString(R.string.sign_in)
+                R.id.signUpFragment -> getString(R.string.sign_up)
                 else -> ""
             }
             supportActionBar?.title = title

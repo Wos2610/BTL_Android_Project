@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.auth.ktx)
     implementation(libs.timber)
     implementation(libs.gson)
     implementation(libs.androidx.room.runtime)

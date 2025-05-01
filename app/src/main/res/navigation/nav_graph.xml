@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/dashboardFragment">
+    app:startDestination="@id/signInFragment">
 
     <fragment
         android:id="@+id/createFoodInformationFragment"
@@ -202,12 +202,36 @@
         android:id="@+id/signInFragment"
         android:name="com.example.btl_android_project.presentation.sign_in.SignInFragment"
         android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" />
+        tools:layout="@layout/fragment_sign_in" >
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <argument
+            android:name="password"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/signInFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.btl_android_project.presentation.sign_up.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/signUpFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userActivityLevelFragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserActivityLevelFragment"
