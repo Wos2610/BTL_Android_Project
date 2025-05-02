@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
-    private val args : SignInFragmentArgs by navArgs()
+    private val args: SignInFragmentArgs by navArgs()
     private val viewModel: SignInViewModel by viewModels()
 
     override fun onCreateView(
@@ -46,6 +46,9 @@ class SignInFragment : Fragment() {
                 },
                 onFailure = { exception ->
                     Toast.makeText(requireContext(), exception.message, Toast.LENGTH_SHORT).show()
+                },
+                onLoading = { isLoading ->
+                    showLoading(isLoading)
                 }
             )
         }
@@ -64,9 +67,22 @@ class SignInFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onFailure = { exception ->
-
+                // Just ignore failure, user needs to log in
+            },
+            onLoading = { isLoading ->
+                showLoading(isLoading)
             }
         )
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+        // Disable interaction with UI elements when loading
+        binding.etEmail.isEnabled = !isLoading
+        binding.etPassword.isEnabled = !isLoading
+        binding.btnSignIn.isEnabled = !isLoading
+        binding.btnSignUp.isEnabled = !isLoading
     }
 
     override fun onDestroyView() {
