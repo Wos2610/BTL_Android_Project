@@ -1,36 +1,35 @@
 package com.example.btl_android_project.firestore.datasource
 
+import android.util.Log
 import com.example.btl_android_project.local.entity.Food
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class FoodFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ){
+    suspend fun addFood(food: Food): String = suspendCoroutine { continuation ->
+        Log.d("FoodFireStoreDataSourceImpl", "Adding food: ${food.name}")
 
-    suspend fun addFood(food: Food): String {
-        try {
-            val foodRef = if (food.id != 0) {
-                firestore.collection(FOODS_COLLECTION).document(food.id.toString())
-            } else {
-                firestore.collection(FOODS_COLLECTION).document()
+        val docRef = firestore.collection(FOODS_COLLECTION).document()
+
+        val newId = docRef.id
+        val updatedFood = food.copy(id = newId)
+
+        docRef.set(updatedFood)
+            .addOnSuccessListener {
+                Timber.d("Food ${updatedFood.name} added successfully with ID: $newId")
+                continuation.resume(newId)
             }
-
-            val foodWithId = if (food.id == 0) {
-                food.copy(id = foodRef.id.toInt())
-            } else {
-                food
+            .addOnFailureListener { e ->
+                Timber.e("Failed to add food ${updatedFood.name}: ${e.message}")
+                continuation.resumeWithException(e)
             }
-
-            foodRef.set(foodWithId).await()
-            Timber.d("Food added with ID: ${foodRef.id}")
-            return foodRef.id
-        } catch (e: Exception) {
-            Timber.e("Error adding food: ${e.message}")
-            throw e
-        }
     }
 
     suspend fun updateFood(food: Food) {
@@ -65,7 +64,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    suspend fun getAllFoodsByUser(userId: Int): List<Food> {
+    suspend fun getAllFoodsByUser(userId: String): List<Food> {
         return try {
             val result = firestore.collection(FOODS_COLLECTION)
                 .whereEqualTo("userId", userId)
@@ -78,7 +77,7 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    suspend fun searchFoods(query: String, userId: Int): List<Food> {
+    suspend fun searchFoods(query: String, userId: String): List<Food> {
         return try {
             // Firestore doesn't support "LIKE" queries directly, use range queries
             val result = firestore.collection(FOODS_COLLECTION)

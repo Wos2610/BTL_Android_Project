@@ -31,8 +31,8 @@ class LogRecipeDiaryFragment : Fragment() {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = args.isFromCreateMeal
 
-        if (args.recipeId != 0) {
-            viewModel.getRecipeById(args.recipeId)
+        if (args.recipeId != "") {
+            viewModel.getRecipeById(args.recipeId.toString())
         }
     }
     override fun onCreateView(

@@ -20,7 +20,7 @@ class CreateFoodInformationFragment : Fragment() {
     private var _binding: FragmentCreateFoodInformationBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CreateFoodInformationViewModel by viewModels()
-    private var foodId = -1
+    private var foodId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,8 +32,8 @@ class CreateFoodInformationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        foodId = arguments?.getInt("foodId")!!
-        if (foodId != -1) {
+        foodId = arguments?.getString("foodId")!!
+        if (foodId != "") {
             viewModel.loadFood(foodId)
         }
         observeViewModel()
@@ -86,7 +86,7 @@ class CreateFoodInformationFragment : Fragment() {
                 val servingsUnit = binding.etUnit.text.toString().trim()
                 val servingsPerContainer = binding.etServingPerContainer.text.toString().toIntOrNull() ?: 0
 
-                if (foodId != -1) {
+                if (foodId != "") {
                     val action =
                         CreateFoodInformationFragmentDirections.actionCreateFoodInformationFragmentToCreateFoodNutritionFragment(
                             foodId = foodId,

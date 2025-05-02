@@ -28,7 +28,7 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
         }
     }
     
-    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: Int): List<DiaryMealCrossRef> {
+    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: String): List<DiaryMealCrossRef> {
         return try {
             val snapshot = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("diaryId", diaryId)
@@ -141,11 +141,11 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
         
         return try {
             DiaryMealCrossRef(
-                diaryId = (data["diaryId"] as? Number)?.toInt() ?: 0,
-                mealId = (data["mealId"] as? Number)?.toInt() ?: 0,
+                diaryId = (data["diaryId"] as? String) ?: "",
+                mealId = (data["mealId"] as? String) ?: "",
                 servings = (data["servings"] as? Number)?.toInt() ?: 1,
                 mealType = (data["mealType"] as? String)?.let { MealType.valueOf(it) },
-                userId = (data["userId"] as? Number)?.toInt() ?: 0,
+                userId = (data["userId"] as? String) ?: "",
             )
         } catch (e: Exception) {
             null

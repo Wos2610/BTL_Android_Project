@@ -21,10 +21,10 @@ interface MealRecipeCrossRefDao {
     suspend fun deleteMealRecipeCrossRefByRecipeId(recipeId: String)
 
     @Query("SELECT * FROM meal_recipe_cross_ref WHERE mealId = :mealId")
-    suspend fun getMealRecipeCrossRefById(mealId: Int): List<MealRecipeCrossRef>?
+    suspend fun getMealRecipeCrossRefById(mealId: String): List<MealRecipeCrossRef>?
 
     @Query("DELETE FROM meal_recipe_cross_ref WHERE mealId = :mealId")
-    suspend fun deleteMealRecipeCrossRefByMealId(mealId: Int)
+    suspend fun deleteMealRecipeCrossRefByMealId(mealId: String)
 
     @Query("DELETE FROM meal_recipe_cross_ref")
     suspend fun deleteAllMealRecipeCrossRefs()

@@ -17,7 +17,7 @@ class MealFoodCrossRefRepository @Inject constructor(
         mealFoodCrossRefFireStoreDataSource.insertMealFoodCrossRef(mealFoodCrossRefs)
     }
 
-    suspend fun pullFromFireStore(userId: Int = 0) {
+    suspend fun pullFromFireStore(userId: String) {
         Timber.d("Pulling meal food cross refs from Firestore")
         val foods = mealFoodCrossRefFireStoreDataSource.getAllMealFoodCrossRefsByUser(
             userId = userId
@@ -38,18 +38,18 @@ class MealFoodCrossRefRepository @Inject constructor(
         mealFoodCrossRefFireStoreDataSource.deleteMealFoodCrossRef(foodId)
     }
 
-    suspend fun getMealFoodCrossRefById(mealId: Int): List<MealFoodCrossRef>? {
+    suspend fun getMealFoodCrossRefById(mealId: String): List<MealFoodCrossRef>? {
         Timber.d("Getting meal food cross ref with ID: $mealId")
         return mealFoodCrossRefDao.getMealFoodCrossRefById(mealId)
     }
 
-    suspend fun deleteMealFoodCrossRefByMealId(mealId: Int) {
+    suspend fun deleteMealFoodCrossRefByMealId(mealId: String) {
         Timber.d("Deleting meal food cross ref with meal ID: $mealId")
         mealFoodCrossRefDao.deleteMealFoodCrossRefByMealId(mealId)
         mealFoodCrossRefFireStoreDataSource.deleteMealFoodCrossRefByMealId(mealId)
     }
 
-    suspend fun pullFromFireStoreByMealId(mealId: Int) {
+    suspend fun pullFromFireStoreByMealId(mealId: String) {
         withContext(Dispatchers.IO) {
             Timber.d("Pulling meal food cross ref from Firestore with meal ID: $mealId")
             val foods = mealFoodCrossRefFireStoreDataSource.getMealFoodCrossRefByMealId(mealId)

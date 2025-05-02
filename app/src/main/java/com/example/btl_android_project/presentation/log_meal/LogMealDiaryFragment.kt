@@ -1,25 +1,19 @@
 package com.example.btl_android_project.presentation.log_meal
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.databinding.FragmentLogMealDiaryBinding
-import com.example.btl_android_project.local.entity.Food
-import com.example.btl_android_project.local.entity.Recipe
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,7 +27,7 @@ class LogMealDiaryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getMealById(args.mealId)
+        viewModel.getMealById(args.mealId.toString())
     }
 
     override fun onCreateView(

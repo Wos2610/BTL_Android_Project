@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class LogExercise(
     val id: Int = 0,
-    val userId: Int = 0,
+    val userId: String = "",
     val exerciseId: Int = 0,
     val dailyDiaryId: Int = 0,
     val minutes: Int = 0,

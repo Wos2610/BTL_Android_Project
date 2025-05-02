@@ -1,6 +1,11 @@
 package com.example.btl_android_project.local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.example.btl_android_project.local.entity.Food
 import kotlinx.coroutines.flow.Flow
 
@@ -16,13 +21,13 @@ interface FoodDao {
     suspend fun deleteFood(food: Food)
 
     @Query("SELECT * FROM foods WHERE id = :foodId")
-    suspend fun getFoodById(foodId: Int): Food?
+    suspend fun getFoodById(foodId: String): Food?
 
     @Query("SELECT * FROM foods WHERE userId = :userId")
-    fun getAllFoodsByUser(userId: Int): Flow<List<Food>>
+    fun getAllFoodsByUser(userId: String): Flow<List<Food>>
 
     @Query("SELECT * FROM foods WHERE name LIKE '%' || :query || '%' AND userId = :userId")
-    fun searchFoods(query: String, userId: Int): List<Food>
+    fun searchFoods(query: String, userId: String): List<Food>
 
     @Query("DELETE FROM foods WHERE id = :foodId")
     suspend fun deleteFoodById(foodId: Int)

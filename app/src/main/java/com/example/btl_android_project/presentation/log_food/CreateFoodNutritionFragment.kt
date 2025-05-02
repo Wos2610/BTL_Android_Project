@@ -1,12 +1,12 @@
 package com.example.btl_android_project.presentation.log_food
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +24,7 @@ class CreateFoodNutritionFragment : Fragment() {
     private val viewModel: CreateFoodNutritionViewModel by viewModels()
     private lateinit var nutritionAdapter: NutritionAdapter
 
-    private var foodId = -1
+    private var foodId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,8 +50,8 @@ class CreateFoodNutritionFragment : Fragment() {
         viewModel.servingsPerContainer = args.servingsPerContainer
 
 
-        foodId = arguments?.getInt("foodId") ?: -1
-        if (foodId != -1) {
+        foodId = arguments?.getString("foodId") ?: ""
+        if (foodId != "") {
             viewModel.loadNutrition(foodId)
         }
 
@@ -118,7 +118,7 @@ class CreateFoodNutritionFragment : Fragment() {
 
     private fun setSaveButtonToolBarOnClickListener() {
         (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
-            if (foodId != -1) {
+            if (foodId != "") {
                 viewModel.updateFood(foodId)
             } else {
                 viewModel.saveFood()

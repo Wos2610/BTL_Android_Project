@@ -6,8 +6,8 @@ import java.io.Serializable
 
 @Entity(tableName = "recipes")
 data class Recipe(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = "",
     val name: String = "",
     val imageUrl: String = "",
     val instructions: String = "",
@@ -15,7 +15,7 @@ data class Recipe(
     val protein: Int = 0,
     val carbs: Int = 0,
     val fat: Int = 0,
-    val userId: Int = 0,
+    val userId: String = "",
     val ingredients: List<RecipeIngredient> = emptyList(),
     val servings: Int = 0,
 ) : Serializable

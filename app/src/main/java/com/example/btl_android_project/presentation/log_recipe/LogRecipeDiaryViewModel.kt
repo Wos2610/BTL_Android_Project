@@ -19,7 +19,7 @@ class LogRecipeDiaryViewModel @Inject constructor(
 ): ViewModel() {
     var servings: Int = 1
 
-    var currentRecipeId: Int = 0
+    var currentRecipeId: String = ""
 
     private val _recipe = MutableStateFlow<Recipe?>(null)
     val recipe = _recipe
@@ -68,7 +68,7 @@ class LogRecipeDiaryViewModel @Inject constructor(
     }
 
     fun getRecipeById(
-        recipeId: Int,
+        recipeId: String,
     ) {
         viewModelScope.launch {
             val recipe = recipeRepository.getRecipeById(recipeId)

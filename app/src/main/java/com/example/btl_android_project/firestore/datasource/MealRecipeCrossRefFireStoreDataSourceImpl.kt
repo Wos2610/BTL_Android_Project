@@ -51,7 +51,7 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    suspend fun getAllMealRecipeCrossRefsByUser(userId: Int): List<MealRecipeCrossRef> {
+    suspend fun getAllMealRecipeCrossRefsByUser(userId: String): List<MealRecipeCrossRef> {
         val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
             .whereEqualTo("userId", userId)
             .get()
@@ -63,12 +63,12 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
 
     suspend fun searchMealRecipeCrossRefs(
         query: String,
-        userId: Int
+        userId: String
     ): List<MealRecipeCrossRef> {
         TODO("Not yet implemented")
     }
 
-    suspend fun deleteMealRecipeCrossRefByMealId(mealId: Int) {
+    suspend fun deleteMealRecipeCrossRefByMealId(mealId: String) {
         // Query for all documents where recipeId matches the given value
         val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
             .whereEqualTo("mealId", mealId)
@@ -87,7 +87,7 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    suspend fun getMealRecipeCrossRefsByMealId(mealId: Int): List<MealRecipeCrossRef> {
+    suspend fun getMealRecipeCrossRefsByMealId(mealId: String): List<MealRecipeCrossRef> {
         val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
             .whereEqualTo("mealId", mealId)
             .get()

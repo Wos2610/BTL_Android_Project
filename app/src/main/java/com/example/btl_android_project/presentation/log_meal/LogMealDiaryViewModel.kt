@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.plus
 
 @HiltViewModel
 class LogMealDiaryViewModel @Inject constructor(
@@ -20,7 +19,7 @@ class LogMealDiaryViewModel @Inject constructor(
     val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
     val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
 ) : ViewModel() {
-    var currentMealId: Int = 0
+    var currentMealId: String = ""
     var _meal : MutableStateFlow<Meal?> = MutableStateFlow(null)
     val meal = _meal.asStateFlow()
 
@@ -68,7 +67,7 @@ class LogMealDiaryViewModel @Inject constructor(
 //        }
     }
 
-    fun getMealById(mealId: Int) {
+    fun getMealById(mealId: String) {
         viewModelScope.launch {
             val mealWithFoodsAndRecipes = mealRepository.getMealWithFoodsAndRecipes(mealId)
             _meal.value = mealWithFoodsAndRecipes.meal

@@ -3,6 +3,7 @@ package com.example.btl_android_project.presentation.log_recipe
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.Recipe
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.repository.RecipeRepository
@@ -15,11 +16,13 @@ import kotlin.math.roundToInt
 
 @HiltViewModel
 class DetailRecipeViewModel @Inject constructor(
-    val recipeRepository: RecipeRepository
+    val recipeRepository: RecipeRepository,
+    val firebaseAuthDataSource: FirebaseAuthDataSource
 ): ViewModel() {
     var recipeName: String = ""
     var servings: Int = 1
-    var recipeId: Int = 0
+    var recipeId: String = ""
+    var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
 
     var recipe: Recipe? = null
 
@@ -81,7 +84,7 @@ class DetailRecipeViewModel @Inject constructor(
         fatAmount = ((totalFat.toDouble() / sum) * 100).roundToInt()
     }
 
-    fun insertOrUpdateRecipe(
+    fun insertRecipe(
         navigateToLogAllFragment: () -> Unit
     ) {
         viewModelScope.launch {
@@ -94,15 +97,16 @@ class DetailRecipeViewModel @Inject constructor(
                 calories = _totalCalories.value,
                 carbs = _totalCarbs.value,
                 fat = _totalFat.value,
-                protein = _totalProtein.value
+                protein = _totalProtein.value,
+                userId = userId,
             )
-            recipeRepository.insertOrUpdateRecipe(newRecipe)
+            recipeRepository.insertRecipe(newRecipe)
             navigateToLogAllFragment()
         }
     }
 
     fun deleteRecipe(
-        recipeId: Int,
+        recipeId: String,
         navigateToLogAllFragment: () -> Unit
     ) {
         viewModelScope.launch {
@@ -112,7 +116,7 @@ class DetailRecipeViewModel @Inject constructor(
     }
 
     fun getRecipeById(
-        recipeId: Int,
+        recipeId: String
     ) {
         viewModelScope.launch {
             val recipe = recipeRepository.getRecipeById(recipeId)

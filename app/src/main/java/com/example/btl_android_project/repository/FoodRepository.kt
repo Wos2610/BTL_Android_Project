@@ -16,16 +16,14 @@ class FoodRepository @Inject constructor(
     private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
 ) {
     // Local operations
-    suspend fun insertFood(food: Food): Long {
+    suspend fun insertFood(food: Food): String {
         return try {
-            // First insert to local database
-            val localId = foodDao.insertFood(food)
+            val firestoreId = foodFireStoreDataSource.addFood(food)
+            val updatedFood = food.copy(id = firestoreId)
+            foodDao.insertFood(updatedFood)
 
-            // Then sync to Firestore
-            val firestoreId = foodFireStoreDataSource.addFood(food.copy(id = localId.toInt()))
-
-            Timber.d("Food inserted with local ID: $localId and Firestore ID: $firestoreId")
-            localId
+            Timber.d("Food inserted with local ID: $firestoreId and Firestore ID: $firestoreId")
+            firestoreId
         } catch (e: Exception) {
             Timber.e("Error inserting food: ${e.message}")
             throw e
@@ -63,7 +61,7 @@ class FoodRepository @Inject constructor(
         }
     }
 
-    suspend fun getFoodById(foodId: Int): Food? {
+    suspend fun getFoodById(foodId: String): Food? {
         return try {
             // Try to get from local database first
             val localFood = foodDao.getFoodById(foodId)
@@ -72,7 +70,7 @@ class FoodRepository @Inject constructor(
                 localFood
             } else {
                 // If not found locally, try to get from Firestore
-                val firestoreFood = foodFireStoreDataSource.getFoodById(foodId.toString())
+                val firestoreFood = foodFireStoreDataSource.getFoodById(foodId)
 
                 // If found in Firestore, insert to local database
                 if (firestoreFood != null) {
@@ -87,7 +85,7 @@ class FoodRepository @Inject constructor(
         }
     }
 
-    fun getAllFoodsByUser(userId: Int): Flow<List<Food>> {
+    fun getAllFoodsByUser(userId: String): Flow<List<Food>> {
         return try {
             foodDao.getAllFoodsByUser(userId)
         } catch (e: Exception) {
@@ -96,7 +94,7 @@ class FoodRepository @Inject constructor(
         }
     }
 
-    suspend fun searchFoods(query: String, userId: Int): List<Food> {
+    suspend fun searchFoods(query: String, userId: String): List<Food> {
         return withContext(Dispatchers.IO) {
             try {
                 foodDao.searchFoods(query, userId)
@@ -108,7 +106,7 @@ class FoodRepository @Inject constructor(
     }
 
     // Sync functions
-    suspend fun syncFoodsFromFirestore(userId: Int) {
+    suspend fun syncFoodsFromFirestore(userId: String) {
         try {
             val firestoreFoods = foodFireStoreDataSource.getAllFoodsByUser(userId)
             foodDao.insertAllFoods(firestoreFoods)
@@ -118,7 +116,7 @@ class FoodRepository @Inject constructor(
         }
     }
 
-    suspend fun getFoodByFoodId(id: Int) : Food? {
+    suspend fun getFoodByFoodId(id: String) : Food? {
         return withContext(Dispatchers.IO){
             foodDao.getFoodById(id)
         }

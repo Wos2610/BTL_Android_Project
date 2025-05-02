@@ -8,8 +8,8 @@ import java.io.Serializable
 @kotlinx.parcelize.Parcelize
 @Entity(tableName = "recipe_ingredients")
 data class RecipeIngredient(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = "",
     val fdcId: Int = 0,
     val description: String = "",
     val foodNutrients: List<Nutrition> = emptyList(),

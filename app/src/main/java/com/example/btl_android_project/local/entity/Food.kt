@@ -9,8 +9,8 @@ import java.io.Serializable
 @Entity(tableName = "foods")
 @TypeConverters(Converters::class)
 data class Food(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = "",
     val name: String = "",
     val calories: Float = 0f,
     val protein: Float = 0f,
@@ -24,7 +24,7 @@ data class Food(
     val servings: Int = 1,
 
     val nutritions: List<Nutrition> = emptyList(),
-    val userId: Int = 0,
+    val userId: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) : Serializable

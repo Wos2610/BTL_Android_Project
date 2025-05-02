@@ -29,7 +29,7 @@ class MealRepository @Inject constructor(
     suspend fun createMeal(
         name: String,
         mealType: String,
-        userId: Int,
+        userId: String,
         selectedFoodItems: List<MealItem.FoodItem>,
         selectedRecipeItems: List<MealItem.RecipeItem>,
         totalCalories: Int,
@@ -42,10 +42,18 @@ class MealRepository @Inject constructor(
                 name = name,
                 mealType = mealType,
                 userId = userId,
-                totalCalories = 0f
+                totalCalories = totalCalories.toFloat(),
+                totalCarbs = totalCarbs.toFloat(),
+                totalProtein = totalProtein.toFloat(),
+                totalFat = totalFat.toFloat()
             )
-            val mealId = mealDao.insertMeal(meal).toInt()
+
+            val mealId = mealFireStoreDataSource.addMeal(meal)
             Log.d("MealRepository", "Inserted meal with ID: $mealId")
+
+            val updatedMeal = meal.copy(id = mealId)
+
+            mealDao.insertMeal(updatedMeal)
 
             selectedFoodItems.forEach { food ->
                 mealFoodCrossRefRepository.insertMealFoodCrossRef(
@@ -71,25 +79,15 @@ class MealRepository @Inject constructor(
                         meal.userId
                     )
                 )
+                Log.d(
+                    "MealRepository",
+                    "Inserted MealRecipeCrossRef: mealId=$mealId, recipeId=${recipe.recipe.id}, servings=${recipe.recipe.servings}"
+                )
             }
-
-            val updatedMeal = Meal(
-                id = mealId,
-                name = name,
-                mealType = mealType,
-                userId = userId,
-                totalCalories = totalCalories.toFloat(),
-                totalCarbs = totalCarbs.toFloat(),
-                totalProtein = totalProtein.toFloat(),
-                totalFat = totalFat.toFloat()
-            )
-
-            mealDao.updateMeal(updatedMeal)
-            mealFireStoreDataSource.addMeal(updatedMeal)
         }
     }
 
-    suspend fun getMealsOfUser(userId: Int): List<MealWithFoodsAndRecipes> {
+    suspend fun getMealsOfUser(userId: String): List<MealWithFoodsAndRecipes> {
         return mealDao.getMealsWithFoodsAndRecipesByUser(userId)
     }
 
@@ -97,7 +95,7 @@ class MealRepository @Inject constructor(
         mealDao.deleteMeal(meal)
     }
 
-    suspend fun getMealWithFoodsAndRecipes(mealId: Int): MealWithFoodsAndRecipes {
+    suspend fun getMealWithFoodsAndRecipes(mealId: String): MealWithFoodsAndRecipes {
         return withContext(Dispatchers.IO) {
             val meal = mealDao.getMealById(mealId)
             val mealFoodCrossRefs = mealFoodCrossRefRepository.getMealFoodCrossRefById(mealId)
@@ -134,7 +132,7 @@ class MealRepository @Inject constructor(
             val meal = Meal(
                 name = name,
                 mealType = mealType,
-                userId = userId,
+                userId = userId.toString(),
                 totalCalories = 0f
             )
             mealDao.insertMeal(meal).toInt()
@@ -143,7 +141,7 @@ class MealRepository @Inject constructor(
 
     fun getMeals(): Flow<List<Meal>> = mealDao.getMeals()
 
-    suspend fun pullFromFireStore(userId: Int) {
+    suspend fun pullFromFireStore(userId: String) {
         Log.d("MealRepository", "Pulling meals from Firestore")
         val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
         Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore")
@@ -151,10 +149,10 @@ class MealRepository @Inject constructor(
     }
 
     suspend fun editMeal(
-        mealId: Int,
+        mealId: String,
         name: String,
         mealType: String,
-        userId: Int,
+        userId: String,
         selectedFoodItems: List<MealItem.FoodItem>,
         selectedRecipeItems: List<MealItem.RecipeItem>,
         totalCalories: Int,
@@ -223,23 +221,23 @@ class MealRepository @Inject constructor(
         }
     }
 
-    suspend fun searchMeals(query: String, userId: Int): List<Meal> {
+    suspend fun searchMeals(query: String, userId: String): List<Meal> {
         return mealDao.searchMeals(query, userId)
     }
 
-    suspend fun getMealsByUserId(userId: Int): Flow<List<Meal>> {
+    suspend fun getMealsByUserId(userId: String): Flow<List<Meal>> {
         return withContext(Dispatchers.IO) {
             mealDao.getMealsByUserId(userId)
         }
     }
 
-    suspend fun getMealById(mealId: Int): Meal? {
+    suspend fun getMealById(mealId: String): Meal? {
         return withContext(Dispatchers.IO) {
             mealDao.getMealById(mealId)
         }
     }
 
-    suspend fun pullFromFireStoreByUserId(userId: Int) {
+    suspend fun pullFromFireStoreByUserId(userId: String) {
         withContext(Dispatchers.IO) {
             Log.d("MealRepository", "Pulling meals from Firestore by user ID: $userId")
             val meals = mealFireStoreDataSource.getAllMealsByUser(userId)

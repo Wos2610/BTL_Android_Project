@@ -27,7 +27,7 @@ class DailyDiaryRepository @Inject constructor(
     /**
      * Get daily diaries for a specific user
      */
-    suspend fun getDailyDiariesByUserId(userId: Int): Flow<List<DailyDiary>> {
+    suspend fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>> {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiariesByUserId(userId)
         }
@@ -45,7 +45,7 @@ class DailyDiaryRepository @Inject constructor(
     /**
      * Get a user's daily diary for a specific date
      */
-    suspend fun getDailyDiaryByDate(userId: Int, date: LocalDate): DailyDiary? {
+    suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiaryByDate(userId, date)
         }
@@ -62,25 +62,26 @@ class DailyDiaryRepository @Inject constructor(
         totalExerciseCalories: Float,
         totalWaterMl: Int
     ): Int {
-        return withContext(Dispatchers.IO) {
-            val dailyDiary = DailyDiary(
-                userId = userId,
-                logDate = logDate,
-                caloriesRemaining = caloriesRemaining,
-                totalFoodCalories = totalFoodCalories,
-                totalExerciseCalories = totalExerciseCalories,
-                totalWaterMl = totalWaterMl
-            )
-            
-            val diaryId = dailyDiaryDao.insertDailyDiary(dailyDiary).toInt()
-            Log.d(TAG, "Inserted daily diary with ID: $diaryId")
-            
-            // Add to Firestore
-            val updatedDiary = dailyDiary.copy(id = diaryId)
-            diaryFireStoreDataSource.insertDailyDiary(updatedDiary)
-            
-            diaryId
-        }
+//        return withContext(Dispatchers.IO) {
+//            val dailyDiary = DailyDiary(
+//                userId = userId.toString(),
+//                logDate = logDate,
+//                caloriesRemaining = caloriesRemaining,
+//                totalFoodCalories = totalFoodCalories,
+//                totalExerciseCalories = totalExerciseCalories,
+//                totalWaterMl = totalWaterMl
+//            )
+//
+//            val diaryId = dailyDiaryDao.insertDailyDiary(dailyDiary).toInt()
+//            Log.d(TAG, "Inserted daily diary with ID: $diaryId")
+//
+//            // Add to Firestore
+//            val updatedDiary = dailyDiary.copy(id = diaryId)
+//            diaryFireStoreDataSource.insertDailyDiary(updatedDiary)
+//
+//            diaryId
+//        }
+        return 0
     }
     
     /**
@@ -95,23 +96,23 @@ class DailyDiaryRepository @Inject constructor(
         totalExerciseCalories: Float,
         totalWaterMl: Int
     ) {
-        withContext(Dispatchers.IO) {
-            val updatedDiary = DailyDiary(
-                id = id,
-                userId = userId,
-                logDate = logDate,
-                caloriesRemaining = caloriesRemaining,
-                totalFoodCalories = totalFoodCalories,
-                totalExerciseCalories = totalExerciseCalories,
-                totalWaterMl = totalWaterMl
-            )
-            
-            dailyDiaryDao.updateDailyDiary(updatedDiary)
-            Log.d(TAG, "Updated daily diary with ID: $id")
-            
-            // Update in Firestore
-            diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
-        }
+//        withContext(Dispatchers.IO) {
+//            val updatedDiary = DailyDiary(
+//                id = id,
+//                userId = userId.toString(),
+//                logDate = logDate,
+//                caloriesRemaining = caloriesRemaining,
+//                totalFoodCalories = totalFoodCalories,
+//                totalExerciseCalories = totalExerciseCalories,
+//                totalWaterMl = totalWaterMl
+//            )
+//
+//            dailyDiaryDao.updateDailyDiary(updatedDiary)
+//            Log.d(TAG, "Updated daily diary with ID: $id")
+//
+//            // Update in Firestore
+//            diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
+//        }
     }
     
     /**
@@ -130,7 +131,7 @@ class DailyDiaryRepository @Inject constructor(
     /**
      * Pull diary data from Firestore for a specific user
      */
-    suspend fun pullFromFireStore(userId: Int) {
+    suspend fun pullFromFireStore(userId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling daily diaries from Firestore")
             val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
@@ -143,30 +144,29 @@ class DailyDiaryRepository @Inject constructor(
     /**
      * Get or create a daily diary for a specific date
      */
-    suspend fun getOrCreateDailyDiary(userId: Int, date: LocalDate): DailyDiary {
+    suspend fun getOrCreateDailyDiary(userId: String, date: LocalDate): DailyDiary {
         return withContext(Dispatchers.IO) {
             val existingDiary = dailyDiaryDao.getDailyDiaryByDate(userId, date)
             
             if (existingDiary != null) {
                 existingDiary
             } else {
-                // Create a new diary for this date with default values
                 val newDiary = DailyDiary(
                     userId = userId,
                     logDate = date,
                     caloriesRemaining = 0f,
                     totalFoodCalories = 0f,
                     totalExerciseCalories = 0f,
-                    totalWaterMl = 0
+                    totalWaterMl = 0,
+                    totalFat = 0f,
+                    totalCarbs = 0f,
+                    totalProtein = 0f
                 )
-                
-                val diaryId = dailyDiaryDao.insertDailyDiary(newDiary).toInt()
-                Log.d(TAG, "Created new daily diary with ID: $diaryId for date: $date")
-                
-                // Add to Firestore
+
+                val diaryId = diaryFireStoreDataSource.insertDailyDiary(newDiary)
                 val completeDiary = newDiary.copy(id = diaryId)
-                diaryFireStoreDataSource.insertDailyDiary(completeDiary)
-                
+                dailyDiaryDao.insertDailyDiary(completeDiary)
+
                 completeDiary
             }
         }
@@ -201,7 +201,7 @@ class DailyDiaryRepository @Inject constructor(
         }
     }
 
-    suspend fun pullFromFireStoreByUserId(userId: Int) {
+    suspend fun pullFromFireStoreByUserId(userId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling daily diaries from Firestore for user ID: $userId")
             val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)

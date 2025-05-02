@@ -3,6 +3,7 @@ package com.example.btl_android_project.presentation.log_recipe
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.Recipe
@@ -23,10 +24,11 @@ class LogRecipeViewModel @Inject constructor(
     val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
     val dailyDiaryRepository: DailyDiaryRepository,
     val dailyDiaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
+    val firebaseAuthDataSource: FirebaseAuthDataSource,
 ): ViewModel() {
     private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
     val recipes = _recipes.asStateFlow()
-    var userId: Int = 0
+    var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
     val logDate : LocalDate = LocalDate.now()
 
     fun pullRecipesFromFireStore() {
@@ -53,7 +55,7 @@ class LogRecipeViewModel @Inject constructor(
     }
 
     fun addRecipeToDiary(
-        recipeId: Int,
+        recipeId: String,
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch {

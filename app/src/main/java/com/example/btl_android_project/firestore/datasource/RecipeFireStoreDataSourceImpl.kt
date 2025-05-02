@@ -6,6 +6,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class RecipeFireStoreDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
@@ -35,9 +38,9 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    fun addRecipe(recipe: Recipe) {
+    fun updateRecipe(recipe: Recipe) {
         Log.d("RecipeFireStoreDataSourceImpl", "Adding recipe: ${recipe.id}")
-        val docRef = firestore.collection(RECIPES_COLLECTION).document(recipe.id.toString())
+        val docRef = firestore.collection(RECIPES_COLLECTION).document(recipe.id)
         docRef.set(recipe)
             .addOnSuccessListener {
                 Timber.Forest.d("Recipe ${recipe.name} added successfully")
@@ -47,8 +50,8 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    fun deleteRecipe(recipeId: Int) {
-        val docRef = firestore.collection(RECIPES_COLLECTION).document(recipeId.toString())
+    fun deleteRecipe(recipeId: String) {
+        val docRef = firestore.collection(RECIPES_COLLECTION).document(recipeId)
         docRef.delete()
             .addOnSuccessListener {
                 Timber.Forest.d("Recipe with ID $recipeId deleted successfully")
@@ -58,7 +61,7 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    suspend fun getAllRecipesByUser(userId: Int): List<Recipe> {
+    suspend fun getAllRecipesByUser(userId: String): List<Recipe> {
         return try {
             val result = firestore.collection(RECIPES_COLLECTION)
                 .whereEqualTo("userId", userId)
@@ -68,6 +71,38 @@ class RecipeFireStoreDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Timber.e("Error getting foods by user ID: ${e.message}")
             emptyList()
+        }
+    }
+
+    suspend fun addRecipe(recipe: Recipe): String = suspendCoroutine { continuation ->
+        Log.d("RecipeFireStoreDataSourceImpl", "Adding recipe: ${recipe.name}")
+
+        val docRef = firestore.collection(RECIPES_COLLECTION).document()
+
+        val newId = docRef.id
+        val updatedRecipe = recipe.copy(id = newId)
+
+        docRef.set(updatedRecipe)
+            .addOnSuccessListener {
+                Timber.d("Recipe ${updatedRecipe.name} added successfully with ID: $newId")
+                continuation.resume(newId)
+            }
+            .addOnFailureListener { e ->
+                Timber.e("Failed to add recipe ${updatedRecipe.name}: ${e.message}")
+                continuation.resumeWithException(e)
+            }
+    }
+
+    suspend fun getRecipeById(recipeId: String): Recipe? {
+        return try {
+            val result = firestore.collection(RECIPES_COLLECTION)
+                .document(recipeId)
+                .get()
+                .await()
+            result.toObject(Recipe::class.java)
+        } catch (e: Exception) {
+            Timber.e("Error getting recipe by ID: ${e.message}")
+            null
         }
     }
 }

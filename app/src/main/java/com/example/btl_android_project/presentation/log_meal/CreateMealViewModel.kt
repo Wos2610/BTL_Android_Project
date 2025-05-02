@@ -2,6 +2,7 @@ package com.example.btl_android_project.presentation.log_meal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.Meal
 import com.example.btl_android_project.repository.MealRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,11 +16,12 @@ import kotlin.math.roundToInt
 @HiltViewModel
 class CreateMealViewModel @Inject constructor(
     val mealRepository: MealRepository,
+    val firebaseAuthDataSource: FirebaseAuthDataSource,
 ) : ViewModel() {
     var mealId: Int = 0
     var mealName: String = ""
     var mealType: String = ""
-    var userId: Int = 0
+    var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
 
     val _mealItems: MutableStateFlow<List<MealItem>> = MutableStateFlow(emptyList())
     val mealItems: StateFlow<List<MealItem>> = _mealItems.asStateFlow()

@@ -29,8 +29,8 @@ class LogFoodDiaryFragment : Fragment() {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = args.isFromCreateMeal
 
-        if (args.foodId != 0) {
-            viewModel.getFoodById(args.foodId)
+        if (args.foodId != null && args.foodId != "" ) {
+            viewModel.getFoodById(args.foodId!!)
         }
     }
     override fun onCreateView(

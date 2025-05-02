@@ -2,7 +2,6 @@ package com.example.btl_android_project.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "meal_food_cross_ref",
@@ -13,8 +12,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class MealFoodCrossRef(
-    val mealId: Int = 0,
-    val foodId: Int = 0,
+    val mealId: String = "",
+    val foodId: String = "",
     val servings: Int = 1,
-    val userId: Int = 0,
+    val userId: String = ""
 )

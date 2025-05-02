@@ -16,23 +16,23 @@ class RecipeRepository @Inject constructor(
 
     fun getAllRecipes(): Flow<List<Recipe>> = recipeDao.getAllRecipes()
 
-    suspend fun getRecipesByUserId(userId: Int): Flow<List<Recipe>>{
+    suspend fun getRecipesByUserId(userId: String): Flow<List<Recipe>>{
         return withContext(Dispatchers.IO) {
             recipeDao.getRecipesByUserId(userId)
         }
     }
 
-    suspend fun getRecipeById(id: Int): Recipe? {
+    suspend fun getRecipeById(id: String): Recipe? {
         return withContext(Dispatchers.IO) {
             recipeDao.getRecipeById(id)
         }
     }
 
-    suspend fun insertOrUpdateRecipe(recipe: Recipe){
+    suspend fun insertRecipe(recipe: Recipe){
         withContext(Dispatchers.IO) {
-            val recipeId = recipeDao.insertRecipe(recipe)
-            val updatedRecipe = recipe.copy(id = recipeId.toInt())
-            recipeFireStoreDataSource.addRecipe(updatedRecipe)
+            val recipeId = recipeFireStoreDataSource.addRecipe(recipe)
+            val updatedRecipe = recipe.copy(id = recipeId)
+            recipeDao.insertRecipe(updatedRecipe)
         }
     }
 
@@ -40,7 +40,7 @@ class RecipeRepository @Inject constructor(
 
     suspend fun updateRecipe(recipe: Recipe) = recipeDao.updateRecipe(recipe)
 
-    suspend fun deleteRecipe(recipeId: Int){
+    suspend fun deleteRecipe(recipeId: String){
         withContext(Dispatchers.IO) {
             recipeFireStoreDataSource.deleteRecipe(recipeId)
             recipeDao.deleteRecipeById(recipeId)
@@ -49,7 +49,7 @@ class RecipeRepository @Inject constructor(
 
     suspend fun deleteAllRecipes() = recipeDao.deleteAllRecipes()
 
-    suspend fun pullFromFireStore(userId: Int = 0) {
+    suspend fun pullFromFireStore(userId: String) {
         withContext(Dispatchers.IO) {
             val recipes = recipeFireStoreDataSource.getAllRecipesByUser(userId)
             Log.d("RecipeRepository", "Pulled ${recipes.size} recipes from Firestore")
@@ -60,7 +60,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun searchRecipes(query: String, userId: Int): List<Recipe> {
+    suspend fun searchRecipes(query: String, userId: String): List<Recipe> {
         return withContext(Dispatchers.IO) {
             recipeDao.searchRecipes(query, userId)
         }

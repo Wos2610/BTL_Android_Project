@@ -89,7 +89,7 @@ class DiaryMealCrossRefRepository @Inject constructor(
     /**
      * Pull diary-meal cross references from Firestore
      */
-    suspend fun pullFromFireStore(diaryId: Int) {
+    suspend fun pullFromFireStore(diaryId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling diary-meal cross references from Firestore for diaryId=$diaryId")
             val crossRefs = diaryMealCrossRefFireStoreDataSource.getDiaryMealCrossRefsByDiaryId(diaryId)

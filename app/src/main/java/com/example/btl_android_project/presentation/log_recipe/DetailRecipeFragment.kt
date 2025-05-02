@@ -1,14 +1,14 @@
 package com.example.btl_android_project.presentation.log_recipe
 
 import android.app.AlertDialog
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -38,11 +38,11 @@ class DetailRecipeFragment : Fragment() {
         viewModel.recipeName = args.recipeName.toString()
         viewModel.servings = args.servings
         viewModel.setIngredients(args.ingredients.toList())
-        viewModel.recipeId = args.recipeId
+        viewModel.recipeId = args.recipeId.toString()
         isFromCreateMeal = args.isFromCreateMeal
 
-        if (args.recipeId != 0) {
-            viewModel.getRecipeById(args.recipeId)
+        if (args.recipeId != "") {
+            viewModel.getRecipeById(args.recipeId.toString())
         }
     }
     override fun onCreateView(
@@ -154,7 +154,7 @@ class DetailRecipeFragment : Fragment() {
                         findNavController().popBackStack(R.id.logAllFragment, false)
                     }
                     .setNegativeButton("Just Create") { _, _ ->
-                        viewModel.insertOrUpdateRecipe {
+                        viewModel.insertRecipe {
                             findNavController().popBackStack(R.id.logAllFragment, false)
                         }
                     }
@@ -177,12 +177,12 @@ class DetailRecipeFragment : Fragment() {
                 .setTitle("Delete Recipe")
                 .setMessage("Are you sure you want to delete this recipe?")
                 .setPositiveButton("Delete") { _, _ ->
-                    viewModel.deleteRecipe(
-                        recipeId = viewModel.recipeId,
-                        navigateToLogAllFragment = {
-                            findNavController().popBackStack(R.id.logAllFragment, false)
-                        },
-                    )
+//                    viewModel.deleteRecipe(
+//                        recipeId = viewModel.recipeId,
+//                        navigateToLogAllFragment = {
+//                            findNavController().popBackStack(R.id.logAllFragment, false)
+//                        },
+//                    )
                 }
                 .setNegativeButton("Cancel", null)
                 .show()

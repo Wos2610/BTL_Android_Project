@@ -23,7 +23,7 @@ class DetailIngredientViewModel @Inject constructor(
         viewModelScope.launch {
             val staticRecipeIngredient = staticRecipeIngredientRepository.getIngredientById(id)
             val recipeIngredient = RecipeIngredient(
-                id = staticRecipeIngredient?.id ?: 0,
+                id = (staticRecipeIngredient?.id ?: 0).toString(),
                 fdcId = staticRecipeIngredient?.fdcId ?: 0,
                 description = staticRecipeIngredient?.description ?: "",
                 foodNutrients = staticRecipeIngredient?.foodNutrients ?: emptyList(),

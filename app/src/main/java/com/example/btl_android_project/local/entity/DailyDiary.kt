@@ -8,9 +8,9 @@ import java.time.LocalDate
 
 @Entity(tableName = "daily_diary")
 data class DailyDiary(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val userId: Int = 0,
+    @PrimaryKey
+    val id: String = "",
+    val userId: String = "",
     val logDate: LocalDate? = null,
     val caloriesRemaining: Float = 0f,
     val totalFoodCalories: Float = 0f,

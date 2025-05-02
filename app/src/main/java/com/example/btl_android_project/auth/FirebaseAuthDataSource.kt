@@ -70,4 +70,21 @@ class FirebaseAuthDataSource @Inject constructor(
         auth.signOut()
         navigateToLoginScreen()
     }
+
+    fun checkUserLoggedIn(
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            onSuccess()
+        } else {
+            onFailure(Exception("User not logged in"))
+        }
+    }
+
+    fun getCurrentUserId(): String? {
+        Timber.d("Current user ID: ${auth.currentUser?.uid}")
+        return auth.currentUser?.uid
+    }
 }

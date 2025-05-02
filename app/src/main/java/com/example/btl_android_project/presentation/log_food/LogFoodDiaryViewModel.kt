@@ -2,8 +2,8 @@ package com.example.btl_android_project.presentation.log_food
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.local.entity.Food
-import com.example.btl_android_project.repository.MealRepository
 import com.example.btl_android_project.repository.FoodRepository
+import com.example.btl_android_project.repository.MealRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +18,7 @@ class LogFoodDiaryViewModel @Inject constructor(
 ): ViewModel() {
     var servings: Int = 1
 
-    var currentFoodId: Int = 0
+    var currentFoodId: String = ""
 
     private val _food = MutableStateFlow<Food?>(null)
     val food = _food
@@ -47,7 +47,7 @@ class LogFoodDiaryViewModel @Inject constructor(
     }
 
     fun getFoodById(
-        foodId: Int,
+        foodId: String,
     ) {
         viewModelScope.launch {
             val food = foodRepository.getFoodByFoodId(foodId)

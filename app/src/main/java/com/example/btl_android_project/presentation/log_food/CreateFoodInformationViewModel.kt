@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,9 +38,6 @@ class CreateFoodInformationViewModel @Inject constructor(
 
     private val _isSaved = MutableStateFlow(false)
     val isSaved: StateFlow<Boolean> = _isSaved
-
-    // Giả sử userId là cố định
-    private val userId = 1
 
     fun setName(name: String) {
         _foodName.value = name
@@ -79,7 +75,7 @@ class CreateFoodInformationViewModel @Inject constructor(
         return validateBasicFoodInfo()
     }
 
-    fun loadFood(foodId: Int) {
+    fun loadFood(foodId: String) {
         viewModelScope.launch {
             _food.value = foodRepository.getFoodById(foodId)
         }

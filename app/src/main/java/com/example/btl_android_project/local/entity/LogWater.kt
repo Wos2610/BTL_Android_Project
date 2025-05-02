@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class LogWater(
     val id: Int = 0,
-    val userId: Int = 0,
+    val userId: String = "",
     val dailyDiaryId: Int = 0,
     val amountMl: Int = 0,
     val logTime: String = ""

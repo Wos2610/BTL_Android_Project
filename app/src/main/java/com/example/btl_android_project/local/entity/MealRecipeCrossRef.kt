@@ -12,8 +12,8 @@ import androidx.room.ForeignKey
     ]
 )
 data class MealRecipeCrossRef(
-    val mealId: Int = 0,
-    val recipeId: Int = 0,
+    val mealId: String = "",
+    val recipeId: String = "",
     val servings: Int = 1,
-    val userId: Int = 0,
+    val userId: String = ""
 )

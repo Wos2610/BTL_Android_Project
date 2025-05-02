@@ -22,4 +22,14 @@ class SignInViewModel @Inject constructor(
 
         firebaseAuthDataSource.loginUser(email, password, onSuccess, onFailure)
     }
+
+    fun checkUserLoggedIn(
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        firebaseAuthDataSource.checkUserLoggedIn(
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
+    }
 }

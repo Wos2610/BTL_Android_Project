@@ -2,6 +2,7 @@ package com.example.btl_android_project.presentation.log_meal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.Meal
 import com.example.btl_android_project.repository.MealRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,24 +11,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.plus
 import kotlin.math.roundToInt
 
 @HiltViewModel
 class EditMealViewModel @Inject constructor(
     val mealRepository: MealRepository,
+    val firebaseAuthDataSource: FirebaseAuthDataSource,
 ) : ViewModel() {
     var mealId: Int = 0
     var mealName: String = ""
     var mealType: String = ""
-    var userId: Int = 0
+    var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
 
     val _mealItems: MutableStateFlow<List<MealItem>> = MutableStateFlow(emptyList())
     val mealItems: StateFlow<List<MealItem>> = _mealItems.asStateFlow()
 
-    var currentMealId: Int = 0
+    var currentMealId: String = ""
     var _meal: MutableStateFlow<Meal?> = MutableStateFlow(null)
     val meal = _meal.asStateFlow()
 
@@ -147,7 +146,7 @@ class EditMealViewModel @Inject constructor(
         }
     }
 
-    fun getMealById(mealId: Int) {
+    fun getMealById(mealId: String) {
         viewModelScope.launch {
             val mealWithFoodsAndRecipes = mealRepository.getMealWithFoodsAndRecipes(mealId)
             _meal.value = mealWithFoodsAndRecipes.meal

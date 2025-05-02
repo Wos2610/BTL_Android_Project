@@ -2,6 +2,7 @@ package com.example.btl_android_project.presentation.log_food
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.repository.FoodRepository
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateFoodNutritionViewModel @Inject constructor(
-    private val foodRepository: FoodRepository
+    private val foodRepository: FoodRepository,
+    private val firebaseAuthDataSource: FirebaseAuthDataSource
 ) : ViewModel() {
     // Danh sách mặc định
     private val _nutritions = MutableStateFlow<List<Nutrition>>(
@@ -44,7 +46,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
     var servingsSize: Int = 0
     var servingsUnit: String = ""
     var servingsPerContainer: Int = 0
-    private val userId = 0
+    private val userId = firebaseAuthDataSource.getCurrentUserId()
 
     // Hàm cập nhật
     fun updateNutrition(index: Int, amount: Float) {
@@ -59,7 +61,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
         _nutritions.value = updatedList
     }
 
-    fun loadNutrition(foodId: Int) {
+    fun loadNutrition(foodId: String) {
         viewModelScope.launch {
             val food = foodRepository.getFoodById(foodId)
             food?.let {
@@ -70,7 +72,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
     }
 
     // Update
-    fun updateFood(foodId: Int) {
+    fun updateFood(foodId: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
@@ -99,7 +101,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
                     carbs = carbs,
                     fat = fat,
                     nutritions = _nutritions.value,
-                    userId = userId
+                    userId = userId.toString()
                 )
 
                 foodRepository.updateFood(food)
@@ -141,7 +143,7 @@ class CreateFoodNutritionViewModel @Inject constructor(
                     carbs = carbs,
                     fat = fat,
                     nutritions = _nutritions.value,
-                    userId = userId
+                    userId = userId.toString()
                 )
 
                 foodRepository.insertFood(food)

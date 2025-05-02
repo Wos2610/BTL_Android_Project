@@ -56,6 +56,19 @@ class SignInFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.checkUserLoggedIn(
+            onSuccess = {
+                val action = SignInFragmentDirections.actionSignInFragmentToDashboardFragment()
+                findNavController().navigate(action)
+            },
+            onFailure = { exception ->
+
+            }
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

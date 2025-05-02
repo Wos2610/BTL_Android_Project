@@ -1,6 +1,11 @@
 package com.example.btl_android_project.local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.example.btl_android_project.local.entity.Recipe
 import kotlinx.coroutines.flow.Flow
 
@@ -11,10 +16,10 @@ interface RecipeDao {
     fun getAllRecipes(): Flow<List<Recipe>>
 
     @Query("SELECT * FROM recipes WHERE id = :id")
-    suspend fun getRecipeById(id: Int): Recipe?
+    suspend fun getRecipeById(id: String): Recipe?
 
     @Query("SELECT * FROM recipes WHERE userId = :userId ORDER BY id DESC")
-    fun getRecipesByUserId(userId: Int): Flow<List<Recipe>>
+    fun getRecipesByUserId(userId: String): Flow<List<Recipe>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipe: Recipe): Long
@@ -29,7 +34,7 @@ interface RecipeDao {
     suspend fun deleteRecipe(recipe: Recipe)
 
     @Query("DELETE FROM recipes WHERE id = :id")
-    suspend fun deleteRecipeById(id: Int)
+    suspend fun deleteRecipeById(id: String)
 
     @Query("DELETE FROM recipes")
     suspend fun deleteAllRecipes()
@@ -38,5 +43,5 @@ interface RecipeDao {
     suspend fun getRecipesByIds(ids: List<Int>): List<Recipe>
 
     @Query("SELECT * FROM recipes WHERE name LIKE '%' || :query || '%' AND userId = :userId")
-    suspend fun searchRecipes(query: String, userId: Int): List<Recipe>
+    suspend fun searchRecipes(query: String, userId: String): List<Recipe>
 }

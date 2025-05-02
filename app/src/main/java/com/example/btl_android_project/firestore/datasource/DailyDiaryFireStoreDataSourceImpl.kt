@@ -28,7 +28,7 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
         }
     }
     
-    suspend fun getDailyDiariesByUserId(userId: Int): List<DailyDiary> {
+    suspend fun getDailyDiariesByUserId(userId: String): List<DailyDiary> {
         return try {
             val snapshot = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("userId", userId)
@@ -40,7 +40,7 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
         }
     }
     
-    suspend fun getDailyDiaryById(id: Int): DailyDiary? {
+    suspend fun getDailyDiaryById(id: String): DailyDiary? {
         return try {
             val document = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("id", id)
@@ -55,7 +55,7 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
         }
     }
     
-    suspend fun getDailyDiaryByDate(userId: Int, date: LocalDate): DailyDiary? {
+    suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return try {
             val document = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("userId", userId)
@@ -70,34 +70,41 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
             throw e
         }
     }
-    
-    suspend fun insertDailyDiary(dailyDiary: DailyDiary): Long {
+
+    suspend fun insertDailyDiary(dailyDiary: DailyDiary): String {
         return suspendCoroutine { continuation ->
+            // Tạo document reference mới với ID tự động từ Firebase
+            val docRef = firestore.collection(COLLECTION_NAME).document()
+
+            // Lấy ID mới được tạo
+            val newId = docRef.id
+
+            // Cập nhật đối tượng dailyDiary với ID mới
+            val updatedDiary = dailyDiary.copy(id = newId)
+
             val diaryMap = mapOf(
-                "id" to dailyDiary.id,
-                "userId" to dailyDiary.userId,
-                "logDate" to dailyDiary.logDate?.toString(),
-                "caloriesRemaining" to dailyDiary.caloriesRemaining,
-                "totalFoodCalories" to dailyDiary.totalFoodCalories,
-                "totalExerciseCalories" to dailyDiary.totalExerciseCalories,
-                "totalWaterMl" to dailyDiary.totalWaterMl,
-                "totalFat" to dailyDiary.totalFat,
-                "totalCarbs" to dailyDiary.totalCarbs,
-                "totalProtein" to dailyDiary.totalProtein
+                "id" to newId,  // Sử dụng ID mới
+                "userId" to updatedDiary.userId,
+                "logDate" to updatedDiary.logDate?.toString(),
+                "caloriesRemaining" to updatedDiary.caloriesRemaining,
+                "totalFoodCalories" to updatedDiary.totalFoodCalories,
+                "totalExerciseCalories" to updatedDiary.totalExerciseCalories,
+                "totalWaterMl" to updatedDiary.totalWaterMl,
+                "totalFat" to updatedDiary.totalFat,
+                "totalCarbs" to updatedDiary.totalCarbs,
+                "totalProtein" to updatedDiary.totalProtein
             )
-            
-            firestore.collection(COLLECTION_NAME)
-                .document(dailyDiary.id.toString())
-                .set(diaryMap)
+
+            docRef.set(diaryMap)
                 .addOnSuccessListener {
-                    continuation.resume(dailyDiary.id.toLong())
+                    continuation.resume(newId)  // Trả về ID mới dạng String
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)
                 }
         }
     }
-    
+
     suspend fun updateDailyDiary(dailyDiary: DailyDiary): Int {
         return suspendCoroutine { continuation ->
             val diaryMap = mapOf(
@@ -112,9 +119,9 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 "totalCarbs" to dailyDiary.totalCarbs,
                 "totalProtein" to dailyDiary.totalProtein
             )
-            
+
             firestore.collection(COLLECTION_NAME)
-                .document(dailyDiary.id.toString())
+                .document(dailyDiary.id)
                 .set(diaryMap)
                 .addOnSuccessListener {
                     continuation.resume(1) // 1 row updated
@@ -128,7 +135,7 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
     suspend fun deleteDailyDiary(dailyDiary: DailyDiary): Int {
         return suspendCoroutine { continuation ->
             firestore.collection(COLLECTION_NAME)
-                .document(dailyDiary.id.toString())
+                .document(dailyDiary.id)
                 .delete()
                 .addOnSuccessListener {
                     continuation.resume(1) // 1 row deleted
@@ -151,8 +158,8 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
         
         return try {
             DailyDiary(
-                id = (data["id"] as? Number)?.toInt() ?: 0,
-                userId = (data["userId"] as? Number)?.toInt() ?: 0,
+                id = (data["id"] as? String) ?: "",
+                userId = (data["userId"] as? String) ?: "",
                 logDate = (data["logDate"] as? String)?.let { LocalDate.parse(it) },
                 caloriesRemaining = (data["caloriesRemaining"] as? Number)?.toFloat() ?: 0f,
                 totalFoodCalories = (data["totalFoodCalories"] as? Number)?.toFloat() ?: 0f,

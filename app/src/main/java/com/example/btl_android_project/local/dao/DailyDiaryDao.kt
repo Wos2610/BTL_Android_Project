@@ -16,13 +16,13 @@ interface DailyDiaryDao {
     fun getDailyDiaries(): Flow<List<DailyDiary>>
 
     @Query("SELECT * FROM daily_diary WHERE userId = :userId ORDER BY logDate DESC")
-    fun getDailyDiariesByUserId(userId: Int): Flow<List<DailyDiary>>
+    fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>>
 
     @Query("SELECT * FROM daily_diary WHERE id = :id")
     suspend fun getDailyDiaryById(id: Int): DailyDiary?
 
     @Query("SELECT * FROM daily_diary WHERE userId = :userId AND logDate = :date LIMIT 1")
-    suspend fun getDailyDiaryByDate(userId: Int, date: LocalDate): DailyDiary?
+    suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDailyDiary(dailyDiary: DailyDiary): Long

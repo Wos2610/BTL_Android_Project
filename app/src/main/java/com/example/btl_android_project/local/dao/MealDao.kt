@@ -51,15 +51,15 @@ interface MealDao {
 
     // Get all meals of a user (with basic info)
     @Query("SELECT * FROM meals WHERE userId = :userId ORDER BY id DESC")
-    fun getMealsByUserId(userId: Int): Flow<List<Meal>>
+    fun getMealsByUserId(userId: String): Flow<List<Meal>>
 
     // Get all meals of a user with Foods and Recipes
     @Transaction
     @Query("SELECT * FROM meals WHERE userId = :userId ORDER BY id DESC")
-    suspend fun getMealsWithFoodsAndRecipesByUser(userId: Int): List<MealWithFoodsAndRecipes>
+    suspend fun getMealsWithFoodsAndRecipesByUser(userId: String): List<MealWithFoodsAndRecipes>
 
     @Query("SELECT * FROM meals WHERE id = :mealId")
-    suspend fun getMealById(mealId: Int): Meal
+    suspend fun getMealById(mealId: String): Meal
 
     @Query("SELECT * FROM meals")
     fun getMeals(): Flow<List<Meal>>
@@ -68,7 +68,7 @@ interface MealDao {
     suspend fun insertAllMeals(meals: List<Meal>)
 
     @Query("SELECT * FROM meals WHERE name LIKE '%' || :query || '%' AND userId = :userId")
-    suspend fun searchMeals(query: String, userId: Int): List<Meal>
+    suspend fun searchMeals(query: String, userId: String): List<Meal>
 
     @Query("DELETE FROM meals")
     suspend fun deleteAllMeals(): Int
