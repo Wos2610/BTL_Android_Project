@@ -89,7 +89,7 @@ class LogRecipeFragment : Fragment() {
                     findNavController().navigate(action)
                 }
                 else{
-                    val action = LogAllFragmentDirections.actionLogAllFragmentToDetailRecipeFragment(
+                    val action = LogAllFragmentDirections.actionLogAllFragmentToEditRecipeFragment(
                         recipeId = recipe.id,
                         recipeName = recipe.name,
                         servings = recipe.servings,

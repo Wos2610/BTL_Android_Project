@@ -19,7 +19,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @HiltViewModel
-class DetailRecipeViewModel @Inject constructor(
+class EditRecipeViewModel @Inject constructor(
     val recipeRepository: RecipeRepository,
     val firebaseAuthDataSource: FirebaseAuthDataSource,
     val dailyDiaryRepository: DailyDiaryRepository,
@@ -30,8 +30,8 @@ class DetailRecipeViewModel @Inject constructor(
     var recipeId: String = ""
     var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
 
+    var logDate = LocalDate.now()
     var recipe: Recipe? = null
-    val logDate = LocalDate.now()
 
     private val _totalCalories = MutableStateFlow(0)
     val totalCalories = _totalCalories
@@ -91,7 +91,7 @@ class DetailRecipeViewModel @Inject constructor(
         fatAmount = ((totalFat.toDouble() / sum) * 100).roundToInt()
     }
 
-    fun insertRecipe(
+    fun updateRecipe(
         navigateToLogAllFragment: () -> Unit
     ) {
         viewModelScope.launch {
@@ -107,7 +107,7 @@ class DetailRecipeViewModel @Inject constructor(
                 protein = _totalProtein.value,
                 userId = userId,
             )
-            recipeRepository.insertRecipe(newRecipe)
+            recipeRepository.updateRecipe(newRecipe)
             navigateToLogAllFragment()
         }
     }

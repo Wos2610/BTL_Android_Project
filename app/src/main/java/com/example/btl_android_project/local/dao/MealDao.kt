@@ -59,7 +59,7 @@ interface MealDao {
     suspend fun getMealsWithFoodsAndRecipesByUser(userId: String): List<MealWithFoodsAndRecipes>
 
     @Query("SELECT * FROM meals WHERE id = :mealId")
-    suspend fun getMealById(mealId: String): Meal
+    suspend fun getMealById(mealId: String): Meal?
 
     @Query("SELECT * FROM meals")
     fun getMeals(): Flow<List<Meal>>

@@ -13,7 +13,8 @@ import javax.inject.Inject
 class FoodRepository @Inject constructor(
     private val foodDao: FoodDao,
     private val foodFireStoreDataSource: FoodFireStoreDataSourceImpl,
-    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
+    private val mealRepository: MealRepository
 ) {
     // Local operations
     suspend fun insertFood(food: Food): String {
@@ -37,6 +38,8 @@ class FoodRepository @Inject constructor(
 
             // Sync to Firestore
             foodFireStoreDataSource.updateFood(food)
+
+            mealRepository.calculateWhenFoodChange(food.id.toString())
 
             Timber.d("Food updated with ID: ${food.id}")
         } catch (e: Exception) {

@@ -46,5 +46,6 @@
     <string name="edit_meal">Edit Meal</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="edit_recipe">Edit Recipe</string>
 
 </resources>

@@ -193,6 +193,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.editMealFragment -> getString(R.string.edit_meal)
                 R.id.signInFragment -> getString(R.string.sign_in)
                 R.id.signUpFragment -> getString(R.string.sign_up)
+                R.id.editRecipeFragment -> getString(R.string.edit_recipe)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -362,6 +363,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logFoodDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.logMealDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.editMealFragment -> setSaveButtonVisibility(true)
+                R.id.editRecipeFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }
@@ -413,6 +415,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.detailRecipeFragment -> setAddButtonVisibility(true)
                 R.id.createMealFragment -> setAddButtonVisibility(true)
                 R.id.editMealFragment -> setAddButtonVisibility(true)
+                R.id.editRecipeFragment -> setAddButtonVisibility(true)
                 else -> setAddButtonVisibility(false)
             }
         }
@@ -457,9 +460,8 @@ class MainActivity : AppCompatActivity() {
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.detailRecipeFragment -> {
-                    setDeleteButtonVisibility(true)
-                }
+                R.id.detailRecipeFragment -> setDeleteButtonVisibility(true)
+                R.id.editRecipeFragment -> setDeleteButtonVisibility(true)
                 else -> {
                     setDeleteButtonVisibility(false)
                 }

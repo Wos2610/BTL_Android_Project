@@ -57,4 +57,11 @@ class MealFoodCrossRefRepository @Inject constructor(
             mealFoodCrossRefDao.insertAllMealFoodCrossRefs(foods)
         }
     }
+
+    suspend fun getMealFoodCrossRefByFoodId(foodId: String): List<MealFoodCrossRef>? {
+        return withContext(Dispatchers.IO) {
+            Timber.d("Getting meal food cross ref with food ID: $foodId")
+            mealFoodCrossRefDao.getMealFoodCrossRefByFoodId(foodId)
+        }
+    }
 }

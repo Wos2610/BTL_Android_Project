@@ -38,8 +38,6 @@ class RecipeRepository @Inject constructor(
 
     suspend fun insertRecipes(recipes: List<Recipe>) = recipeDao.insertRecipes(recipes)
 
-    suspend fun updateRecipe(recipe: Recipe) = recipeDao.updateRecipe(recipe)
-
     suspend fun deleteRecipe(recipeId: String){
         withContext(Dispatchers.IO) {
             recipeFireStoreDataSource.deleteRecipe(recipeId)
@@ -66,4 +64,10 @@ class RecipeRepository @Inject constructor(
         }
     }
 
+    suspend fun updateRecipe(recipe: Recipe) {
+        withContext(Dispatchers.IO) {
+            recipeFireStoreDataSource.updateRecipe(recipe)
+            recipeDao.updateRecipe(recipe)
+        }
+    }
 }

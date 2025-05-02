@@ -53,4 +53,11 @@ class MealRecipeCrossRefRepository @Inject constructor(
         }
     }
 
+    suspend fun getMealRecipeCrossRefByRecipeId(recipeId: String): List<MealRecipeCrossRef>? {
+        return withContext(Dispatchers.IO) {
+            Timber.d("Getting meal recipe cross ref with recipe ID: $recipeId")
+            mealRecipeCrossRefDao.getMealRecipeCrossRefByRecipeId(recipeId)
+        }
+    }
+
 }

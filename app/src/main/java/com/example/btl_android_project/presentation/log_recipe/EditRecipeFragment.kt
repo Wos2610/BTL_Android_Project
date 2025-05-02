@@ -19,18 +19,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
-import com.example.btl_android_project.databinding.FragmentDetailRecipeBinding
+import com.example.btl_android_project.databinding.FragmentEditRecipeBinding
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DetailRecipeFragment : Fragment() {
-    private var _binding: FragmentDetailRecipeBinding? = null
+class EditRecipeFragment : Fragment() {
+
+    private var _binding: FragmentEditRecipeBinding? = null
     private val binding get() = _binding!!
-    private val args: DetailRecipeFragmentArgs by navArgs()
+    private val args: EditRecipeFragmentArgs by navArgs()
     private lateinit var ingredientAdapter: IngredientAdapter
-    private val viewModel: DetailRecipeViewModel by viewModels()
+    private val viewModel: EditRecipeViewModel by viewModels()
     private var isFromCreateMeal: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class DetailRecipeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailRecipeBinding.inflate(inflater, container, false)
+        _binding = FragmentEditRecipeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -157,8 +158,8 @@ class DetailRecipeFragment : Fragment() {
                             },
                         )
                     }
-                    .setNegativeButton("Just Create") { _, _ ->
-                        viewModel.insertRecipe {
+                    .setNegativeButton("Just Update") { _, _ ->
+                        viewModel.updateRecipe {
                             findNavController().popBackStack(R.id.logAllFragment, false)
                         }
                     }
@@ -170,7 +171,7 @@ class DetailRecipeFragment : Fragment() {
 
     private fun setAddButtonToolBarOnClickListener() {
         (requireActivity() as? MainActivity)?.setAddButtonClickListener {
-            val action = DetailRecipeFragmentDirections.actionDetailRecipeFragmentToSearchIngredientFragment()
+            val action = EditRecipeFragmentDirections.actionEditRecipeFragmentToSearchIngredientFragment()
             findNavController().navigate(action)
         }
     }

@@ -97,7 +97,7 @@ class MealRepository @Inject constructor(
 
     suspend fun getMealWithFoodsAndRecipes(mealId: String): MealWithFoodsAndRecipes {
         return withContext(Dispatchers.IO) {
-            val meal = mealDao.getMealById(mealId)
+            val meal = mealDao.getMealById(mealId) ?: throw IllegalArgumentException("Meal not found")
             val mealFoodCrossRefs = mealFoodCrossRefRepository.getMealFoodCrossRefById(mealId)
             val mealRecipeCrossRefs = mealRecipeCrossRefRepository.getMealRecipeCrossRefById(mealId)
 
@@ -250,6 +250,73 @@ class MealRepository @Inject constructor(
                 Log.d("MealRepository", "Pulling food and recipe cross refs for meal ID: $mealId")
                 mealFoodCrossRefRepository.pullFromFireStoreByMealId(mealId)
                 mealRecipeCrossRefRepository.pullFromFireStoreByMealId(mealId)
+            }
+        }
+    }
+
+    suspend fun calculateWhenFoodChange(foodId: String) {
+        withContext(Dispatchers.IO) {
+            val mealFoodCrossRefs = mealFoodCrossRefRepository.getMealFoodCrossRefByFoodId(foodId)
+            mealFoodCrossRefs?.forEach { crossRef ->
+                val meal = mealDao.getMealById(crossRef.mealId)
+
+                val mealWithFoodsAndRecipes = getMealWithFoodsAndRecipes(crossRef.mealId)
+
+                val foods = mealWithFoodsAndRecipes.foods
+                val recipes = mealWithFoodsAndRecipes.recipes
+
+                val totalCalories = foods.sumOf { it.calories.toInt() * it.servings } + recipes.sumOf { it.calories * it.servings }
+                val totalCarbs = foods.sumOf { it.carbs.toInt()  * it.servings } + recipes.sumOf { it.carbs * it.servings }
+                val totalProtein = foods.sumOf { it.protein.toInt()  * it.servings } + recipes.sumOf { it.protein * it.servings }
+                val totalFat = foods.sumOf { it.fat.toInt()  * it.servings } + recipes.sumOf { it.fat * it.servings }
+
+                val updatedMeal = meal?.copy(
+                    totalCalories = totalCalories.toFloat(),
+                    totalCarbs = totalCarbs.toFloat(),
+                    totalProtein = totalProtein.toFloat(),
+                    totalFat = totalFat.toFloat()
+                )
+                updatedMeal?.let {
+                    mealDao.updateMeal(it)
+                    mealFireStoreDataSource.updateMeal(it)
+                    Log.d("MealRepository", "Updated meal with ID: ${it.id}")
+                }
+            }
+        }
+    }
+
+    suspend fun calculateWhenRecipeChange(recipeId: String) {
+        withContext(Dispatchers.IO) {
+            val mealRecipeCrossRefs =
+                mealRecipeCrossRefRepository.getMealRecipeCrossRefByRecipeId(recipeId)
+            mealRecipeCrossRefs?.forEach { crossRef ->
+                val meal = mealDao.getMealById(crossRef.mealId)
+
+                val mealWithFoodsAndRecipes = getMealWithFoodsAndRecipes(crossRef.mealId)
+
+                val foods = mealWithFoodsAndRecipes.foods
+                val recipes = mealWithFoodsAndRecipes.recipes
+
+                val totalCalories =
+                    foods.sumOf { it.calories.toInt() * it.servings } + recipes.sumOf { it.calories * it.servings }
+                val totalCarbs =
+                    foods.sumOf { it.carbs.toInt() * it.servings } + recipes.sumOf { it.carbs * it.servings }
+                val totalProtein =
+                    foods.sumOf { it.protein.toInt() * it.servings } + recipes.sumOf { it.protein * it.servings }
+                val totalFat =
+                    foods.sumOf { it.fat.toInt() * it.servings } + recipes.sumOf { it.fat * it.servings }
+
+                val updatedMeal = meal?.copy(
+                    totalCalories = totalCalories.toFloat(),
+                    totalCarbs = totalCarbs.toFloat(),
+                    totalProtein = totalProtein.toFloat(),
+                    totalFat = totalFat.toFloat()
+                )
+                updatedMeal?.let {
+                    mealDao.updateMeal(it)
+                    mealFireStoreDataSource.updateMeal(it)
+                    Log.d("MealRepository", "Updated meal with ID: ${it.id}")
+                }
             }
         }
     }
