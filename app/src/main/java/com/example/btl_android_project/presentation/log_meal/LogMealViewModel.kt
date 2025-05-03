@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
+import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.Meal
 import com.example.btl_android_project.repository.DailyDiaryRepository
@@ -31,6 +32,7 @@ class LogMealViewModel @Inject constructor(
     val meals = _meals.asStateFlow()
     var userId: String = firebaseAuthDataSource.getCurrentUserId().toString()
     val logDate: LocalDate = LocalDate.now()
+    var selectedMealType: String? = null
 
     fun loadMealFoodCrossRef() {
         viewModelScope.launch {
@@ -65,7 +67,7 @@ class LogMealViewModel @Inject constructor(
                 diaryId = dailyDiary.id,
                 userId = userId,
                 servings = 1,
-                mealType = null,
+                mealType = MealType.valueOf(selectedMealType ?: "")
             )
             dailyDiaryMealCrossRefRepository.insertDiaryMealCrossRef(dairyMealCrossRef)
 

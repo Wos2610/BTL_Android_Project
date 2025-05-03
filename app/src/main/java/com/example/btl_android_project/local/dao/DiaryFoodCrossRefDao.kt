@@ -14,10 +14,13 @@ interface DiaryFoodCrossRefDao {
     suspend fun getDiaryFoodCrossRefs(): List<DiaryFoodCrossRef>
 
     @Query("SELECT * FROM diary_food_cross_ref WHERE diaryId = :diaryId")
-    suspend fun getDiaryFoodCrossRefsByDiaryId(diaryId: Int): List<DiaryFoodCrossRef>
+    suspend fun getDiaryFoodCrossRefsByDiaryId(diaryId: String): List<DiaryFoodCrossRef>
 
-    @Query("SELECT * FROM diary_food_cross_ref WHERE diaryId = :diaryId AND foodId = :foodId LIMIT 1")
-    suspend fun getDiaryFoodCrossRef(diaryId: Int, foodId: Int): DiaryFoodCrossRef?
+    @Query("SELECT * FROM diary_food_cross_ref WHERE diaryId = :diaryId AND foodId = :foodId")
+    suspend fun getDiaryFoodCrossRef(diaryId: String, foodId: String): List<DiaryFoodCrossRef>?
+
+    @Query("SELECT * FROM diary_food_cross_ref WHERE diaryId = :diaryId AND foodId = :foodId AND mealType = :mealType LIMIT 1")
+    suspend fun getDiaryFoodCrossRefByMealType(diaryId: String, foodId: String, mealType: String): DiaryFoodCrossRef?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef): Long
@@ -26,14 +29,14 @@ interface DiaryFoodCrossRefDao {
     suspend fun insertAllDiaryFoodCrossRefs(crossRefs: List<DiaryFoodCrossRef>)
 
     @Update
-    suspend fun updateDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef): Int
+    suspend fun updateDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef)
 
     @Delete
-    suspend fun deleteDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef): Int
+    suspend fun deleteDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef)
 
     @Query("DELETE FROM diary_food_cross_ref WHERE diaryId = :diaryId")
-    suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: Int): Int
+    suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: String): Int
 
     @Query("DELETE FROM diary_food_cross_ref")
-    suspend fun deleteAllDiaryFoodCrossRefs(): Int
+    suspend fun deleteAllDiaryFoodCrossRefs()
 }

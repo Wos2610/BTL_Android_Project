@@ -5,8 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.btl_android_project.local.entity.DailyDiary
+import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -38,4 +40,8 @@ interface DailyDiaryDao {
 
     @Query("DELETE FROM daily_diary")
     suspend fun deleteAllDailyDiaries(): Int
+
+    @Transaction
+    @Query("SELECT * FROM daily_diary WHERE userId = :userId AND logDate = :date LIMIT 1")
+    suspend fun getDiaryByDate(userId: String, date: LocalDate): DiaryWithAllNutrition?
 }

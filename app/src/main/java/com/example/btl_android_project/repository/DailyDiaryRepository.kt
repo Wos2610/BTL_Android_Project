@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.btl_android_project.firestore.datasource.DailyDiaryFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.DailyDiaryDao
 import com.example.btl_android_project.local.entity.DailyDiary
+import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -48,6 +49,12 @@ class DailyDiaryRepository @Inject constructor(
     suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiaryByDate(userId, date)
+        }
+    }
+
+    suspend fun getDiaryByDate(userId: String, date: LocalDate): DiaryWithAllNutrition? {
+        return withContext(Dispatchers.IO) {
+            dailyDiaryDao.getDiaryByDate(userId, date)
         }
     }
     

@@ -26,7 +26,7 @@ class DiaryMealCrossRefRepository @Inject constructor(
     /**
      * Get diary-meal cross references by diary ID
      */
-    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: Int): List<DiaryMealCrossRef>? {
+    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: String): List<DiaryMealCrossRef>? {
         return withContext(Dispatchers.IO) {
             diaryMealCrossRefDao.getDiaryMealCrossRefsByDiaryId(diaryId)
         }
@@ -76,7 +76,7 @@ class DiaryMealCrossRefRepository @Inject constructor(
     /**
      * Delete all diary-meal cross references for a specific diary
      */
-    suspend fun deleteDiaryMealCrossRefsByDiaryId(diaryId: Int) {
+    suspend fun deleteDiaryMealCrossRefsByDiaryId(diaryId: String) {
         withContext(Dispatchers.IO) {
             diaryMealCrossRefDao.deleteDiaryMealCrossRefsByDiaryId(diaryId)
             Log.d(TAG, "Deleted all DiaryMealCrossRefs for diaryId=$diaryId")
@@ -94,8 +94,13 @@ class DiaryMealCrossRefRepository @Inject constructor(
             Log.d(TAG, "Pulling diary-meal cross references from Firestore for diaryId=$diaryId")
             val crossRefs = diaryMealCrossRefFireStoreDataSource.getDiaryMealCrossRefsByDiaryId(diaryId)
             Log.d(TAG, "Pulled ${crossRefs.size} diary-meal cross references from Firestore")
-            diaryMealCrossRefDao.deleteAllDiaryMealCrossRefs()
             diaryMealCrossRefDao.insertAllDiaryMealCrossRefs(crossRefs)
+        }
+    }
+
+    suspend fun getDiaryMealCrossRef(diaryId: String, mealId: String): DiaryMealCrossRef? {
+        return withContext(Dispatchers.IO) {
+            diaryMealCrossRefDao.getDiaryMealCrossRef(diaryId, mealId)
         }
     }
 }

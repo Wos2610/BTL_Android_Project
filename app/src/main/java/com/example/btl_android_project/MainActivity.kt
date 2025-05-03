@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
@@ -123,11 +124,28 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         navController?.let {
             binding.navigation.setupWithNavController(it)
+
+            binding.navigation.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.dashboardFragment -> {
+                        it.navigate(R.id.dashboardFragment)
+                        true
+                    }
+                    R.id.todayDiaryFragment -> {
+                        it.navigate(R.id.todayDiaryFragment)
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.dashboardFragment-> {
+                    binding.navigation.visibility = View.VISIBLE
+                }
+                R.id.todayDiaryFragment -> {
                     binding.navigation.visibility = View.VISIBLE
                 }
                 else -> {
@@ -162,6 +180,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logItemListDialogFragment -> false
                 R.id.signInFragment -> false
                 R.id.signUpFragment -> false
+                R.id.todayDiaryFragment -> false
                 else -> true
             }
             supportActionBar?.setDisplayHomeAsUpEnabled(show)
@@ -194,6 +213,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.signInFragment -> getString(R.string.sign_in)
                 R.id.signUpFragment -> getString(R.string.sign_up)
                 R.id.editRecipeFragment -> getString(R.string.edit_recipe)
+                R.id.todayDiaryFragment -> getString(R.string.today_diary)
                 else -> ""
             }
             supportActionBar?.title = title
@@ -235,6 +255,20 @@ class MainActivity : AppCompatActivity() {
                     gravity = Gravity.CENTER
                 }
                 this.layoutParams = layoutParams
+
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        selectedMealPosition = position
+                        selectedMeal = if (position > 0) mealOptions[position] else null
+
+                        mealSelectedListener?.onMealSelected(selectedMeal)
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        selectedMealPosition = 0
+                        selectedMeal = null
+                    }
+                }
             }
         }
 
@@ -249,6 +283,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var selectedMealPosition: Int = 0
+    private var selectedMeal: String? = null
+
+    interface OnMealSelectedListener {
+        fun onMealSelected(meal: String?)
+    }
+
+    fun getSelectedMeal(): String? {
+        return selectedMeal
+    }
+
+    private var mealSelectedListener: OnMealSelectedListener? = null
+
+    fun setOnMealSelectedListener(listener: OnMealSelectedListener) {
+        mealSelectedListener = listener
+    }
+
     fun showMealDropdown(show: Boolean) {
         if (show) {
             mealSpinner.let {
@@ -261,6 +312,10 @@ class MainActivity : AppCompatActivity() {
                 binding.toolbar.removeView(it)
             }
         }
+    }
+
+    fun setMealDropdownListener(listener: AdapterView.OnItemSelectedListener) {
+        mealSpinner?.onItemSelectedListener = listener
     }
 
     fun initEndTextToolbar(

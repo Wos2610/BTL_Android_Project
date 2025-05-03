@@ -409,4 +409,9 @@
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
+    <fragment
+        android:id="@+id/todayDiaryFragment"
+        android:name="com.example.btl_android_project.presentation.diary.TodayDiaryFragment"
+        android:label="fragment_today_diary"
+        tools:layout="@layout/fragment_today_diary" />
 </navigation>

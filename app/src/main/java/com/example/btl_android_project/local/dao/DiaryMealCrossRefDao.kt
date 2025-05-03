@@ -14,10 +14,10 @@ interface DiaryMealCrossRefDao {
     suspend fun getDiaryMealCrossRefs(): List<DiaryMealCrossRef>
 
     @Query("SELECT * FROM diary_meal_cross_ref WHERE diaryId = :diaryId")
-    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: Int): List<DiaryMealCrossRef>
+    suspend fun getDiaryMealCrossRefsByDiaryId(diaryId: String): List<DiaryMealCrossRef>
 
     @Query("SELECT * FROM diary_meal_cross_ref WHERE diaryId = :diaryId AND mealId = :mealId LIMIT 1")
-    suspend fun getDiaryMealCrossRef(diaryId: Int, mealId: Int): DiaryMealCrossRef?
+    suspend fun getDiaryMealCrossRef(diaryId: String, mealId: String): DiaryMealCrossRef?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDiaryMealCrossRef(crossRef: DiaryMealCrossRef): Long
@@ -32,7 +32,7 @@ interface DiaryMealCrossRefDao {
     suspend fun deleteDiaryMealCrossRef(crossRef: DiaryMealCrossRef): Int
 
     @Query("DELETE FROM diary_meal_cross_ref WHERE diaryId = :diaryId")
-    suspend fun deleteDiaryMealCrossRefsByDiaryId(diaryId: Int): Int
+    suspend fun deleteDiaryMealCrossRefsByDiaryId(diaryId: String): Int
 
     @Query("DELETE FROM diary_meal_cross_ref")
     suspend fun deleteAllDiaryMealCrossRefs(): Int

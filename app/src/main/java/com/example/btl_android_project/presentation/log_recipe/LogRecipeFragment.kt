@@ -13,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.btl_android_project.MainActivity
+import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogRecipeBinding
 import com.example.btl_android_project.presentation.log_all.LogAllFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +56,7 @@ class LogRecipeFragment : Fragment() {
         binding.btnCreateRecipe.tvLogItem.text = "Create New Recipe"
 
         setupRecyclerView()
+        setupMealListener()
 
         binding.btnCreateRecipe.cvLogItem.setOnClickListener {
             val action = LogAllFragmentDirections.actionLogAllFragmentToNewRecipeFragment()
@@ -104,12 +107,19 @@ class LogRecipeFragment : Fragment() {
                 if(isFromCreateMeal) {
 
                 }else{
-                    viewModel.addRecipeToDiary(
-                        recipeId = recipe.id,
-                        onSuccess = {
-                            Toast.makeText(requireContext(), "Recipe added to diary", Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                    if(viewModel.selectedMealType == null){
+                        val selectedMeal = getSelectedMealFromActivity()
+                        if(selectedMeal != null || selectedMeal.equals(getString(R.string.select_a_meal))) viewModel.selectedMealType = selectedMeal
+                        else Toast.makeText(requireContext(), "Please select a meal type", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        viewModel.addRecipeToDiary(
+                            recipeId = recipe.id,
+                            onSuccess = {
+                                Toast.makeText(requireContext(), "Recipe added to diary", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
                 }
             }
         )
@@ -118,6 +128,22 @@ class LogRecipeFragment : Fragment() {
             layoutManager = linearLayoutManager
             adapter = recipeAdapter
         }
+    }
+
+    private fun setupMealListener() {
+        (activity as MainActivity).setOnMealSelectedListener(object : MainActivity.OnMealSelectedListener {
+            override fun onMealSelected(meal: String?) {
+                if (meal != null && meal != getString(R.string.select_a_meal)) {
+                    viewModel.selectedMealType = meal
+                } else {
+                    viewModel.selectedMealType = null
+                }
+            }
+        })
+    }
+
+    private fun getSelectedMealFromActivity(): String? {
+        return (activity as MainActivity).getSelectedMeal()
     }
 
 

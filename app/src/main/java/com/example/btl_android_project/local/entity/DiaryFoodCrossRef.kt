@@ -6,7 +6,7 @@ import com.example.btl_android_project.local.MealType
 
 @Entity(
     tableName = "diary_food_cross_ref",
-    primaryKeys = ["diaryId", "foodId"],
+    primaryKeys = ["diaryId", "foodId", "mealType"],
     foreignKeys = [
         ForeignKey(
             entity = DailyDiary::class,
@@ -26,6 +26,6 @@ data class DiaryFoodCrossRef(
     val diaryId: String,
     val foodId: String,
     val userId: String,
-    val servings: Int = 1,
-    val mealType: MealType? = null,
+    var servings: Int = 1,
+    val mealType: MealType,
 )

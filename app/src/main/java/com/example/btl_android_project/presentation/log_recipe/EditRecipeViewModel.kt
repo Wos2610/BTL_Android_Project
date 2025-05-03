@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
+import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.Recipe
 import com.example.btl_android_project.local.entity.RecipeIngredient
@@ -143,7 +144,7 @@ class EditRecipeViewModel @Inject constructor(
                 diaryId = dailyDiary.id,
                 userId = userId,
                 servings = 1,
-                mealType = null,
+                mealType = MealType.BREAKFAST,
             )
             dailyDiaryRecipeCrossRefRepository.insertDiaryRecipeCrossRef(dairyRecipeCrossRef)
 

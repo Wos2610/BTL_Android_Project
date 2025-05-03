@@ -17,6 +17,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.btl_android_project.MainActivity
+import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogFoodBinding
 import com.example.btl_android_project.presentation.log_all.LogAllFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,6 +74,7 @@ class LogFoodFragment : Fragment() {
         setupSwipeToDelete()
         observeViewModel()
         setupListeners()
+        setupMealListener()
     }
 
     private fun setupRecyclerView() {
@@ -95,12 +98,19 @@ class LogFoodFragment : Fragment() {
 
                 }
                 else{
-                    viewModel.addFoodToDiary(
-                        foodId = food.id,
-                        onSuccess = {
-                            Toast.makeText(requireContext(), "Food added to diary", Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                    if(viewModel.selectedMealType == null){
+                        val selectedMeal = getSelectedMealFromActivity()
+                        if(selectedMeal != null || selectedMeal.equals(getString(R.string.select_a_meal))) viewModel.selectedMealType = selectedMeal
+                        else Toast.makeText(requireContext(), "Please select a meal type", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        viewModel.addFoodToDiary(
+                            foodId = food.id,
+                            onSuccess = {
+                                Toast.makeText(requireContext(), "Food added to diary", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
                 }
             }
         )
@@ -120,11 +130,9 @@ class LogFoodFragment : Fragment() {
 
     private fun setupListeners() {
         binding.btnCreateAFood.cvLogItem.setOnClickListener {
-            val action =
-                LogAllFragmentDirections.actionLogAllFragmentToCreateFoodInformationFragment();
+            val action = LogAllFragmentDirections.actionLogAllFragmentToCreateFoodInformationFragment();
             findNavController().navigate(action)
         }
-
     }
 
     private fun setupSwipeToDelete() {
@@ -201,4 +209,21 @@ class LogFoodFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun setupMealListener() {
+        (activity as MainActivity).setOnMealSelectedListener(object : MainActivity.OnMealSelectedListener {
+            override fun onMealSelected(meal: String?) {
+                if (meal != null && meal != getString(R.string.select_a_meal)) {
+                    viewModel.selectedMealType = meal
+                } else {
+                   viewModel.selectedMealType = null
+                }
+            }
+        })
+    }
+
+    private fun getSelectedMealFromActivity(): String? {
+        return (activity as MainActivity).getSelectedMeal()
+    }
+
 }

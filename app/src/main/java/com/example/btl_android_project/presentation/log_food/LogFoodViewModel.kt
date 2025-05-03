@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
+import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.repository.DailyDiaryRepository
@@ -36,6 +37,8 @@ class LogFoodViewModel @Inject constructor(
 
     private val userId = firebaseAuthDataSource.getCurrentUserId()
     val logDate : LocalDate = LocalDate.now()
+
+    var selectedMealType: String? = null
 
     fun loadFoods() {
         viewModelScope.launch {
@@ -85,6 +88,7 @@ class LogFoodViewModel @Inject constructor(
             try {
                 foodRepository.syncFoodsFromFirestore(userId.toString())
                 mealFoodCrossRefRepository.pullFromFireStore(userId.toString())
+                dailyDiaryFoodCrossRefRepository.pullFromFireStore(userId.toString())
             } catch (e: Exception) {
                 Timber.e("Error syncing foods from Firestore: ${e.message}")
             }
@@ -110,9 +114,9 @@ class LogFoodViewModel @Inject constructor(
                 diaryId = dailyDiary.id,
                 userId = userId.toString(),
                 servings = 1,
-                mealType = null,
+                mealType = MealType.valueOf(selectedMealType ?: ""),
             )
-            dailyDiaryFoodCrossRefRepository.insertDiaryFoodCrossRef(dairyFoodCrossRef)
+            dailyDiaryFoodCrossRefRepository.insertOrUpdateDiaryFoodCrossRef(dairyFoodCrossRef)
 
             val food = foodRepository.getFoodById(foodId)
             val updatedDailyDiary = dailyDiary.copy(

@@ -45,11 +45,11 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
                 "diaryId" to crossRef.diaryId,
                 "foodId" to crossRef.foodId,
                 "servings" to crossRef.servings,
-                "mealType" to crossRef.mealType?.name,
+                "mealType" to crossRef.mealType.name,
                 "userId" to crossRef.userId
             )
             
-            val documentId = "${crossRef.diaryId}_${crossRef.foodId}"
+            val documentId = "${crossRef.diaryId}_${crossRef.foodId}_${crossRef.mealType.name}"
             
             firestore.collection(COLLECTION_NAME)
                 .document(documentId)
@@ -103,7 +103,7 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
         }
     }
     
-    suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: Int): Int {
+    suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: String): Int {
         return try {
             val batch = firestore.batch()
             var count = 0
@@ -143,7 +143,7 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
                 diaryId = (data["diaryId"] as? String) ?: "",
                 foodId = (data["foodId"] as? String) ?: "",
                 servings = (data["servings"] as? Number)?.toInt() ?: 1,
-                mealType = (data["mealType"] as? String)?.let { MealType.valueOf(it) },
+                mealType = (data["mealType"] as? String).let { MealType.valueOf(it.toString()) },
                 userId = (data["userId"] as? String) ?: "",
             )
         } catch (e: Exception) {
