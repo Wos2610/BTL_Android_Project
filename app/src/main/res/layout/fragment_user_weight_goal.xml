@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/dark_black"
+    android:background="@color/dark_gray"
     tools:context=".presentation.user_goal.UserWeightGoalFragment">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thanks Marvilo! Now for your goals."
-            android:textColor="@color/light_gray"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Select up to 3 that are important to you, including one weight goal."
             android:textSize="14sp"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"/>
 
         <ScrollView
