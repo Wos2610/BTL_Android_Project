@@ -40,26 +40,11 @@
                     android:weightSum="2">
 
                     <EditText
-                        android:id="@+id/etHeightFeet"
-                        android:layout_width="0dp"
+                        android:id="@+id/etHeightCm"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:background="@drawable/edittext_background"
                         android:hint="Height (cm)"
-                        android:inputType="number"
-                        android:paddingVertical="18dp" />
-
-                    <Space
-                        android:layout_width="8dp"
-                        android:layout_height="wrap_content" />
-
-                    <EditText
-                        android:id="@+id/etHeightInches"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittext_background"
-                        android:hint="Height (feet)"
                         android:inputType="number"
                         android:paddingVertical="18dp" />
                 </LinearLayout>

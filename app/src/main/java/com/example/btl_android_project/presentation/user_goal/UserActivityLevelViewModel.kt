@@ -6,5 +6,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserActivityLevelViewModel @Inject constructor() : ViewModel() {
-    // TODO: Implement the ViewModel
+    var userProfileArgument: UserProfileArgument? = null
+    var userActivityLevel: String = ""
+
+    fun updateUserProfileArgumentBeforeSend() {
+        userProfileArgument = userProfileArgument?.copy(
+            activityLevel = userActivityLevel
+        )
+    }
 }

@@ -13,6 +13,7 @@ import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
+import com.example.btl_android_project.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -81,6 +82,11 @@ class DatabaseModule {
     @Provides
     fun provideDiaryMealCrossRefDao(appDatabase: AppDatabase) : DiaryMealCrossRefDao {
         return appDatabase.diaryMealCrossRefDao()
+    }
+
+    @Provides
+    fun provideUserProfileDao(appDatabase: AppDatabase) : UserProfileDao {
+        return appDatabase.userProfileDao()
     }
 
     @Singleton

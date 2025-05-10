@@ -7,5 +7,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserInformation2ViewModel @Inject constructor(): ViewModel() {
-    // TODO: Implement the ViewModel
+    var userProfileArgument: UserProfileArgument? = null
+    var userHeightCm: Double = 0.0
+    var userCurrentWeight: Double = 0.0
+    var userGoalWeight: Double = 0.0
+
+    fun updateUserProfileArgumentBeforeSend() {
+        userProfileArgument = userProfileArgument?.copy(
+            heightCm = userHeightCm,
+            currentWeight = userCurrentWeight,
+            goalWeight = userGoalWeight
+        )
+    }
 }

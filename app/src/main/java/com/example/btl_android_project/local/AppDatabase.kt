@@ -15,6 +15,7 @@ import com.example.btl_android_project.local.dao.RecipeDao
 import com.example.btl_android_project.local.dao.StaticFoodDao
 import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
+import com.example.btl_android_project.local.dao.UserProfileDao
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
@@ -27,6 +28,7 @@ import com.example.btl_android_project.local.entity.Recipe
 import com.example.btl_android_project.local.entity.StaticFoodEntity
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipesEntity
+import com.example.btl_android_project.local.entity.UserProfile
 
 @Database(
     entities = [
@@ -42,6 +44,7 @@ import com.example.btl_android_project.local.entity.StaticRecipesEntity
         DiaryFoodCrossRef::class,
         DiaryRecipeCrossRef::class,
         DiaryMealCrossRef::class,
+        UserProfile::class
                ],
     version = 1,
     exportSchema = false
@@ -60,4 +63,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun diaryFoodCrossRefDao(): DiaryFoodCrossRefDao
     abstract fun diaryRecipeCrossRefDao(): DiaryRecipeCrossRefDao
     abstract fun diaryMealCrossRefDao(): DiaryMealCrossRefDao
+    abstract fun userProfileDao(): UserProfileDao
 }

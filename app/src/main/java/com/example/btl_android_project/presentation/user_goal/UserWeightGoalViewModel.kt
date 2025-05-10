@@ -6,5 +6,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserWeightGoalViewModel @Inject constructor(): ViewModel() {
-    // TODO: Implement the ViewModel
+    var userGoal: String = ""
+    var userProfileArgument : UserProfileArgument = UserProfileArgument()
+
+    fun updateUserProfileArgumentBeforeSend() {
+        userProfileArgument = userProfileArgument.copy(
+            weightGoal = userGoal
+        )
+    }
 }

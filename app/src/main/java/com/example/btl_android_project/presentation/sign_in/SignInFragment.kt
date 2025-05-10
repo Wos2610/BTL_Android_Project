@@ -40,7 +40,7 @@ class SignInFragment : Fragment() {
             viewModel.loginUser(
                 email = email,
                 password = password,
-                onSuccess = {
+                onLogin = {
                     val action = SignInFragmentDirections.actionSignInFragmentToDashboardFragment()
                     findNavController().navigate(action)
                 },
@@ -49,6 +49,10 @@ class SignInFragment : Fragment() {
                 },
                 onLoading = { isLoading ->
                     showLoading(isLoading)
+                },
+                onSetUpGoal = {
+                    val action = SignInFragmentDirections.actionSignInFragmentToUserWeightGoalFragment()
+                    findNavController().navigate(action)
                 }
             )
         }

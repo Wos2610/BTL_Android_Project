@@ -6,5 +6,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserInformation1ViewModel @Inject constructor(): ViewModel() {
-    // TODO: Implement the ViewModel
+    var userProfileArgument: UserProfileArgument? = null
+    var isFeMale: Boolean = true
+    var dateOfBirth: String = ""
+    var city: String = ""
+
+    fun updateUserProfileArgumentBeforeSend() {
+        userProfileArgument = userProfileArgument?.copy(
+            dateOfBirth = dateOfBirth,
+            city = city,
+            isFeMale = isFeMale
+        )
+    }
 }

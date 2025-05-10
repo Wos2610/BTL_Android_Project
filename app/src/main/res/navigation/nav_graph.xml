@@ -227,6 +227,10 @@
             android:id="@+id/action_signInFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_userWeightGoalFragment"
+            app:destination="@id/userWeightGoalFragment"
+            app:popUpTo="@id/signInFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -242,27 +246,72 @@
         android:id="@+id/userActivityLevelFragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserActivityLevelFragment"
         android:label="fragment_user_activity_level"
-        tools:layout="@layout/fragment_user_activity_level" />
+        tools:layout="@layout/fragment_user_activity_level" >
+        <action
+            android:id="@+id/action_userActivityLevelFragment_to_userInformation1Fragment"
+            app:destination="@id/userInformation1Fragment"
+            app:popUpTo="@id/userActivityLevelFragment" />
+        <argument
+            android:name="userProfile"
+            app:argType="com.example.btl_android_project.presentation.user_goal.UserProfileArgument"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/userGoalFragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserGoalFragment"
         android:label="fragment_user_goal"
-        tools:layout="@layout/fragment_user_goal" />
+        tools:layout="@layout/fragment_user_goal" >
+        <argument
+            android:name="userProfile"
+            app:argType="com.example.btl_android_project.presentation.user_goal.UserProfileArgument"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_userGoalFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/dashboardFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userInformation1Fragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserInformation1Fragment"
         android:label="fragment_user_information1"
-        tools:layout="@layout/fragment_user_information1" />
+        tools:layout="@layout/fragment_user_information1" >
+        <action
+            android:id="@+id/action_userInformation1Fragment_to_userInformation2Fragment"
+            app:destination="@id/userInformation2Fragment"
+            app:popUpTo="@id/userInformation1Fragment" />
+        <argument
+            android:name="userProfile"
+            app:argType="com.example.btl_android_project.presentation.user_goal.UserProfileArgument"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/userInformation2Fragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserInformation2Fragment"
         android:label="fragment_user_information2"
-        tools:layout="@layout/fragment_user_information2" />
+        tools:layout="@layout/fragment_user_information2" >
+        <argument
+            android:name="userProfile"
+            app:argType="com.example.btl_android_project.presentation.user_goal.UserProfileArgument"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_userInformation2Fragment_to_userGoalFragment"
+            app:destination="@id/userGoalFragment"
+            app:popUpTo="@id/userInformation2Fragment" />
+    </fragment>
     <fragment
         android:id="@+id/userWeightGoalFragment"
         android:name="com.example.btl_android_project.presentation.user_goal.UserWeightGoalFragment"
         android:label="fragment_user_weight_goal"
-        tools:layout="@layout/fragment_user_weight_goal" />
+        tools:layout="@layout/fragment_user_weight_goal" >
+        <action
+            android:id="@+id/action_userWeightGoalFragment_to_userActivityLevelFragment"
+            app:destination="@id/userActivityLevelFragment"
+            app:popUpTo="@id/userWeightGoalFragment" />
+    </fragment>
     <dialog
         android:id="@+id/logItemListDialogFragment"
         android:name="com.example.btl_android_project.presentation.LogItemListDialogFragment"
