@@ -52,9 +52,7 @@
                     android:focusable="true"
                     android:tag="NotVeryActive"
                     app:cardBackgroundColor="@color/light_gray"
-                    app:cardCornerRadius="8dp"
-                    app:cardStrokeColor="@color/gray"
-                    app:cardStrokeWidth="2dp">
+                    app:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -87,9 +85,7 @@
                     android:focusable="true"
                     android:tag="LightlyActive"
                     app:cardBackgroundColor="@color/light_gray"
-                    app:cardCornerRadius="8dp"
-                    app:cardStrokeColor="@color/gray"
-                    app:cardStrokeWidth="2dp">
+                    app:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -122,9 +118,7 @@
                     android:focusable="true"
                     android:tag="LightlyActive"
                     app:cardBackgroundColor="@color/light_gray"
-                    app:cardCornerRadius="8dp"
-                    app:cardStrokeColor="@color/gray"
-                    app:cardStrokeWidth="2dp">
+                    app:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -157,9 +151,7 @@
                     android:focusable="true"
                     android:tag="LightlyActive"
                     app:cardBackgroundColor="@color/light_gray"
-                    app:cardCornerRadius="8dp"
-                    app:cardStrokeColor="@color/gray"
-                    app:cardStrokeWidth="2dp">
+                    app:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
