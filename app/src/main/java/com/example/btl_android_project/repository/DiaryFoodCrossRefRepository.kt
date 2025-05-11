@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.btl_android_project.firestore.datasource.DiaryFoodCrossRefFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
+import com.example.btl_android_project.local.enums.MealType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -83,6 +84,18 @@ class DiaryFoodCrossRefRepository @Inject constructor(
     suspend fun getDiaryFoodCrossRefByFoodId(foodId: String): List<DiaryFoodCrossRef>? {
         return withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.getDiaryFoodCrossRefByFoodId(foodId)
+        }
+    }
+
+    suspend fun deleteDiaryFoodCrossRef(
+        userId: String,
+        diaryId: String,
+        foodId: String,
+        mealType: MealType
+    ) {
+        withContext(Dispatchers.IO) {
+            diaryFoodCrossRefDao.deleteByUserIdDiaryIdFoodIdMealType(userId, diaryId, foodId, mealType.name)
+            diaryFoodCrossRefFireStoreDataSource.deleteByUserIdDiaryIdFoodIdMealType(userId, diaryId, foodId, mealType.name)
         }
     }
 }

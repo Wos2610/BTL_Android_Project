@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.btl_android_project.firestore.datasource.DiaryRecipeCrossRefFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
+import com.example.btl_android_project.local.enums.MealType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -39,6 +40,13 @@ class DiaryRecipeCrossRefRepository @Inject constructor(
             if (crossRefs.isNotEmpty()) {
                 diaryRecipeCrossRefDao.deleteAndInsertInTransaction(diaryId, crossRefs)
             }
+        }
+    }
+
+    suspend fun deleteDiaryRecipeCrossRef(userId: String, diaryId: String, recipeId: String, mealType: MealType) {
+        withContext(Dispatchers.IO) {
+            diaryRecipeCrossRefDao.deleteByUserIdDiaryIdRecipeIdMealType(userId, diaryId, recipeId, mealType.name)
+            diaryRecipeCrossRefFireStoreDataSource.deleteByUserIdDiaryIdRecipeIdMealType(userId, diaryId, recipeId, mealType.name)
         }
     }
 }

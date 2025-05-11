@@ -128,6 +128,40 @@ class DiaryRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    suspend fun deleteByUserIdDiaryIdRecipeIdMealType(
+        userId: String,
+        diaryId: String,
+        recipeId: String,
+        mealType: String,
+    ): Int {
+        return try {
+            val batch = firestore.batch()
+            var count = 0
+
+            val documents = firestore.collection(COLLECTION_NAME)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("diaryId", diaryId)
+                .whereEqualTo("recipeId", recipeId)
+                .whereEqualTo("mealType", mealType)
+                .get()
+                .await()
+                .documents
+
+            documents.forEach { document ->
+                batch.delete(document.reference)
+                count++
+            }
+
+            if (count > 0) {
+                batch.commit().await()
+            }
+
+            count
+        } catch (e: Exception) {
+            throw e
+        }
+    }
     
     private fun mapSnapshotToDiaryRecipeCrossRefs(snapshot: QuerySnapshot): List<DiaryRecipeCrossRef> {
         return snapshot.documents.mapNotNull { document ->

@@ -128,6 +128,27 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    suspend fun deleteByUserIdDiaryIdFoodIdMealType(
+        userId: String,
+        diaryId: String,
+        foodId: String,
+        mealType: String
+    ): Int {
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${foodId}_${mealType}"
+
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .delete()
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
+        }
+    }
     
     private fun mapSnapshotToDiaryFoodCrossRefs(snapshot: QuerySnapshot): List<DiaryFoodCrossRef> {
         return snapshot.documents.mapNotNull { document ->

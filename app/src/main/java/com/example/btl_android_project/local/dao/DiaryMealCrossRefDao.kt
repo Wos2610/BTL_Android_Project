@@ -52,4 +52,12 @@ interface DiaryMealCrossRefDao {
             insertAll(crossRefs)
         }
     }
+
+    @Query("DELETE FROM diary_meal_cross_ref WHERE userId = :userId AND diaryId = :diaryId AND mealId = :mealId AND mealType = :mealType")
+    suspend fun deleteByUserIdDiaryIdMealIdMealType(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: String
+    ): Int
 }

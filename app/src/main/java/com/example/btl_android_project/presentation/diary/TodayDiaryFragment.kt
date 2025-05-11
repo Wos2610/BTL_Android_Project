@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.MainActivity
+import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentTodayDiaryBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -99,7 +102,36 @@ class TodayDiaryFragment : Fragment() {
             MealSection("Snacks", 0, emptyList())
         )
 
-        adapter = MealSectionAdapter(sections)
+        adapter = MealSectionAdapter(
+            sections = sections,
+            onItemLongClick = { mealItem, view ->
+                val popup = PopupMenu(view.context, view)
+                popup.menuInflater.inflate(R.menu.menu_meal_item, popup.menu)
+                popup.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.action_delete -> {
+                            viewModel.deleteItemFromDiary(
+                                mealItem = mealItem,
+                                onSuccess = {
+                                    viewModel.getDiaryByDate(
+                                        date = viewModel.selectedDate.value,
+                                        onSuccess = { listMealSection ->
+                                            adapter.updateData(listMealSection)
+                                        }
+                                    )
+                                },
+                                onFailure = {
+                                    Toast.makeText(requireContext(), "Can't delete history item", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popup.show()
+            }
+        )
         binding.recyclerView.adapter = adapter
     }
 

@@ -57,4 +57,12 @@ interface DiaryFoodCrossRefDao {
 
     @Query("SELECT * FROM diary_food_cross_ref WHERE foodId = :foodId")
     suspend fun getDiaryFoodCrossRefByFoodId(foodId: String): List<DiaryFoodCrossRef>?
+
+    @Query("DELETE FROM diary_food_cross_ref WHERE userId = :userId AND diaryId = :diaryId AND foodId = :foodId AND mealType = :mealType")
+    suspend fun deleteByUserIdDiaryIdFoodIdMealType(
+        userId: String,
+        diaryId: String,
+        foodId: String,
+        mealType: String
+    )
 }
