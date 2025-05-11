@@ -61,11 +61,12 @@ class TodayDiaryFragment : Fragment() {
                     viewModel.dailyDiary.collect { diaryWithNutrition ->
                         if (diaryWithNutrition != null) {
                             binding.foodTextView.text = diaryWithNutrition.diary.totalFoodCalories.toString()
+                            binding.goalTextView.text = diaryWithNutrition.diary.caloriesGoal.toString()
                         }
                         else{
                             binding.foodTextView.text = "0"
+                            binding.goalTextView.text = "0"
                         }
-                        binding.goalTextView.text = diaryWithNutrition?.diary?.caloriesGoal.toString()
                     }
                 }
             }
