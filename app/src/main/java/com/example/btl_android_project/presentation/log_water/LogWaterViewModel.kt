@@ -1,6 +1,7 @@
 package com.example.btl_android_project.presentation.log_water
 
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.LogWaterRepository
+import com.example.btl_android_project.repository.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class LogWaterViewModel @Inject constructor(
     private val logWaterRepository: LogWaterRepository,
     private val dailyDiaryRepository: DailyDiaryRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val firebaseAuthDataSource: FirebaseAuthDataSource
 ) : ViewModel() {
 
@@ -28,7 +31,6 @@ class LogWaterViewModel @Inject constructor(
 
     private val _amountMl = MutableStateFlow(0)
     val amountMl: StateFlow<Int> = _amountMl
-
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -43,6 +45,8 @@ class LogWaterViewModel @Inject constructor(
         _amountMl.value = amount
     }
 
+    private val _waterGoal = MutableStateFlow(0)
+    val waterGoal: StateFlow<Int> = _waterGoal
 
     private val _totalWater = MutableLiveData(0)
     val totalWater: LiveData<Int> get() = _totalWater
@@ -84,6 +88,13 @@ class LogWaterViewModel @Inject constructor(
             _isLoading.value = false
         }
         onSuccess()
+    }
+
+    fun loadWaterGoal() {
+        viewModelScope.launch {
+            val userProfile = userProfileRepository.getUserProfileByUserId(userId.toString())
+            _waterGoal.value = userProfile?.waterGoal ?: 0
+        }
     }
 
     fun loadLog(logId: String) {

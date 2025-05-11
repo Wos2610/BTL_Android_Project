@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogWaterBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,9 +37,12 @@ class LogWaterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.loadWaterGoal()
+
         viewModel.totalWater.observe(viewLifecycleOwner) {
             binding.tvTotalVolume.text = "${it} ml"
         }
+
 
         binding.btnAdd250.setOnClickListener {
             viewModel.addWater(250)
@@ -66,6 +70,11 @@ class LogWaterFragment : Fragment() {
             })
         }
 
+        lifecycleScope.launchWhenStarted {
+            viewModel.waterGoal.collect { goal ->
+                binding.tvYourGoal.text = "Your Daily Goal: $goal ml"
+            }
+        }
 
     }
 
