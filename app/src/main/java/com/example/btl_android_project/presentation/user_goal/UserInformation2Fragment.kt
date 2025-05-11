@@ -40,7 +40,7 @@ class UserInformation2Fragment : Fragment() {
         binding.etHeightCm.doOnTextChanged { text, _, _, _ ->
             if (text.toString().isNotEmpty()) {
                 try {
-                    val height = text.toString().toDouble()
+                    val height = text.toString().toFloat()
                     if (height < 0) {
                         binding.etHeightCm.error = "Height cannot be negative"
                     } else {
@@ -56,7 +56,7 @@ class UserInformation2Fragment : Fragment() {
         binding.etCurrentWeight.doOnTextChanged { text, _, _, _ ->
             if (text.toString().isNotEmpty()) {
                 try {
-                    val weight = text.toString().toDouble()
+                    val weight = text.toString().toFloat()
                     if (weight < 0) {
                         binding.etCurrentWeight.error = "Weight cannot be negative"
                     } else {
@@ -72,7 +72,7 @@ class UserInformation2Fragment : Fragment() {
         binding.etGoalWeight.doOnTextChanged { text, _, _, _ ->
             if (text.toString().isNotEmpty()) {
                 try {
-                    val weight = text.toString().toDouble()
+                    val weight = text.toString().toFloat()
                     if (weight < 0) {
                         binding.etGoalWeight.error = "Weight cannot be negative"
                     } else {

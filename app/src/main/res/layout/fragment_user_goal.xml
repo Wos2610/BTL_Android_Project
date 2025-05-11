@@ -77,10 +77,10 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvWaterGoal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-
                             android:gravity="center"
                             android:text="With this plan, you should:"
                             android:textAlignment="center"
@@ -97,39 +97,65 @@
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginBottom="16dp"
-                            android:background="@color/separator" />
-
-                        <CheckBox
-                            android:id="@+id/cbEmailSignUp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="Sign up for emails"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get recipes, workouts, and nutrition, fitness tips from MyFitnessPal experts. Plus, a first look at new features!"
-                            android:textSize="13sp" />
-
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-
             </LinearLayout>
         </ScrollView>
+
+        <Button
+            android:id="@+id/btnChangeWeightGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Change Goal" />
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="NEXT" />
+            android:text="Save" />
     </LinearLayout>
+
+    <!-- Loading Overlay -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            card_view:cardBackgroundColor="@color/light_gray"
+            card_view:cardCornerRadius="12dp"
+            card_view:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
 </FrameLayout>

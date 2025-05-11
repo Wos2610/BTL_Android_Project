@@ -13,6 +13,9 @@ import com.example.btl_android_project.repository.StaticRecipeIngredientReposito
 import com.example.btl_android_project.repository.StaticRecipesRepository
 import com.example.btl_android_project.repository.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,115 +29,76 @@ class SignInViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
     private val mealRepository: MealRepository,
     private val dailyDiaryRepository: DailyDiaryRepository,
-    private val authDataSource: FirebaseAuthDataSource,
     private val userProfileRepository: UserProfileRepository,
-): ViewModel() {
-    fun loginUser(
-        email: String,
-        password: String,
-        onLogin: () -> Unit,
-        onFailure: (Exception) -> Unit,
-        onLoading: (Boolean) -> Unit,
-        onSetUpGoal: () -> Unit
-    ) {
-        if(email == "" || password == "") {
-            onFailure(Exception("Email or password cannot be empty"))
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
+    val uiState: StateFlow<SignInUiState> = _uiState
+
+    fun loginUser(email: String, password: String) {
+        if (email.isEmpty() || password.isEmpty()) {
+            _uiState.value = SignInUiState.Error(Exception("Email or password cannot be empty"))
             return
         }
-        onLoading(true)
-        firebaseAuthDataSource.loginUser(
-            email = email,
-            password = password,
-            onSuccess = {
-                checkUserSetUpGoal(
-                    onLoadUserData = {
-                        loadUserData(
-                            onSuccess = onLogin,
-                            onLoading = onLoading
-                        )
-                    },
-                    onSetUpGoal = {
-                        onLoading(false)
-                        onSetUpGoal()
-                    },
-                    onLoading = onLoading
-                )
-            },
-            onFailure = { exception ->
-                onLoading(false)
-                onFailure(exception)
-            }
-        )
-    }
 
-    fun checkUserLoggedIn(
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit,
-        onLoading: (Boolean) -> Unit
-    ) {
-        onLoading(true)
-        firebaseAuthDataSource.checkUserLoggedIn(
-            onSuccess = {
-                loadUserData(
-                    onSuccess = onSuccess,
-                    onLoading = onLoading
-                )
-            },
-            onFailure = { exception ->
-                onLoading(false)
-                onFailure(exception)
-            }
-        )
-    }
-
-    fun checkUserSetUpGoal(
-        onLoadUserData: () -> Unit,
-        onSetUpGoal: () -> Unit,
-        onLoading: (Boolean) -> Unit
-    ) {
+        _uiState.value = SignInUiState.Loading
         viewModelScope.launch {
-            onLoading(true)
             try {
-                val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
-                val userProfile = userProfileRepository.getUserProfileByUserId(
-                    userId = currentUserId,
-                )
-
-                if (userProfile != null) {
-                    onLoadUserData()
-                } else {
-                    onSetUpGoal()
-                }
-                onLoading(false)
-
+                firebaseAuthDataSource.loginUserSuspend(email, password)
+                checkAndLoadUserData()
             } catch (e: Exception) {
-                Log.e("SignInViewModel", "Error checking user set up goal", e)
+                _uiState.value = SignInUiState.Error(e)
             }
         }
     }
 
-    fun loadUserData(
-        onSuccess: () -> Unit,
-        onLoading: (Boolean) -> Unit
-    ) {
+    fun checkUserLoggedIn() {
+        _uiState.value = SignInUiState.Loading
         viewModelScope.launch {
-            onLoading(true)
             try {
-                val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
-                staticFoodRepository.pullFromFireStore()
-                staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore()
-                staticRecipesRepository.pullStaticRecipesFromFireStore()
-                foodRepository.syncFoodsFromFirestore(userId = currentUserId)
-                recipeRepository.pullFromFireStore(userId = currentUserId)
-                mealRepository.pullFromFireStoreByUserId(userId = currentUserId)
-                dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId)
-                onLoading(false)
-                onSuccess()
+                val isLoggedIn = firebaseAuthDataSource.checkUserLoggedInSuspend()
+                if (isLoggedIn) {
+                    checkAndLoadUserData()
+                } else {
+                    _uiState.value = SignInUiState.NotLoggedIn
+                }
             } catch (e: Exception) {
-                // Handle any unexpected errors
-            } finally {
-                onLoading(false)
+                _uiState.value = SignInUiState.Error(e)
             }
+        }
+    }
+
+    private suspend fun checkAndLoadUserData() {
+        try {
+            val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
+            val userProfile = userProfileRepository.getUserProfileByUserId(currentUserId)
+
+            if (userProfile != null) {
+                loadUserData()
+                _uiState.value = SignInUiState.Success
+            } else {
+                _uiState.value = SignInUiState.NeedsSetup
+            }
+        } catch (e: Exception) {
+            Log.e("SignInViewModel", "Error checking user set up goal", e)
+            _uiState.value = SignInUiState.Error(e)
+        }
+    }
+
+    private suspend fun loadUserData() {
+        try {
+            val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
+            coroutineScope {
+                launch { staticFoodRepository.pullFromFireStore() }
+                launch { staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore() }
+                launch { staticRecipesRepository.pullStaticRecipesFromFireStore() }
+                launch { foodRepository.syncFoodsFromFirestore(userId = currentUserId) }
+                launch { recipeRepository.pullFromFireStore(userId = currentUserId) }
+                launch { mealRepository.pullFromFireStoreByUserId(userId = currentUserId) }
+                launch { dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId) }
+            }
+        } catch (e: Exception) {
+            Log.e("SignInViewModel", "Error loading user data", e)
+            throw e
         }
     }
 }

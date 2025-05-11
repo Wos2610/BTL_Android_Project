@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.btl_android_project.databinding.FragmentSignInBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -40,20 +44,6 @@ class SignInFragment : Fragment() {
             viewModel.loginUser(
                 email = email,
                 password = password,
-                onLogin = {
-                    val action = SignInFragmentDirections.actionSignInFragmentToDashboardFragment()
-                    findNavController().navigate(action)
-                },
-                onFailure = { exception ->
-                    Toast.makeText(requireContext(), exception.message, Toast.LENGTH_SHORT).show()
-                },
-                onLoading = { isLoading ->
-                    showLoading(isLoading)
-                },
-                onSetUpGoal = {
-                    val action = SignInFragmentDirections.actionSignInFragmentToUserWeightGoalFragment()
-                    findNavController().navigate(action)
-                }
             )
         }
 
@@ -61,28 +51,46 @@ class SignInFragment : Fragment() {
             val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
             findNavController().navigate(action)
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { signInUiState ->
+                    when (signInUiState) {
+                        is SignInUiState.Idle -> {
+
+                        }
+                        is SignInUiState.Loading -> {
+                            showLoading(true)
+                        }
+                        is SignInUiState.Success -> {
+                            val action = SignInFragmentDirections.actionSignInFragmentToDashboardFragment()
+                            findNavController().navigate(action)
+                        }
+                        is SignInUiState.Error -> {
+                            showLoading(false)
+                            Toast.makeText(requireContext(), signInUiState.exception.toString(), Toast.LENGTH_SHORT).show()
+                        }
+                        is SignInUiState.NeedsSetup -> {
+                            val action = SignInFragmentDirections.actionSignInFragmentToUserWeightGoalFragment()
+                            findNavController().navigate(action)
+                        }
+                        is SignInUiState.NotLoggedIn -> {
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.checkUserLoggedIn(
-            onSuccess = {
-                val action = SignInFragmentDirections.actionSignInFragmentToDashboardFragment()
-                findNavController().navigate(action)
-            },
-            onFailure = { exception ->
-                // Just ignore failure, user needs to log in
-            },
-            onLoading = { isLoading ->
-                showLoading(isLoading)
-            }
-        )
+        viewModel.checkUserLoggedIn()
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
 
-        // Disable interaction with UI elements when loading
         binding.etEmail.isEnabled = !isLoading
         binding.etPassword.isEnabled = !isLoading
         binding.btnSignIn.isEnabled = !isLoading

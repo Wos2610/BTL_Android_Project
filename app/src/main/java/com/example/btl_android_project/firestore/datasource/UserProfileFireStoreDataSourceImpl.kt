@@ -14,9 +14,9 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
         private const val COLLECTION_NAME = "user_profiles"
     }
 
-    suspend fun getUserProfile(userId: String): UserProfile? {
+    suspend fun getUserProfile(userProfileId: String): UserProfile? {
         return try {
-            val document = firestore.collection(COLLECTION_NAME).document(userId).get().await()
+            val document = firestore.collection(COLLECTION_NAME).document(userProfileId).get().await()
             if (document.exists()) {
                 mapDocumentToUserProfile(document.data)
             } else {
@@ -27,12 +27,35 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    suspend fun insertUserProfile(userProfile: UserProfile): Result<Unit> {
+    suspend fun getUserProfileByUserId(userId: String): UserProfile? {
+        return try {
+            val querySnapshot = firestore.collection(COLLECTION_NAME)
+                .whereEqualTo("userId", userId)
+                .limit(1)
+                .get()
+                .await()
+
+            if (!querySnapshot.isEmpty) {
+                val document = querySnapshot.documents[0]
+                mapDocumentToUserProfile(document.data)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun insertUserProfile(userProfile: UserProfile): Result<String> {
         return try {
             val data = mapUserProfileToDocument(userProfile)
-            firestore.collection(COLLECTION_NAME).document(userProfile.userId)
-                .set(data).await()
-            Result.success(Unit)
+            val documentRef = firestore.collection(COLLECTION_NAME).document()
+            val newUserId = documentRef.id
+
+            val updatedData = data + mapOf("userProfileId" to newUserId)
+
+            documentRef.set(updatedData).await()
+            Result.success(newUserId)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -67,10 +90,10 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
                 height = it["height"] as? Float ?: 0f,
                 currentWeight = it["currentWeight"] as? Float ?: 0f,
                 initialWeight = it["initialWeight"] as? Float ?: 0f,
-                weeklyGoal = it["weeklyGoal"] as? String ?: "",
                 weightGoal = it["weightGoal"] as? Float ?: 0f,
                 waterGoal = it["waterGoal"] as? Int ?: 0,
-                calorieGoal = it["calorieGoal"] as? Int ?: 0
+                calorieGoal = it["calorieGoal"] as? Int ?: 0,
+                userProfileId = it["userProfileId"] as? String ?: ""
             )
         }
     }
@@ -81,10 +104,10 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
             "height" to userProfile.height,
             "currentWeight" to userProfile.currentWeight,
             "initialWeight" to userProfile.initialWeight,
-            "weeklyGoal" to userProfile.weeklyGoal,
             "weightGoal" to userProfile.weightGoal,
             "waterGoal" to userProfile.waterGoal,
-            "calorieGoal" to userProfile.calorieGoal
+            "calorieGoal" to userProfile.calorieGoal,
+            "userProfileId" to userProfile.userProfileId
         )
     }
 }

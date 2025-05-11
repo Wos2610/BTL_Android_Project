@@ -8,9 +8,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UserInformation2ViewModel @Inject constructor(): ViewModel() {
     var userProfileArgument: UserProfileArgument? = null
-    var userHeightCm: Double = 0.0
-    var userCurrentWeight: Double = 0.0
-    var userGoalWeight: Double = 0.0
+    var userHeightCm: Float = 0f
+    var userCurrentWeight: Float = 0f
+    var userGoalWeight: Float = 0f
 
     fun updateUserProfileArgumentBeforeSend() {
         userProfileArgument = userProfileArgument?.copy(

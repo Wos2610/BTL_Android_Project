@@ -3,8 +3,10 @@ package com.example.btl_android_project.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.resumeWithException
 
 class FirebaseAuthDataSource @Inject constructor(
     private val auth: FirebaseAuth,
@@ -86,5 +88,25 @@ class FirebaseAuthDataSource @Inject constructor(
     fun getCurrentUserId(): String? {
         Timber.d("Current user ID: ${auth.currentUser?.uid}")
         return auth.currentUser?.uid
+    }
+
+    suspend fun loginUserSuspend(email: String, password: String): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            loginUser(
+                email = email,
+                password = password,
+                onSuccess = { continuation.resume(true, {})},
+                onFailure = { exception -> continuation.resumeWithException(exception) }
+            )
+        }
+    }
+
+    suspend fun checkUserLoggedInSuspend(): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            checkUserLoggedIn(
+                onSuccess = { continuation.resume(true, {}) },
+                onFailure = { exception -> continuation.resumeWithException(exception) }
+            )
+        }
     }
 }
