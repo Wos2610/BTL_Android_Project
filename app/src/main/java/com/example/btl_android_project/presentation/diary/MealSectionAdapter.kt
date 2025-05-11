@@ -9,7 +9,7 @@ import com.example.btl_android_project.databinding.ItemMealSectionBinding
 
 class MealSectionAdapter(
     private var sections: List<MealSection>,
-    private val onItemLongClick: (MealItem, View) -> Unit,
+    private val onItemLongClick: (MealItem, View, Int) -> Unit,
 ) :
     RecyclerView.Adapter<MealSectionAdapter.SectionViewHolder>() {
 

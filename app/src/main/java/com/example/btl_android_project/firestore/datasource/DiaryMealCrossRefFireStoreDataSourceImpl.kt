@@ -150,6 +150,28 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 }
         }
     }
+
+    suspend fun updateByUserIdDiaryIdMealIdMealType(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: String,
+        servings: Int
+    ): Int {
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${mealId}_$mealType"
+
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .update("servings", servings)
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
+        }
+    }
     
     private fun mapSnapshotToDiaryMealCrossRefs(snapshot: QuerySnapshot): List<DiaryMealCrossRef> {
         return snapshot.documents.mapNotNull { document ->

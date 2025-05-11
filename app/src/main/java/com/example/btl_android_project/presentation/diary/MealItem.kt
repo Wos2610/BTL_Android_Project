@@ -4,11 +4,12 @@ import com.example.btl_android_project.local.enums.MealType
 
 data class MealItem(
     val name: String,
-    val serving: String,
-    val calories: Int,
+    var serving: String,
+    var calories: Int,
     val id: String,
     val type: Type,
-    val mealType: MealType
+    val mealType: MealType,
+    var servings: Int,
 )
 
 enum class Type {

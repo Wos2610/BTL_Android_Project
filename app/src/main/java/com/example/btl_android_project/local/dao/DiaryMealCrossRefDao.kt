@@ -60,4 +60,13 @@ interface DiaryMealCrossRefDao {
         mealId: String,
         mealType: String
     ): Int
+
+    @Query("UPDATE diary_meal_cross_ref SET servings = :servings WHERE userId = :userId AND diaryId = :diaryId AND mealId = :mealId AND mealType = :mealType")
+    suspend fun updateByUserIdDiaryIdMealIdMealType(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: String,
+        servings: Int
+    ): Int
 }

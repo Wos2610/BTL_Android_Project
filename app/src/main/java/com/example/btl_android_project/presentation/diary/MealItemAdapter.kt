@@ -8,7 +8,7 @@ import com.example.btl_android_project.databinding.BasicItemMealBinding
 
 class MealItemAdapter(
     private val items: List<MealItem>,
-    private val onItemLongClick: (MealItem, View) -> Unit
+    private val onItemLongClick: (MealItem, View, Int) -> Unit
 ) : RecyclerView.Adapter<MealItemAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -31,7 +31,7 @@ class MealItemAdapter(
             binding.itemCaloriesTextView.text = item.calories.toString()
 
             binding.root.setOnLongClickListener {
-                onItemLongClick(item, binding.root)
+                onItemLongClick(item, binding.root,position)
                 true
             }
         }

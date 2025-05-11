@@ -49,7 +49,7 @@ class DiaryRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
                 "userId" to crossRef.userId
             )
             
-            val documentId = "${crossRef.diaryId}_${crossRef.recipeId}"
+            val documentId = "${crossRef.diaryId}_${crossRef.recipeId}_${crossRef.mealType.name}"
             
             firestore.collection(COLLECTION_NAME)
                 .document(documentId)
@@ -135,31 +135,41 @@ class DiaryRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
         recipeId: String,
         mealType: String,
     ): Int {
-        return try {
-            val batch = firestore.batch()
-            var count = 0
 
-            val documents = firestore.collection(COLLECTION_NAME)
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("diaryId", diaryId)
-                .whereEqualTo("recipeId", recipeId)
-                .whereEqualTo("mealType", mealType)
-                .get()
-                .await()
-                .documents
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${recipeId}_$mealType"
 
-            documents.forEach { document ->
-                batch.delete(document.reference)
-                count++
-            }
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .delete()
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
+        }
+    }
 
-            if (count > 0) {
-                batch.commit().await()
-            }
+    suspend fun updateByUserIdDiaryIdRecipeIdMealType(
+        userId: String,
+        diaryId: String,
+        recipeId: String,
+        mealType: String,
+        servings: Int,
+    ): Int {
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${recipeId}_$mealType"
 
-            count
-        } catch (e: Exception) {
-            throw e
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .update("servings", servings)
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
         }
     }
     

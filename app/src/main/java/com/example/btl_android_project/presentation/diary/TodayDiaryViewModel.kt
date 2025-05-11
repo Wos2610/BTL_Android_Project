@@ -111,7 +111,7 @@ class TodayDiaryViewModel @Inject constructor(
 
         diaryWithNutrition.foods.forEach { foodSnapshot ->
             val servingText = "${foodSnapshot.servings} serving"
-            val item = MealItem(foodSnapshot.foodName, servingText, foodSnapshot.calories.toInt(), foodSnapshot.foodId, Type.FOOD, mealType = foodSnapshot.mealType)
+            val item = MealItem(foodSnapshot.foodName, servingText, foodSnapshot.calories.toInt(), foodSnapshot.foodId, Type.FOOD, mealType = foodSnapshot.mealType, servings = foodSnapshot.servings)
 
             when(foodSnapshot.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -123,7 +123,7 @@ class TodayDiaryViewModel @Inject constructor(
 
         diaryWithNutrition.meals.forEach { mealSnapshot ->
             val servingText = "${mealSnapshot.servings} serving"
-            val item = MealItem(mealSnapshot.mealName, servingText, mealSnapshot.calories.toInt(), mealSnapshot.mealId, Type.MEAL, mealType = mealSnapshot.mealType)
+            val item = MealItem(mealSnapshot.mealName, servingText, mealSnapshot.calories.toInt(), mealSnapshot.mealId, Type.MEAL, mealType = mealSnapshot.mealType, servings = mealSnapshot.servings)
 
             when(mealSnapshot.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -135,7 +135,7 @@ class TodayDiaryViewModel @Inject constructor(
 
         diaryWithNutrition.recipes.forEach { recipeSnapshot ->
             val servingText = "${recipeSnapshot.servings} serving"
-            val item = MealItem(recipeSnapshot.recipeName, servingText, recipeSnapshot.calories.toInt(), recipeSnapshot.recipeId, Type.RECIPE, mealType = recipeSnapshot.mealType)
+            val item = MealItem(recipeSnapshot.recipeName, servingText, recipeSnapshot.calories.toInt(), recipeSnapshot.recipeId, Type.RECIPE, mealType = recipeSnapshot.mealType, servings = recipeSnapshot.servings)
 
             when(recipeSnapshot.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -176,14 +176,7 @@ class TodayDiaryViewModel @Inject constructor(
             if (food == null) return@forEach
             val calories = food.calories * crossRef.servings
             val servingText = "${crossRef.servings} serving"
-            val item = MealItem(food.name, servingText, calories.toInt(), food.id, Type.FOOD, mealType = crossRef.mealType)
-
-            when(crossRef.mealType) {
-                MealType.BREAKFAST -> breakfastItems.add(item)
-                MealType.LUNCH -> lunchItems.add(item)
-                MealType.DINNER -> dinnerItems.add(item)
-                MealType.SNACK -> snackItems.add(item)
-            }
+            val item = MealItem(food.name, servingText, calories.toInt(), food.id, Type.FOOD, mealType = crossRef.mealType, servings = crossRef.servings)
 
             when(crossRef.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -193,7 +186,6 @@ class TodayDiaryViewModel @Inject constructor(
             }
         }
 
-        // Process meals
         val mealCrossRefs = diaryWithNutrition.diary.id.let { diaryId ->
             mealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diaryId)
         }
@@ -203,7 +195,7 @@ class TodayDiaryViewModel @Inject constructor(
             if (meal == null) return@forEach
             val calories = meal.totalCalories * crossRef.servings
             val servingText = "${crossRef.servings} serving"
-            val item = MealItem(meal.name, servingText, calories.toInt(), meal.id, Type.MEAL, mealType = crossRef.mealType)
+            val item = MealItem(meal.name, servingText, calories.toInt(), meal.id, Type.MEAL, mealType = crossRef.mealType, servings = crossRef.servings)
 
             when(crossRef.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -213,7 +205,6 @@ class TodayDiaryViewModel @Inject constructor(
             }
         }
 
-        // Process recipes
         val recipeCrossRefs = diaryWithNutrition.diary.id.let { diaryId ->
             recipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diaryId)
         }
@@ -223,7 +214,7 @@ class TodayDiaryViewModel @Inject constructor(
             if (recipe == null) return@forEach
             val calories = recipe.calories * crossRef.servings
             val servingText = "${crossRef.servings} serving"
-            val item = MealItem(recipe.name, servingText, calories.toInt(), recipe.id, Type.RECIPE, mealType = crossRef.mealType)
+            val item = MealItem(recipe.name, servingText, calories.toInt(), recipe.id, Type.RECIPE, mealType = crossRef.mealType, servings = crossRef.servings)
 
             when(crossRef.mealType) {
                 MealType.BREAKFAST -> breakfastItems.add(item)
@@ -233,13 +224,11 @@ class TodayDiaryViewModel @Inject constructor(
             }
         }
 
-        // Calculate total calories for each section
         val breakfastCalories = breakfastItems.sumOf { it.calories }
         val lunchCalories = lunchItems.sumOf { it.calories }
         val dinnerCalories = dinnerItems.sumOf { it.calories }
         val snackCalories = snackItems.sumOf { it.calories }
 
-        // Create and return sections
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
@@ -291,6 +280,56 @@ class TodayDiaryViewModel @Inject constructor(
                         diaryId = todayDiary.value!!.diary.id,
                         mealId = mealItem.id,
                         mealType = mealItem.mealType
+                    )
+                    onSuccess()
+                }
+            }
+        }
+        else{
+            onFailure()
+        }
+    }
+
+    fun updateDiary(
+        servings: Int,
+        mealItem: MealItem,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        val today = LocalDate.now()
+        if(selectedDate.value == today) {
+            if(mealItem.type == Type.FOOD) {
+                viewModelScope.launch {
+                    foodCrossRefRepository.updateDiaryFoodCrossRef(
+                        userId = currentUserId,
+                        diaryId = todayDiary.value!!.diary.id,
+                        foodId = mealItem.id,
+                        mealType = mealItem.mealType,
+                        servings = servings
+                    )
+                    onSuccess()
+                }
+            }
+            else if(mealItem.type == Type.RECIPE) {
+                viewModelScope.launch {
+                    recipeCrossRefRepository.updateDiaryRecipeCrossRef(
+                        userId = currentUserId,
+                        diaryId = todayDiary.value!!.diary.id,
+                        recipeId = mealItem.id,
+                        mealType = mealItem.mealType,
+                        servings = servings
+                    )
+                    onSuccess()
+                }
+            }
+            else if(mealItem.type == Type.MEAL) {
+                viewModelScope.launch {
+                    mealCrossRefRepository.updateDiaryMealCrossRef(
+                        userId = currentUserId,
+                        diaryId = todayDiary.value!!.diary.id,
+                        mealId = mealItem.id,
+                        mealType = mealItem.mealType,
+                        servings = servings
                     )
                     onSuccess()
                 }

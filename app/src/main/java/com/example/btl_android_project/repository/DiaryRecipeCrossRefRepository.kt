@@ -49,4 +49,17 @@ class DiaryRecipeCrossRefRepository @Inject constructor(
             diaryRecipeCrossRefFireStoreDataSource.deleteByUserIdDiaryIdRecipeIdMealType(userId, diaryId, recipeId, mealType.name)
         }
     }
+
+    suspend fun updateDiaryRecipeCrossRef(
+        userId: String,
+        diaryId: String,
+        recipeId: String,
+        mealType: MealType,
+        servings: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            diaryRecipeCrossRefDao.updateByUserIdDiaryIdRecipeIdMealType(userId, diaryId, recipeId, mealType.name, servings)
+            diaryRecipeCrossRefFireStoreDataSource.updateByUserIdDiaryIdRecipeIdMealType(userId, diaryId, recipeId, mealType.name, servings)
+        }
+    }
 }

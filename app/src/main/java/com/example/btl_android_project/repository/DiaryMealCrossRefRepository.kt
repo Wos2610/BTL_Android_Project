@@ -50,4 +50,18 @@ class DiaryMealCrossRefRepository @Inject constructor(
             diaryMealCrossRefFireStoreDataSource.deleteByUserIdDiaryIdMealIdMealType(userId, diaryId, mealId, mealType.name)
         }
     }
+
+    suspend fun updateDiaryMealCrossRef(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: MealType,
+        servings: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            Log.d(TAG, "Updated DiaryMealCrossRef: userId=$userId, diaryId=$diaryId, mealId=$mealId, mealType=$mealType")
+            diaryMealCrossRefDao.updateByUserIdDiaryIdMealIdMealType(userId, diaryId, mealId, mealType.name, servings)
+            diaryMealCrossRefFireStoreDataSource.updateByUserIdDiaryIdMealIdMealType(userId, diaryId, mealId, mealType.name, servings)
+        }
+    }
 }

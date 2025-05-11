@@ -123,25 +123,61 @@ class DailyDiaryRepository @Inject constructor(
 
             val diaryWithAllNutrition = dailyDiaryDao.getDiaryByDate(userId, today)
 
-            val diary = diaryWithAllNutrition?.diary
-            val foods = diaryWithAllNutrition?.foods ?: emptyList()
-            val recipes = diaryWithAllNutrition?.recipes ?: emptyList()
-            val meals = diaryWithAllNutrition?.meals ?: emptyList()
+            if (diaryWithAllNutrition == null) {
+                Log.d(TAG, "No diary found for user ID: $userId on date: $today")
+                return@withContext
+            }
 
-            val totalCalories = foods.sumOf { it.calories.toDouble() } + recipes.sumOf { it.calories } + meals.sumOf { it.totalCalories.toDouble() }
-            val totalFat = foods.sumOf { it.fat.toDouble() } + recipes.sumOf { it.fat } + meals.sumOf { it.totalFat.toDouble() }
-            val totalCarbs = foods.sumOf { it.carbs.toDouble() } + recipes.sumOf { it.carbs } + meals.sumOf { it.totalCarbs.toDouble() }
-            val totalProtein = foods.sumOf { it.protein.toDouble() } + recipes.sumOf { it.protein } + meals.sumOf { it.totalProtein.toDouble() }
+            val diary = diaryWithAllNutrition.diary
 
+            val diaryFoodCrossRefs = diaryFoodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diary.id)
+            val diaryMealCrossRefs = diaryMealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diary.id)
+            val diaryRecipeCrossRefs = diaryRecipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diary.id)
 
-            val updatedDiary = diary?.copy(
+            var totalCalories = 0.0
+            var totalFat = 0.0
+            var totalCarbs = 0.0
+            var totalProtein = 0.0
+
+            diaryFoodCrossRefs?.forEach { crossRef ->
+                val food = diaryWithAllNutrition.foods.find { it.id == crossRef.foodId }
+                food?.let {
+                    totalCalories += it.calories * crossRef.servings
+                    totalFat += it.fat * crossRef.servings
+                    totalCarbs += it.carbs * crossRef.servings
+                    totalProtein += it.protein * crossRef.servings
+                }
+            }
+
+            diaryMealCrossRefs?.forEach { crossRef ->
+                val meal = diaryWithAllNutrition.meals.find { it.id == crossRef.mealId }
+                meal?.let {
+                    totalCalories += it.totalCalories * crossRef.servings
+                    totalFat += it.totalFat * crossRef.servings
+                    totalCarbs += it.totalCarbs * crossRef.servings
+                    totalProtein += it.totalProtein * crossRef.servings
+                }
+
+            }
+
+            diaryRecipeCrossRefs?.forEach { crossRef ->
+                val recipe = diaryWithAllNutrition.recipes.find { it.id == crossRef.recipeId }
+                recipe?.let {
+                    totalCalories += it.calories * crossRef.servings
+                    totalFat += it.fat * crossRef.servings
+                    totalCarbs += it.carbs * crossRef.servings
+                    totalProtein += it.protein * crossRef.servings
+                }
+            }
+
+            val updatedDiary = diary.copy(
                 totalFoodCalories = totalCalories.toFloat(),
                 totalFat = totalFat.toFloat(),
                 totalCarbs = totalCarbs.toFloat(),
                 totalProtein = totalProtein.toFloat()
             )
 
-            updatedDiary?.let {
+            updatedDiary.let {
                 dailyDiaryDao.updateDailyDiary(it)
                 diaryFireStoreDataSource.updateDailyDiary(it)
             }
