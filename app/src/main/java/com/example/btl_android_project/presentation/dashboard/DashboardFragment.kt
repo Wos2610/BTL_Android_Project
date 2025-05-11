@@ -93,27 +93,41 @@ class DashboardFragment : Fragment() {
         val lineData = LineData(dataSet)
         binding.weightChart.apply {
             data = lineData
+            setTouchEnabled(true)
+            setScaleEnabled(false)
+            setPinchZoom(false)
+            legend.isEnabled = false
+            description.isEnabled = false
+            setDrawBorders(false)
+
+            setExtraOffsets(10f, 10f, 10f, 20f)
+
             description.isEnabled = false
             legend.textColor = ContextCompat.getColor(requireContext(), R.color.white)
+
             xAxis.apply {
                 textColor = ContextCompat.getColor(requireContext(), R.color.white)
                 granularity = 1f
+                isGranularityEnabled = true
                 setDrawGridLines(false)
+                setAvoidFirstLastClipping(true)
                 position = XAxis.XAxisPosition.BOTTOM
+                labelRotationAngle = -45f
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         val index = value.toInt()
                         return if (index in dateLabels.indices) dateLabels[index] else ""
                     }
                 }
-                isGranularityEnabled = true
             }
+
             axisLeft.textColor = ContextCompat.getColor(requireContext(), R.color.white)
             axisRight.isEnabled = false
-            extraBottomOffset = 20f
+
             invalidate()
         }
     }
+
 
 
 

@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.btl_android_project.R
 import com.example.btl_android_project.local.entity.LogWeight
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class LogWeightAdapter(
     private val onItemClick: (LogWeight) -> Unit
@@ -15,7 +17,7 @@ class LogWeightAdapter(
     private var items = listOf<LogWeight>()
 
     fun submitList(list: List<LogWeight>) {
-        items = list
+        items = list.sortedByDescending { it.date }
         notifyDataSetChanged()
     }
 
@@ -25,7 +27,12 @@ class LogWeightAdapter(
 
         fun bind(item: LogWeight) {
             tvWeight.text = "${item.weight} kg"
-            tvDate.text = item.date
+
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+            val date = inputFormat.parse(item.date)
+            tvDate.text = outputFormat.format(date!!)
+
             itemView.setOnClickListener {
                 onItemClick(item)
             }
@@ -39,6 +46,7 @@ class LogWeightAdapter(
     }
 
     override fun getItemCount() = items.size
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
     }

@@ -27,7 +27,7 @@ interface LogWeightDao {
     @Query("SELECT * FROM log_weight WHERE id = :id LIMIT 1")
     suspend fun getLogWeightById(id: String): LogWeight?
 
-    @Query("SELECT * FROM log_weight WHERE userId = :userId ORDER BY createdAt DESC")
+    @Query("SELECT * FROM log_weight WHERE userId = :userId ORDER BY date DESC")
     fun getAllLogWeightsByUser(userId: String): Flow<List<LogWeight>>
 
     @Query("DELETE FROM log_weight WHERE id = :id")

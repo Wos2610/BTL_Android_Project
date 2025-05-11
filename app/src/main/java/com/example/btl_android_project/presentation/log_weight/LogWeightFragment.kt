@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogWeightBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +31,8 @@ class LogWeightFragment : Fragment() {
     private var selectedDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
         Date()
     )
+    private var isUpdateMode = false
+    private var currentLogWeightId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +45,7 @@ class LogWeightFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         binding.tvDate.text = formatDateDisplay(selectedDate)
 
         binding.tvDate.setOnClickListener {
@@ -53,21 +57,85 @@ class LogWeightFragment : Fragment() {
             val weight = weightStr.toFloatOrNull()
 
             if (weight != null && weight > 0) {
-                viewModel.saveLogWeight(weight, selectedDate)
+                if (isUpdateMode && currentLogWeightId != null) {
+                    viewModel.updateLogWeight(currentLogWeightId!!, weight, selectedDate)
+                } else {
+                    viewModel.saveLogWeight(weight, selectedDate)
+                }
             } else {
                 Toast.makeText(requireContext(), "Invalid weight", Toast.LENGTH_SHORT).show()
             }
         }
 
+        binding.btnDelete.setOnClickListener {
+            if (isUpdateMode && currentLogWeightId != null) {
+                viewModel.deleteLogWeight(currentLogWeightId!!)
+            } else {
+                Toast.makeText(requireContext(), "No item selected to delete", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnClear.setOnClickListener {
+            clearForm()
+        }
+
         viewModel.saveStatus.observe(viewLifecycleOwner) { success ->
             if (success) {
                 Toast.makeText(requireContext(), "Saved successfully", Toast.LENGTH_SHORT).show()
-                findNavController().popBackStack()
+                clearForm()
+                viewModel.loadLogWeights()
             } else {
                 Toast.makeText(requireContext(), "Failed to save", Toast.LENGTH_SHORT).show()
             }
         }
 
+        viewModel.updateStatus.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Updated successfully", Toast.LENGTH_SHORT).show()
+                clearForm()
+                viewModel.loadLogWeights()
+            } else {
+                Toast.makeText(requireContext(), "Failed to update", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.deleteStatus.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Deleted successfully", Toast.LENGTH_SHORT).show()
+                clearForm()
+                viewModel.loadLogWeights()
+            } else {
+                Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.logWeights.observe(viewLifecycleOwner) { logWeights ->
+            (binding.recyclerView.adapter as LogWeightAdapter).submitList(logWeights)
+        }
+
+        viewModel.loadLogWeights()
+    }
+
+    private fun setupRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = LogWeightAdapter { logWeight ->
+            isUpdateMode = true
+            currentLogWeightId = logWeight.id
+            binding.etWeight.setText(logWeight.weight.toString())
+            selectedDate = logWeight.date
+            binding.tvDate.text = formatDateDisplay(selectedDate)
+
+            binding.btnSave.text = "Update"
+        }
+    }
+
+    private fun clearForm() {
+        binding.etWeight.setText("")
+        selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        binding.tvDate.text = formatDateDisplay(selectedDate)
+        isUpdateMode = false
+        currentLogWeightId = null
+        binding.btnSave.text = "Save"
     }
 
     private fun showDatePicker() {
