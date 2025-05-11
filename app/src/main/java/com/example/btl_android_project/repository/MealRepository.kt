@@ -23,7 +23,8 @@ class MealRepository @Inject constructor(
     private val recipeDao: RecipeDao,
     private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
     private val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
-    private val mealFireStoreDataSource: MealFireStoreDataSourceImpl
+    private val mealFireStoreDataSource: MealFireStoreDataSourceImpl,
+    private val dailyDiaryRepository: DailyDiaryRepository
 ) {
 
     suspend fun createMeal(
@@ -193,6 +194,7 @@ class MealRepository @Inject constructor(
             }
 
             mealFireStoreDataSource.updateMeal(updatedMeal)
+            dailyDiaryRepository.recalculateWhenChanging(userId = userId)
         }
     }
 

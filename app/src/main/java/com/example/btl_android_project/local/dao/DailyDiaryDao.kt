@@ -21,7 +21,7 @@ interface DailyDiaryDao {
     fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>>
 
     @Query("SELECT * FROM daily_diary WHERE id = :id")
-    suspend fun getDailyDiaryById(id: Int): DailyDiary?
+    suspend fun getDailyDiaryById(id: String): DailyDiary?
 
     @Query("SELECT * FROM daily_diary WHERE userId = :userId AND logDate = :date LIMIT 1")
     suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary?

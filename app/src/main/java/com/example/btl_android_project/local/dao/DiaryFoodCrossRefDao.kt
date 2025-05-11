@@ -54,4 +54,7 @@ interface DiaryFoodCrossRefDao {
             insertAll(crossRefs)
         }
     }
+
+    @Query("SELECT * FROM diary_food_cross_ref WHERE foodId = :foodId")
+    suspend fun getDiaryFoodCrossRefByFoodId(foodId: String): List<DiaryFoodCrossRef>?
 }

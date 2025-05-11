@@ -14,7 +14,8 @@ class FoodRepository @Inject constructor(
     private val foodDao: FoodDao,
     private val foodFireStoreDataSource: FoodFireStoreDataSourceImpl,
     private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
-    private val mealRepository: MealRepository
+    private val mealRepository: MealRepository,
+    private val dailyDiaryRepository: DailyDiaryRepository,
 ) {
     suspend fun insertFood(food: Food): String {
         return try {
@@ -37,6 +38,8 @@ class FoodRepository @Inject constructor(
             foodFireStoreDataSource.updateFood(food)
 
             mealRepository.calculateWhenFoodChange(food.id.toString())
+
+            dailyDiaryRepository.recalculateWhenChanging(userId = food.userId)
 
             Timber.d("Food updated with ID: ${food.id}")
         } catch (e: Exception) {

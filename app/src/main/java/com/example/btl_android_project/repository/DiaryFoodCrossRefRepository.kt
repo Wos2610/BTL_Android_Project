@@ -79,4 +79,10 @@ class DiaryFoodCrossRefRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun getDiaryFoodCrossRefByFoodId(foodId: String): List<DiaryFoodCrossRef>? {
+        return withContext(Dispatchers.IO) {
+            diaryFoodCrossRefDao.getDiaryFoodCrossRefByFoodId(foodId)
+        }
+    }
 }
