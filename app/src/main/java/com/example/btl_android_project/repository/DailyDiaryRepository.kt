@@ -6,7 +6,6 @@ import com.example.btl_android_project.local.dao.DailyDiaryDao
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
@@ -21,18 +20,6 @@ class DailyDiaryRepository @Inject constructor(
 ) {
     private val TAG = "DailyDiaryRepository"
 
-    suspend fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>> {
-        return withContext(Dispatchers.IO) {
-            dailyDiaryDao.getDailyDiariesByUserId(userId)
-        }
-    }
-
-    suspend fun getDailyDiaryById(id: Int): DailyDiary? {
-        return withContext(Dispatchers.IO) {
-            dailyDiaryDao.getDailyDiaryById(id)
-        }
-    }
-
     suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiaryByDate(userId, date)
@@ -42,27 +29,6 @@ class DailyDiaryRepository @Inject constructor(
     suspend fun getDiaryByDate(userId: String, date: LocalDate): DiaryWithAllNutrition? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDiaryByDate(userId, date)
-        }
-    }
-
-    suspend fun deleteDailyDiary(dailyDiary: DailyDiary) {
-        withContext(Dispatchers.IO) {
-            dailyDiaryDao.deleteDailyDiary(dailyDiary)
-            Log.d(TAG, "Deleted daily diary with ID: ${dailyDiary.id}")
-            
-            // Delete from Firestore
-            diaryFireStoreDataSource.deleteDailyDiary(dailyDiary)
-        }
-    }
-    
-
-    suspend fun pullFromFireStore(userId: String) {
-        withContext(Dispatchers.IO) {
-            Log.d(TAG, "Pulling daily diaries from Firestore")
-            val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
-            Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore")
-            dailyDiaryDao.deleteAllDailyDiaries()
-            dailyDiaryDao.insertAllDailyDiaries(diaries)
         }
     }
 
@@ -120,7 +86,6 @@ class DailyDiaryRepository @Inject constructor(
             dailyDiaryDao.updateDailyDiary(dailyDiary)
             Log.d(TAG, "Updated daily diary with ID: ${dailyDiary.id}")
 
-            // Update in Firestore
             diaryFireStoreDataSource.updateDailyDiary(dailyDiary)
         }
     }

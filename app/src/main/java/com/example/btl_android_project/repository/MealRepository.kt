@@ -87,14 +87,6 @@ class MealRepository @Inject constructor(
         }
     }
 
-    suspend fun getMealsOfUser(userId: String): List<MealWithFoodsAndRecipes> {
-        return mealDao.getMealsWithFoodsAndRecipesByUser(userId)
-    }
-
-    suspend fun deleteMeal(meal: Meal) {
-        mealDao.deleteMeal(meal)
-    }
-
     suspend fun getMealWithFoodsAndRecipes(mealId: String): MealWithFoodsAndRecipes {
         return withContext(Dispatchers.IO) {
             val meal = mealDao.getMealById(mealId) ?: throw IllegalArgumentException("Meal not found")
@@ -135,15 +127,6 @@ class MealRepository @Inject constructor(
             )
             mealDao.insertMeal(meal).toInt()
         }
-    }
-
-    fun getMeals(): Flow<List<Meal>> = mealDao.getMeals()
-
-    suspend fun pullFromFireStore(userId: String) {
-        Log.d("MealRepository", "Pulling meals from Firestore")
-        val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
-        Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore")
-        mealDao.insertAllMeals(meals)
     }
 
     suspend fun editMeal(

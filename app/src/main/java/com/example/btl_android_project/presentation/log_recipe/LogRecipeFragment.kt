@@ -38,8 +38,6 @@ class LogRecipeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
         Log.d("LogRecipeFragment", "isFromCreateMeal: $isFromCreateMeal")
-
-        viewModel.pullRecipesFromFireStore()
         viewModel.loadRecipes()
     }
 

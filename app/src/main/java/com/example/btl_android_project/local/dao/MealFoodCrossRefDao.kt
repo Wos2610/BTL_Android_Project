@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.btl_android_project.local.entity.MealFoodCrossRef
 
 @Dao
@@ -31,4 +32,18 @@ interface MealFoodCrossRefDao {
 
     @Query("SELECT * FROM meal_food_cross_ref WHERE foodId = :foodId")
     suspend fun getMealFoodCrossRefByFoodId(foodId: String): List<MealFoodCrossRef>?
+
+    @Query("DELETE FROM meal_food_cross_ref WHERE mealId = :mealId")
+    fun deletesByMealId(mealId: String): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(crossRefs: List<MealFoodCrossRef>)
+
+    @Transaction
+    suspend fun deleteAndInsertInTransaction(mealId: String, crossRefs: List<MealFoodCrossRef>) {
+        deletesByMealId(mealId)
+        if (crossRefs.isNotEmpty()) {
+            insertAll(crossRefs)
+        }
+    }
 }

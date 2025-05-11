@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 
@@ -36,4 +37,19 @@ interface DiaryMealCrossRefDao {
 
     @Query("DELETE FROM diary_meal_cross_ref")
     suspend fun deleteAllDiaryMealCrossRefs(): Int
+
+    @Query("DELETE FROM diary_meal_cross_ref WHERE diaryId = :diaryId")
+    fun deletesByDiaryId(diaryId: String): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(crossRefs: List<DiaryMealCrossRef>)
+
+
+    @Transaction
+    suspend fun deleteAndInsertInTransaction(diaryId: String, crossRefs: List<DiaryMealCrossRef>) {
+        deletesByDiaryId(diaryId)
+        if (crossRefs.isNotEmpty()) {
+            insertAll(crossRefs)
+        }
+    }
 }

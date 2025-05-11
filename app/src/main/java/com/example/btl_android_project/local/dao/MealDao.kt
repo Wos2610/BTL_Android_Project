@@ -61,4 +61,5 @@ interface MealDao {
 
     @Query("DELETE FROM meals")
     suspend fun deleteAllMeals(): Int
+
 }

@@ -48,7 +48,9 @@ class MealRecipeCrossRefRepository @Inject constructor(
             Timber.d("Pulling meal recipe cross ref from Firestore with meal ID: $mealId")
             val recipes = mealRecipeCrossRefFireStoreDataSource.getMealRecipeCrossRefsByMealId(mealId)
             Timber.d("Pulled ${recipes.size} recipes from Firestore")
-            mealRecipeCrossRefDao.insertAllMealRecipeCrossRefs(recipes)
+            if (recipes.isNotEmpty()) {
+                mealRecipeCrossRefDao.deleteAndInsertInTransaction(mealId, recipes)
+            }
 
         }
     }

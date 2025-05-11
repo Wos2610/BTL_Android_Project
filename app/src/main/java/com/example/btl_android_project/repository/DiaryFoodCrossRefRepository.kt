@@ -10,15 +10,9 @@ import javax.inject.Inject
 
 class DiaryFoodCrossRefRepository @Inject constructor(
     private val diaryFoodCrossRefDao: DiaryFoodCrossRefDao,
-    private val diaryFoodCrossRefFireStoreDataSource: DiaryFoodCrossRefFireStoreDataSourceImpl
+    private val diaryFoodCrossRefFireStoreDataSource: DiaryFoodCrossRefFireStoreDataSourceImpl,
 ) {
     private val TAG = "DiaryFoodCrossRefRepo"
-
-    suspend fun getDiaryFoodCrossRefs(): List<DiaryFoodCrossRef> {
-        return withContext(Dispatchers.IO) {
-            diaryFoodCrossRefDao.getDiaryFoodCrossRefs()
-        }
-    }
 
     suspend fun getDiaryFoodCrossRefsByDiaryId(diaryId: String): List<DiaryFoodCrossRef>? {
         return withContext(Dispatchers.IO) {
@@ -34,7 +28,6 @@ class DiaryFoodCrossRefRepository @Inject constructor(
                 "Inserted DiaryFoodCrossRef: diaryId=${crossRef.diaryId}, foodId=${crossRef.foodId}, mealType=${crossRef.mealType}"
             )
 
-            // Add to Firestore
             diaryFoodCrossRefFireStoreDataSource.insertDiaryFoodCrossRef(crossRef)
 
             id
@@ -70,58 +63,20 @@ class DiaryFoodCrossRefRepository @Inject constructor(
                 "Updated DiaryFoodCrossRef: diaryId=${crossRef.diaryId}, foodId=${crossRef.foodId}"
             )
 
-            // Update in Firestore
             diaryFoodCrossRefFireStoreDataSource.updateDiaryFoodCrossRef(crossRef)
-        }
-    }
-
-    suspend fun deleteDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef) {
-        withContext(Dispatchers.IO) {
-            diaryFoodCrossRefDao.deleteDiaryFoodCrossRef(crossRef)
-            Log.d(
-                TAG,
-                "Deleted DiaryFoodCrossRef: diaryId=${crossRef.diaryId}, foodId=${crossRef.foodId}"
-            )
-
-            // Delete from Firestore
-            diaryFoodCrossRefFireStoreDataSource.deleteDiaryFoodCrossRef(crossRef)
-        }
-    }
-
-    suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: String) {
-        withContext(Dispatchers.IO) {
-            diaryFoodCrossRefDao.deleteDiaryFoodCrossRefsByDiaryId(diaryId)
-            Log.d(TAG, "Deleted all DiaryFoodCrossRefs for diaryId=$diaryId")
-
-            // Delete from Firestore
-            diaryFoodCrossRefFireStoreDataSource.deleteDiaryFoodCrossRefsByDiaryId(diaryId)
         }
     }
 
     suspend fun pullFromFireStore(diaryId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling diary-food cross references from Firestore for diaryId=$diaryId")
-            val crossRefs =
-                diaryFoodCrossRefFireStoreDataSource.getDiaryFoodCrossRefsByDiaryId(diaryId)
+
+            val crossRefs = diaryFoodCrossRefFireStoreDataSource.getDiaryFoodCrossRefsByDiaryId(diaryId)
             Log.d(TAG, "Pulled ${crossRefs.size} diary-food cross references from Firestore")
-            diaryFoodCrossRefDao.insertAllDiaryFoodCrossRefs(crossRefs)
+
+            if (crossRefs.isNotEmpty()) {
+                diaryFoodCrossRefDao.deleteAndInsertInTransaction(diaryId, crossRefs)
+            }
         }
     }
-
-    suspend fun getDiaryFoodCrossRef(diaryId: String, foodId: String): List<DiaryFoodCrossRef>? {
-        return withContext(Dispatchers.IO) {
-            diaryFoodCrossRefDao.getDiaryFoodCrossRef(diaryId, foodId)
-        }
-    }
-
-    suspend fun getDiaryFoodCrossRefByMealType(
-        diaryId: String,
-        foodId: String,
-        mealType: String
-    ): DiaryFoodCrossRef? {
-        return withContext(Dispatchers.IO) {
-            diaryFoodCrossRefDao.getDiaryFoodCrossRefByMealType(diaryId, foodId, mealType)
-        }
-    }
-
 }
