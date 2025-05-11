@@ -42,6 +42,7 @@ class DashboardFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.todayDiary.collect { diary ->
+                    binding.tvGoalResult.text = diary?.caloriesGoal.toString()
                     binding.tvFoodResult.text = diary?.totalFoodCalories.toString()
                 }
             }

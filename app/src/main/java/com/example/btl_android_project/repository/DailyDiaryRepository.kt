@@ -16,36 +16,23 @@ class DailyDiaryRepository @Inject constructor(
     private val diaryFireStoreDataSource: DailyDiaryFireStoreDataSourceImpl,
     private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
     private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
-    private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository
+    private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
+    private val  userProfileRepository: UserProfileRepository,
 ) {
     private val TAG = "DailyDiaryRepository"
-    
-    /**
-     * Get all daily diaries
-     */
-//    fun getDailyDiaries(): Flow<List<DailyDiary>> = dailyDiaryDao.getDailyDiaries()
-    
-    /**
-     * Get daily diaries for a specific user
-     */
+
     suspend fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>> {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiariesByUserId(userId)
         }
     }
 
-    /**
-     * Get a daily diary by its ID
-     */
     suspend fun getDailyDiaryById(id: Int): DailyDiary? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiaryById(id)
         }
     }
-    
-    /**
-     * Get a user's daily diary for a specific date
-     */
+
     suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return withContext(Dispatchers.IO) {
             dailyDiaryDao.getDailyDiaryByDate(userId, date)
@@ -57,10 +44,7 @@ class DailyDiaryRepository @Inject constructor(
             dailyDiaryDao.getDiaryByDate(userId, date)
         }
     }
-    
-    /**
-     * Create a new daily diary entry
-     */
+
     suspend fun createDailyDiary(
         userId: Int,
         logDate: LocalDate,
@@ -91,9 +75,7 @@ class DailyDiaryRepository @Inject constructor(
         return 0
     }
     
-    /**
-     * Update an existing daily diary entry
-     */
+
     suspend fun updateDailyDiary(
         id: Int,
         userId: Int,
@@ -122,9 +104,7 @@ class DailyDiaryRepository @Inject constructor(
 //        }
     }
     
-    /**
-     * Delete a daily diary entry
-     */
+
     suspend fun deleteDailyDiary(dailyDiary: DailyDiary) {
         withContext(Dispatchers.IO) {
             dailyDiaryDao.deleteDailyDiary(dailyDiary)
@@ -135,9 +115,7 @@ class DailyDiaryRepository @Inject constructor(
         }
     }
     
-    /**
-     * Pull diary data from Firestore for a specific user
-     */
+
     suspend fun pullFromFireStore(userId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling daily diaries from Firestore")
@@ -147,10 +125,7 @@ class DailyDiaryRepository @Inject constructor(
             dailyDiaryDao.insertAllDailyDiaries(diaries)
         }
     }
-    
-    /**
-     * Get or create a daily diary for a specific date
-     */
+
     suspend fun getOrCreateDailyDiary(userId: String, date: LocalDate): DailyDiary {
         return withContext(Dispatchers.IO) {
             val existingDiary = dailyDiaryDao.getDailyDiaryByDate(userId, date)
@@ -158,6 +133,9 @@ class DailyDiaryRepository @Inject constructor(
             if (existingDiary != null) {
                 existingDiary
             } else {
+                Log.d(TAG, "Creating new daily diary for user ID: $userId on date: $date")
+                val userProfile = userProfileRepository.getUserProfileByUserId(userId)
+                val caloriesGoal = userProfile?.calorieGoal?.toFloat() ?: 0f
                 val newDiary = DailyDiary(
                     userId = userId,
                     logDate = date,
@@ -167,7 +145,8 @@ class DailyDiaryRepository @Inject constructor(
                     totalWaterMl = 0,
                     totalFat = 0f,
                     totalCarbs = 0f,
-                    totalProtein = 0f
+                    totalProtein = 0f,
+                    caloriesGoal = caloriesGoal
                 )
 
                 val diaryId = diaryFireStoreDataSource.insertDailyDiary(newDiary)
@@ -179,9 +158,7 @@ class DailyDiaryRepository @Inject constructor(
         }
     }
     
-    /**
-     * Add water consumption to a diary entry
-     */
+
     suspend fun addWater(diaryId: Int, waterMl: Int) {
         withContext(Dispatchers.IO) {
             val diary = dailyDiaryDao.getDailyDiaryById(diaryId)

@@ -19,4 +19,5 @@ data class DailyDiary(
     val totalFat: Float = 0f,
     val totalCarbs: Float = 0f,
     val totalProtein: Float = 0f,
+    val caloriesGoal: Float = 0f,
 ) : Serializable

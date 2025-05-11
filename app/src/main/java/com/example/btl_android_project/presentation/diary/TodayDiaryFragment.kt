@@ -62,6 +62,10 @@ class TodayDiaryFragment : Fragment() {
                         if (diaryWithNutrition != null) {
                             binding.foodTextView.text = diaryWithNutrition.diary.totalFoodCalories.toString()
                         }
+                        else{
+                            binding.foodTextView.text = "0"
+                        }
+                        binding.goalTextView.text = diaryWithNutrition?.diary?.caloriesGoal.toString()
                     }
                 }
             }

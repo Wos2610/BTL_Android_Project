@@ -85,16 +85,17 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
 
     private fun mapDocumentToUserProfile(data: Map<String, Any>?): UserProfile? {
         return data?.let {
-            UserProfile(
+            val userProfile = UserProfile(
+                userProfileId = it["userProfileId"] as? String ?: "",
                 userId = it["userId"] as? String ?: "",
-                height = it["height"] as? Float ?: 0f,
-                currentWeight = it["currentWeight"] as? Float ?: 0f,
-                initialWeight = it["initialWeight"] as? Float ?: 0f,
-                weightGoal = it["weightGoal"] as? Float ?: 0f,
-                waterGoal = it["waterGoal"] as? Int ?: 0,
-                calorieGoal = it["calorieGoal"] as? Int ?: 0,
-                userProfileId = it["userProfileId"] as? String ?: ""
+                height = (it["height"] as? Double)?.toFloat() ?: 0f,
+                currentWeight = (it["currentWeight"] as? Double)?.toFloat() ?: 0f,
+                initialWeight = (it["initialWeight"] as? Double)?.toFloat() ?: 0f,
+                weightGoal = (it["weightGoal"] as? Double)?.toFloat() ?: 0f,
+                waterGoal = (it["waterGoal"] as? Long)?.toInt() ?: 0,
+                calorieGoal = (it["calorieGoal"] as? Long)?.toInt() ?: 0,
             )
+            return userProfile
         }
     }
 
