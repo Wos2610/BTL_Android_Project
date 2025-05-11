@@ -89,6 +89,11 @@ class DatabaseModule {
         return appDatabase.userProfileDao()
     }
 
+    @Provides
+    fun provideDailyDiarySnapshotDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.DailyDiarySnapshotDao {
+        return appDatabase.dailyDiarySnapshotDao()
+    }
+
     @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context) : AppDatabase {

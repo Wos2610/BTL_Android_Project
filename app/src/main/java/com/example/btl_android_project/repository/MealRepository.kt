@@ -297,4 +297,10 @@ class MealRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun getMealWithFoodsAndRecipesById(mealId: String): MealWithFoodsAndRecipes? {
+        return withContext(Dispatchers.IO) {
+            mealDao.getMealWithFoodsAndRecipes(mealId)
+        }
+    }
 }

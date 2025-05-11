@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.btl_android_project.local.dao.DailyDiaryDao
+import com.example.btl_android_project.local.dao.DailyDiarySnapshotDao
 import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
@@ -17,6 +18,7 @@ import com.example.btl_android_project.local.dao.StaticRecipeDao
 import com.example.btl_android_project.local.dao.StaticRecipeIngredientDao
 import com.example.btl_android_project.local.dao.UserProfileDao
 import com.example.btl_android_project.local.entity.DailyDiary
+import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
@@ -44,9 +46,10 @@ import com.example.btl_android_project.local.entity.UserProfile
         DiaryFoodCrossRef::class,
         DiaryRecipeCrossRef::class,
         DiaryMealCrossRef::class,
-        UserProfile::class
+        UserProfile::class,
+        DailyDiarySnapshot::class,
                ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class, RecipeTypeConverters::class)
@@ -64,4 +67,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun diaryRecipeCrossRefDao(): DiaryRecipeCrossRefDao
     abstract fun diaryMealCrossRefDao(): DiaryMealCrossRefDao
     abstract fun userProfileDao(): UserProfileDao
+    abstract fun dailyDiarySnapshotDao(): DailyDiarySnapshotDao
 }

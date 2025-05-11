@@ -2,6 +2,10 @@ package com.example.btl_android_project.local
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
+import com.example.btl_android_project.local.entity.DailyDiarySnapshot
+import com.example.btl_android_project.local.entity.DairyFoodSnapshot
+import com.example.btl_android_project.local.entity.DiaryMealSnapshot
+import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
@@ -76,5 +80,77 @@ class Converters {
     @TypeConverter
     fun toMealType(value: String?): MealType? {
         return value?.let { MealType.valueOf(it) }
+    }
+
+    @TypeConverter
+    fun fromDailyDiarySnapshot(value: String?): DailyDiarySnapshot? {
+        return value?.let { Gson().fromJson(it, DailyDiarySnapshot::class.java) }
+    }
+
+    @TypeConverter
+    fun toDailyDiarySnapshot(value: DailyDiarySnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromDairyMealSnapshot(value: String?): DiaryMealSnapshot? {
+        return value?.let { Gson().fromJson(it, DiaryMealSnapshot::class.java) }
+    }
+
+    @TypeConverter
+    fun toDairyMealSnapshot(value: DiaryMealSnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromDairyMealSnapshotList(value: List<DiaryMealSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toDairyMealSnapshotList(value: String): List<DiaryMealSnapshot> {
+        val listType = object : TypeToken<List<DiaryMealSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromDairyFoodSnapshot(value: String?): DairyFoodSnapshot? {
+        return value?.let { Gson().fromJson(it, DairyFoodSnapshot::class.java) }
+    }
+
+    @TypeConverter
+    fun toDairyFoodSnapshot(value: DairyFoodSnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromDairyFoodSnapshotList(value: List<DairyFoodSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toDairyFoodSnapshotList(value: String): List<DairyFoodSnapshot> {
+        val listType = object : TypeToken<List<DairyFoodSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromDairyRecipeSnapshot(value: String?): DiaryRecipeSnapshot? {
+        return value?.let { Gson().fromJson(it, DiaryRecipeSnapshot::class.java) }
+    }
+    @TypeConverter
+    fun toDairyRecipeSnapshot(value: DiaryRecipeSnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromDairyRecipeSnapshotList(value: List<DiaryRecipeSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toDairyRecipeSnapshotList(value: String): List<DiaryRecipeSnapshot> {
+        val listType = object : TypeToken<List<DiaryRecipeSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
     }
 }

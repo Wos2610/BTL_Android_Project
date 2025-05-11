@@ -3,9 +3,11 @@ package com.example.btl_android_project.presentation.diary
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
+import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import com.example.btl_android_project.local.enums.MealType
 import com.example.btl_android_project.repository.DailyDiaryRepository
+import com.example.btl_android_project.repository.DailyDiarySnapshotRepository
 import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
 import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
@@ -22,7 +24,8 @@ class TodayDiaryViewModel @Inject constructor(
     private val firebaseAuthDataSource: FirebaseAuthDataSource,
     private val foodCrossRefRepository: DiaryFoodCrossRefRepository,
     private val recipeCrossRefRepository: DiaryRecipeCrossRefRepository,
-    private val mealCrossRefRepository: DiaryMealCrossRefRepository
+    private val mealCrossRefRepository: DiaryMealCrossRefRepository,
+    private val dailyDiarySnapshotRepository: DailyDiarySnapshotRepository,
 ): ViewModel() {
     val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
     private var _selectedDate : MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
@@ -32,8 +35,11 @@ class TodayDiaryViewModel @Inject constructor(
     var month = selectedDate.value.monthValue
     var day = selectedDate.value.dayOfMonth
 
-    private var _dailyDiary: MutableStateFlow<DiaryWithAllNutrition?> = MutableStateFlow(null)
+    private var _dailyDiary: MutableStateFlow<DailyDiarySnapshot?> = MutableStateFlow(null)
     val dailyDiary = _dailyDiary.asStateFlow()
+
+    private var _todayDiary: MutableStateFlow<DiaryWithAllNutrition?> = MutableStateFlow(null)
+    val todayDiary = _todayDiary.asStateFlow()
 
 
     fun setSelectedDate(date: LocalDate) {
@@ -48,29 +54,111 @@ class TodayDiaryViewModel @Inject constructor(
         onSuccess: (List<MealSection>) -> Unit,
     ){
         viewModelScope.launch {
-            val diaryWithNutrition = dailyDiaryRepository.getDiaryByDate(
-                userId = currentUserId,
-                date = date
-            )
-
-            _dailyDiary.value = diaryWithNutrition
-
-            if (diaryWithNutrition != null) {
-                val mealSections = transformDiaryDataToMealSections(diaryWithNutrition)
-                onSuccess(mealSections)
-            } else {
-                val emptySections = listOf(
-                    MealSection("Breakfast", 0, emptyList()),
-                    MealSection("Lunch", 0, emptyList()),
-                    MealSection("Dinner", 0, emptyList()),
-                    MealSection("Snacks", 0, emptyList())
+            val today = LocalDate.now()
+            if(date == today) {
+                val diaryWithNutrition = dailyDiaryRepository.getDiaryByDate(
+                    userId = currentUserId,
+                    date = date
                 )
-                onSuccess(emptySections)
+
+                _todayDiary.value = diaryWithNutrition
+
+                if (diaryWithNutrition != null) {
+                    val mealSections = transformTodayDiaryDataToMealSections(diaryWithNutrition)
+                    onSuccess(mealSections)
+                } else {
+                    val emptySections = listOf(
+                        MealSection("Breakfast", 0, emptyList()),
+                        MealSection("Lunch", 0, emptyList()),
+                        MealSection("Dinner", 0, emptyList()),
+                        MealSection("Snacks", 0, emptyList())
+                    )
+                    onSuccess(emptySections)
+                }
+            }
+            else{
+                val diarySnapshot = dailyDiarySnapshotRepository.getByDate(
+                    userId = currentUserId,
+                    date = date
+                )
+
+                _dailyDiary.value = diarySnapshot
+
+                if (diarySnapshot != null) {
+                    val mealSections = transformDiaryDataToMealSections(diarySnapshot)
+                    onSuccess(mealSections)
+                } else {
+                    val emptySections = listOf(
+                        MealSection("Breakfast", 0, emptyList()),
+                        MealSection("Lunch", 0, emptyList()),
+                        MealSection("Dinner", 0, emptyList()),
+                        MealSection("Snacks", 0, emptyList())
+                    )
+                    onSuccess(emptySections)
+                }
             }
         }
     }
 
-    suspend fun transformDiaryDataToMealSections(diaryWithNutrition: DiaryWithAllNutrition): List<MealSection> {
+    suspend fun transformDiaryDataToMealSections(diaryWithNutrition: DailyDiarySnapshot): List<MealSection> {
+        val breakfastItems = mutableListOf<MealItem>()
+        val lunchItems = mutableListOf<MealItem>()
+        val dinnerItems = mutableListOf<MealItem>()
+        val snackItems = mutableListOf<MealItem>()
+
+
+        diaryWithNutrition.foods.forEach { foodSnapshot ->
+            val servingText = "${foodSnapshot.servings} serving"
+            val item = MealItem(foodSnapshot.foodName, servingText, foodSnapshot.calories.toInt())
+
+            when(foodSnapshot.mealType) {
+                MealType.BREAKFAST -> breakfastItems.add(item)
+                MealType.LUNCH -> lunchItems.add(item)
+                MealType.DINNER -> dinnerItems.add(item)
+                MealType.SNACK -> snackItems.add(item)
+            }
+        }
+
+        diaryWithNutrition.meals.forEach { mealSnapshot ->
+            val servingText = "${mealSnapshot.servings} serving"
+            val item = MealItem(mealSnapshot.mealName, servingText, mealSnapshot.calories.toInt())
+
+            when(mealSnapshot.mealType) {
+                MealType.BREAKFAST -> breakfastItems.add(item)
+                MealType.LUNCH -> lunchItems.add(item)
+                MealType.DINNER -> dinnerItems.add(item)
+                MealType.SNACK -> snackItems.add(item)
+            }
+        }
+
+        diaryWithNutrition.recipes.forEach { recipeSnapshot ->
+            val servingText = "${recipeSnapshot.servings} serving"
+            val item = MealItem(recipeSnapshot.recipeName, servingText, recipeSnapshot.calories.toInt())
+
+            when(recipeSnapshot.mealType) {
+                MealType.BREAKFAST -> breakfastItems.add(item)
+                MealType.LUNCH -> lunchItems.add(item)
+                MealType.DINNER -> dinnerItems.add(item)
+                MealType.SNACK -> snackItems.add(item)
+            }
+        }
+
+        // Calculate total calories for each section
+        val breakfastCalories = breakfastItems.sumOf { it.calories }
+        val lunchCalories = lunchItems.sumOf { it.calories }
+        val dinnerCalories = dinnerItems.sumOf { it.calories }
+        val snackCalories = snackItems.sumOf { it.calories }
+
+        // Create and return sections
+        return listOf(
+            MealSection("Breakfast", breakfastCalories, breakfastItems),
+            MealSection("Lunch", lunchCalories, lunchItems),
+            MealSection("Dinner", dinnerCalories, dinnerItems),
+            MealSection("Snacks", snackCalories, snackItems)
+        )
+    }
+
+    suspend fun transformTodayDiaryDataToMealSections(diaryWithNutrition: DiaryWithAllNutrition): List<MealSection> {
         val breakfastItems = mutableListOf<MealItem>()
         val lunchItems = mutableListOf<MealItem>()
         val dinnerItems = mutableListOf<MealItem>()
@@ -149,5 +237,12 @@ class TodayDiaryViewModel @Inject constructor(
             MealSection("Dinner", dinnerCalories, dinnerItems),
             MealSection("Snacks", snackCalories, snackItems)
         )
+    }
+
+    fun saveSnapshot(){
+        viewModelScope.launch {
+            val today = LocalDate.now()
+            dailyDiarySnapshotRepository.execute(userId = currentUserId, date = today)
+        }
     }
 }

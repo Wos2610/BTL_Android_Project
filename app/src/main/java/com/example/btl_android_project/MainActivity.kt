@@ -421,6 +421,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logMealDiaryFragment -> setSaveButtonVisibility(true)
                 R.id.editMealFragment -> setSaveButtonVisibility(true)
                 R.id.editRecipeFragment -> setSaveButtonVisibility(true)
+                R.id.todayDiaryFragment -> setSaveButtonVisibility(true)
                 else -> {
                     setSaveButtonVisibility(false)
                 }

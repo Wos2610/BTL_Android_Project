@@ -148,4 +148,10 @@ class DailyDiaryRepository @Inject constructor(
         }
 
     }
+
+    suspend fun getDailyDiaryById(id: String): DailyDiary? {
+        return withContext(Dispatchers.IO) {
+            dailyDiaryDao.getDailyDiaryById(id)
+        }
+    }
 }
