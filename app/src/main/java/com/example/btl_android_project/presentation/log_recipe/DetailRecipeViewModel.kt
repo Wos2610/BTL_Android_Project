@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
-import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.Recipe
 import com.example.btl_android_project.local.entity.RecipeIngredient
+import com.example.btl_android_project.local.enums.MealType
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
 import com.example.btl_android_project.repository.RecipeRepository

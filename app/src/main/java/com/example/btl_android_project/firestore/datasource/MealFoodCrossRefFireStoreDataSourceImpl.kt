@@ -29,19 +29,16 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
 
 
     suspend fun deleteMealFoodCrossRef(foodId: String) {
-        // Query for all documents where recipeId matches the given value
         val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
             .whereEqualTo("recipeId", foodId)
             .get()
             .await()
 
-        // Delete each matching document
         val batch = firestore.batch()
         snapshot.documents.forEach { document ->
             batch.delete(document.reference)
         }
 
-        // Commit the batch
         if (snapshot.documents.isNotEmpty()) {
             batch.commit().await()
         }
@@ -69,19 +66,16 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
     }
 
     suspend fun deleteMealFoodCrossRefByMealId(mealId: String) {
-        // Query for all documents where recipeId matches the given value
         val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)
             .whereEqualTo("mealId", mealId)
             .get()
             .await()
 
-        // Delete each matching document
         val batch = firestore.batch()
         snapshot.documents.forEach { document ->
             batch.delete(document.reference)
         }
 
-        // Commit the batch
         if (snapshot.documents.isNotEmpty()) {
             batch.commit().await()
         }

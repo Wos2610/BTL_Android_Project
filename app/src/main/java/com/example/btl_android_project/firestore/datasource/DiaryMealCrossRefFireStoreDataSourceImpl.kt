@@ -1,7 +1,7 @@
 package com.example.btl_android_project.firestore.datasource
 
-import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
+import com.example.btl_android_project.local.enums.MealType
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
@@ -56,7 +56,7 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 .document(documentId)
                 .set(crossRefMap)
                 .addOnSuccessListener {
-                    continuation.resume(1L) // Success
+                    continuation.resume(1L)
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)
@@ -80,7 +80,7 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 .document(documentId)
                 .set(crossRefMap)
                 .addOnSuccessListener {
-                    continuation.resume(1) // 1 row updated
+                    continuation.resume(1)
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)
@@ -96,7 +96,7 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 .document(documentId)
                 .delete()
                 .addOnSuccessListener {
-                    continuation.resume(1) // 1 row deleted
+                    continuation.resume(1)
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)

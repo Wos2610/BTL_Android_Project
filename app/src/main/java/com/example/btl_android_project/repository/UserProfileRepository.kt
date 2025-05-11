@@ -2,8 +2,8 @@ package com.example.btl_android_project.repository
 
 import android.util.Log
 import com.example.btl_android_project.firestore.datasource.UserProfileFireStoreDataSourceImpl
-import com.example.btl_android_project.local.ActivityLevel
-import com.example.btl_android_project.local.WeightGoal
+import com.example.btl_android_project.local.enums.ActivityLevel
+import com.example.btl_android_project.local.enums.WeightGoal
 import com.example.btl_android_project.local.dao.UserProfileDao
 import com.example.btl_android_project.local.entity.UserProfile
 import com.example.btl_android_project.presentation.user_goal.UserProfileArgument

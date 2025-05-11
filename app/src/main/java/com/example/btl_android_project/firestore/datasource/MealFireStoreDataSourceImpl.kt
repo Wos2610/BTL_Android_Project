@@ -38,16 +38,12 @@ class MealFireStoreDataSourceImpl @Inject constructor(
     }
 
     suspend fun addMeal(meal: Meal): String = suspendCoroutine { continuation ->
-        // Create a new document with auto-generated ID
         val docRef = firestore.collection(MEALS_COLLECTION).document()
 
-        // Get the auto-generated ID
         val newId = docRef.id
 
-        // Update the meal with the new ID before saving
         val updatedMeal = meal.copy(id = newId)
 
-        // Set the document data
         docRef.set(updatedMeal)
             .addOnSuccessListener {
                 Timber.Forest.d("Meal ${updatedMeal.name} added successfully with ID: $newId")

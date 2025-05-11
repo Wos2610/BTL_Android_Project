@@ -45,66 +45,6 @@ class DailyDiaryRepository @Inject constructor(
         }
     }
 
-    suspend fun createDailyDiary(
-        userId: Int,
-        logDate: LocalDate,
-        caloriesRemaining: Float,
-        totalFoodCalories: Float,
-        totalExerciseCalories: Float,
-        totalWaterMl: Int
-    ): Int {
-//        return withContext(Dispatchers.IO) {
-//            val dailyDiary = DailyDiary(
-//                userId = userId.toString(),
-//                logDate = logDate,
-//                caloriesRemaining = caloriesRemaining,
-//                totalFoodCalories = totalFoodCalories,
-//                totalExerciseCalories = totalExerciseCalories,
-//                totalWaterMl = totalWaterMl
-//            )
-//
-//            val diaryId = dailyDiaryDao.insertDailyDiary(dailyDiary).toInt()
-//            Log.d(TAG, "Inserted daily diary with ID: $diaryId")
-//
-//            // Add to Firestore
-//            val updatedDiary = dailyDiary.copy(id = diaryId)
-//            diaryFireStoreDataSource.insertDailyDiary(updatedDiary)
-//
-//            diaryId
-//        }
-        return 0
-    }
-    
-
-    suspend fun updateDailyDiary(
-        id: Int,
-        userId: Int,
-        logDate: LocalDate,
-        caloriesRemaining: Float,
-        totalFoodCalories: Float,
-        totalExerciseCalories: Float,
-        totalWaterMl: Int
-    ) {
-//        withContext(Dispatchers.IO) {
-//            val updatedDiary = DailyDiary(
-//                id = id,
-//                userId = userId.toString(),
-//                logDate = logDate,
-//                caloriesRemaining = caloriesRemaining,
-//                totalFoodCalories = totalFoodCalories,
-//                totalExerciseCalories = totalExerciseCalories,
-//                totalWaterMl = totalWaterMl
-//            )
-//
-//            dailyDiaryDao.updateDailyDiary(updatedDiary)
-//            Log.d(TAG, "Updated daily diary with ID: $id")
-//
-//            // Update in Firestore
-//            diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
-//        }
-    }
-    
-
     suspend fun deleteDailyDiary(dailyDiary: DailyDiary) {
         withContext(Dispatchers.IO) {
             dailyDiaryDao.deleteDailyDiary(dailyDiary)

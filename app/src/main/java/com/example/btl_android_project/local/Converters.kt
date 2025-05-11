@@ -5,6 +5,7 @@ import androidx.room.TypeConverter
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
+import com.example.btl_android_project.local.enums.MealType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.time.LocalDate

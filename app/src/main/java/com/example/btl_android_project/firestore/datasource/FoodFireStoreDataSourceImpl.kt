@@ -79,7 +79,6 @@ class FoodFireStoreDataSourceImpl @Inject constructor(
 
     suspend fun searchFoods(query: String, userId: String): List<Food> {
         return try {
-            // Firestore doesn't support "LIKE" queries directly, use range queries
             val result = firestore.collection(FOODS_COLLECTION)
                 .whereEqualTo("userId", userId)
                 .whereGreaterThanOrEqualTo("name", query)

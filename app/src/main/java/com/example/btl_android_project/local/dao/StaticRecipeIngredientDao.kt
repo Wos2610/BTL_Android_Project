@@ -9,24 +9,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StaticRecipeIngredientDao {
-
-    // Insert a single ingredient
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIngredient(ingredient: StaticRecipeIngredient)
 
-    // Insert multiple ingredients
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllIngredients(ingredients: List<StaticRecipeIngredient>)
 
-    // Get all ingredients
     @Query("SELECT * FROM static_recipe_ingredients")
     suspend fun getAllIngredients(): List<StaticRecipeIngredient>
 
-    // Get an ingredient by ID
     @Query("SELECT * FROM static_recipe_ingredients WHERE id = :ingredientId")
     suspend fun getIngredientById(ingredientId: Int): StaticRecipeIngredient?
 
-    // Delete all ingredients
     @Query("DELETE FROM static_recipe_ingredients")
     suspend fun deleteAllIngredients()
 

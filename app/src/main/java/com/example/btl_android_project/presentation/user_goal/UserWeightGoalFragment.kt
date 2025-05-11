@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentUserWeightGoalBinding
-import com.example.btl_android_project.local.WeightGoal
+import com.example.btl_android_project.local.enums.WeightGoal
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

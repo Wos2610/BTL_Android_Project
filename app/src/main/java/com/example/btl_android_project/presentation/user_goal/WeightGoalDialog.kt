@@ -14,8 +14,8 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.example.btl_android_project.R
-import com.example.btl_android_project.local.ActivityLevel
-import com.example.btl_android_project.local.WeightGoal
+import com.example.btl_android_project.local.enums.ActivityLevel
+import com.example.btl_android_project.local.enums.WeightGoal
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Date

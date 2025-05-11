@@ -37,24 +37,6 @@ class StaticRecipeIngredientFireStoreDataSourceImpl @Inject constructor(
         return recipeIngredients.toObjects(StaticRecipeIngredient::class.java)
     }
 
-//    @SuppressLint("TimberArgCount")
-//    fun getRecipeIngredientById(id: Long): StaticRecipeIngredient? {
-//        val docRef = firestore.collection(STATIC_RECIPES_INGREDIENTS_COLLECTION).document(id.toString())
-//        var recipeIngredient: StaticRecipeIngredient? = null
-//
-//        docRef.get().addOnSuccessListener { document ->
-//            if (document != null) {
-//                recipeIngredient = document.toObject(StaticRecipeIngredient::class.java)
-//            } else {
-//                Timber.Forest.d("No such document")
-//            }
-//        }.addOnFailureListener { exception ->
-//            Timber.Forest.e(exception, "get failed with ")
-//        }
-//
-//        return recipeIngredient
-//    }
-
     companion object{
         private const val STATIC_RECIPES_INGREDIENTS_COLLECTION = "static_recipe_ingredients"
     }

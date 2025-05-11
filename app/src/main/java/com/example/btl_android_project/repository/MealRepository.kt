@@ -101,14 +101,12 @@ class MealRepository @Inject constructor(
             val mealFoodCrossRefs = mealFoodCrossRefRepository.getMealFoodCrossRefById(mealId)
             val mealRecipeCrossRefs = mealRecipeCrossRefRepository.getMealRecipeCrossRefById(mealId)
 
-            // Use async to parallelize the food fetching
             val foods = mealFoodCrossRefs?.map { crossRef ->
                 async {
                     foodDao.getFoodById(crossRef.foodId)?.copy(servings = crossRef.servings)
                 }
             }?.awaitAll()
 
-            // Use async to parallelize the recipe fetching
             val recipes = mealRecipeCrossRefs?.map { crossRef ->
                 async {
                     recipeDao.getRecipeById(crossRef.recipeId)?.copy(servings = crossRef.servings)
@@ -161,7 +159,6 @@ class MealRepository @Inject constructor(
         totalFat: Int
     ) {
         withContext(Dispatchers.IO) {
-            // Cập nhật thông tin bữa ăn
             val updatedMeal = Meal(
                 id = mealId,
                 name = name,
@@ -175,16 +172,13 @@ class MealRepository @Inject constructor(
 
             Log.d("MealRepository", "Updated meal: $updatedMeal")
 
-            // Cập nhật bữa ăn trong cơ sở dữ liệu cục bộ
             mealDao.updateMeal(updatedMeal)
 
-            // Xóa tất cả các mối quan hệ tham chiếu hiện có
             mealFoodCrossRefRepository.deleteMealFoodCrossRefByMealId(mealId)
             mealRecipeCrossRefRepository.deleteMealRecipeCrossRefByMealId(mealId)
 
             Log.d("MealRepository", "Updating meal with ID: $mealId")
 
-            // Thêm lại các mối quan hệ thực phẩm mới
             selectedFoodItems.forEach { food ->
                 mealFoodCrossRefRepository.insertMealFoodCrossRef(
                     MealFoodCrossRef(
@@ -200,7 +194,6 @@ class MealRepository @Inject constructor(
                 )
             }
 
-            // Thêm lại các mối quan hệ công thức nấu ăn mới
             selectedRecipeItems.forEach { recipe ->
                 mealRecipeCrossRefRepository.insertMealRecipeCrossRef(
                     MealRecipeCrossRef(
@@ -216,7 +209,6 @@ class MealRepository @Inject constructor(
                 )
             }
 
-            // Cập nhật dữ liệu trên Firestore
             mealFireStoreDataSource.updateMeal(updatedMeal)
         }
     }

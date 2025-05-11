@@ -14,27 +14,18 @@ class DiaryFoodCrossRefRepository @Inject constructor(
 ) {
     private val TAG = "DiaryFoodCrossRefRepo"
 
-    /**
-     * Get all diary-food cross references
-     */
     suspend fun getDiaryFoodCrossRefs(): List<DiaryFoodCrossRef> {
         return withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.getDiaryFoodCrossRefs()
         }
     }
 
-    /**
-     * Get diary-food cross references by diary ID
-     */
     suspend fun getDiaryFoodCrossRefsByDiaryId(diaryId: String): List<DiaryFoodCrossRef>? {
         return withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.getDiaryFoodCrossRefsByDiaryId(diaryId)
         }
     }
 
-    /**
-     * Insert a new diary-food cross reference
-     */
     suspend fun insertDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef): Long {
         return withContext(Dispatchers.IO) {
             val id = diaryFoodCrossRefDao.insertDiaryFoodCrossRef(crossRef)
@@ -71,9 +62,6 @@ class DiaryFoodCrossRefRepository @Inject constructor(
         }
     }
 
-    /**
-     * Update an existing diary-food cross reference
-     */
     suspend fun updateDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef) {
         withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.updateDiaryFoodCrossRef(crossRef)
@@ -87,9 +75,6 @@ class DiaryFoodCrossRefRepository @Inject constructor(
         }
     }
 
-    /**
-     * Delete a diary-food cross reference
-     */
     suspend fun deleteDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef) {
         withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.deleteDiaryFoodCrossRef(crossRef)
@@ -103,9 +88,6 @@ class DiaryFoodCrossRefRepository @Inject constructor(
         }
     }
 
-    /**
-     * Delete all diary-food cross references for a specific diary
-     */
     suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: String) {
         withContext(Dispatchers.IO) {
             diaryFoodCrossRefDao.deleteDiaryFoodCrossRefsByDiaryId(diaryId)
@@ -116,9 +98,6 @@ class DiaryFoodCrossRefRepository @Inject constructor(
         }
     }
 
-    /**
-     * Pull diary-food cross references from Firestore
-     */
     suspend fun pullFromFireStore(diaryId: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Pulling diary-food cross references from Firestore for diaryId=$diaryId")

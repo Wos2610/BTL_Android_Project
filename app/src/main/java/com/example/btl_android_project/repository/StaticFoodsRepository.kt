@@ -21,7 +21,6 @@ class StaticFoodsRepository @Inject constructor(
 ) {
     suspend fun pullStaticFoods() {
         val searchExpressions = listOf(
-            // 🍚 Tinh bột & Ngũ cốc
             "rice",
             "corn",
             "wheat",
@@ -33,7 +32,6 @@ class StaticFoodsRepository @Inject constructor(
             "noodles",
             "cereal",
 
-            // 🍗 Thịt, Cá, Hải sản
             "chicken",
             "beef",
             "pork",
@@ -45,7 +43,6 @@ class StaticFoodsRepository @Inject constructor(
             "shrimp",
             "crab",
 
-            // 🥚 Trứng & Sản phẩm từ sữa
             "egg",
             "milk",
             "cheese",
@@ -55,7 +52,6 @@ class StaticFoodsRepository @Inject constructor(
             "sour cream",
             "ice cream",
 
-            // 🥦 Rau củ quả
             "potato",
             "carrot",
             "tomato",
@@ -67,7 +63,6 @@ class StaticFoodsRepository @Inject constructor(
             "broccoli",
             "cauliflower",
 
-            // 🍏 Trái cây
             "apple",
             "banana",
             "orange",
@@ -79,7 +74,6 @@ class StaticFoodsRepository @Inject constructor(
             "watermelon",
             "grape",
 
-            // 🌰 Các loại hạt & Đậu
             "peanut",
             "almond",
             "cashew",
@@ -91,7 +85,6 @@ class StaticFoodsRepository @Inject constructor(
             "black beans",
             "kidney beans",
 
-            // 🛢️ Gia vị & Nguyên liệu nấu ăn
             "salt",
             "sugar",
             "pepper",
@@ -103,7 +96,6 @@ class StaticFoodsRepository @Inject constructor(
             "mustard",
             "mayonnaise",
 
-            // 🥤 Đồ uống
             "water",
             "coffee",
             "tea",

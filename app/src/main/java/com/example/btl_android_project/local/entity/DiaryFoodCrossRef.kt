@@ -2,7 +2,7 @@ package com.example.btl_android_project.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.btl_android_project.local.MealType
+import com.example.btl_android_project.local.enums.MealType
 
 @Entity(
     tableName = "diary_food_cross_ref",

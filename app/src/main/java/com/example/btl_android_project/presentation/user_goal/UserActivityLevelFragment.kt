@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentUserActivityLevelBinding
-import com.example.btl_android_project.local.ActivityLevel
+import com.example.btl_android_project.local.enums.ActivityLevel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

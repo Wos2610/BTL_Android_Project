@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
-import com.example.btl_android_project.local.MealType
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.Meal
+import com.example.btl_android_project.local.enums.MealType
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
 import com.example.btl_android_project.repository.MealFoodCrossRefRepository
 import com.example.btl_android_project.repository.MealRepository
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

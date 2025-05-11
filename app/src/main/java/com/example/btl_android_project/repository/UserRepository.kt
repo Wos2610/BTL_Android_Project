@@ -11,8 +11,8 @@ class UserRepository @Inject constructor() {
         val user = User(userId, username, email, password)
 
         db.collection("users")
-            .document(userId.toString()) // Set userId as document ID
-            .set(user) // Use set() instead of add()
+            .document(userId.toString())
+            .set(user)
             .addOnSuccessListener {
                 Timber.d("User added successfully with ID: $userId")
             }
