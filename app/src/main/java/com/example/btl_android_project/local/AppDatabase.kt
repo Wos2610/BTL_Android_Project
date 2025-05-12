@@ -8,6 +8,7 @@ import com.example.btl_android_project.local.dao.DailyDiarySnapshotDao
 import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
+import com.example.btl_android_project.local.dao.ExerciseDao
 import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.dao.LogWaterDao
 import com.example.btl_android_project.local.dao.LogWeightDao
@@ -24,6 +25,7 @@ import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
+import com.example.btl_android_project.local.entity.Exercise
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.entity.LogWeight
@@ -42,6 +44,7 @@ import com.example.btl_android_project.local.entity.UserProfile
         StaticRecipesEntity::class,
         StaticFoodEntity::class,
         Recipe::class,
+        Exercise::class,
         Food::class,
         LogWater::class,
         LogWeight::class,
@@ -63,6 +66,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun staticRecipeIngredientDao(): StaticRecipeIngredientDao
     abstract fun staticRecipeDao(): StaticRecipeDao
     abstract fun staticFoodDao(): StaticFoodDao
+    abstract fun exerciseDao(): ExerciseDao
     abstract fun foodDao(): FoodDao
     abstract fun logWaterDao(): LogWaterDao
     abstract fun logWeightDao(): LogWeightDao

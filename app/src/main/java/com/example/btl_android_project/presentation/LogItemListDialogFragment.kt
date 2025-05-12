@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.example.btl_android_project.R
@@ -42,7 +43,7 @@ class LogItemListDialogFragment : BottomSheetDialogFragment() {
 
     private inner class ViewHolder(binding: FragmentItemListDialogListDialogItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val text: TextView = binding.tvLogItem
-
+        val imageView: ImageView = binding.ivLogItem
     }
 
     private inner class LogItemAdapter(private val mItemCount: Int) : RecyclerView.Adapter<ViewHolder>() {
@@ -70,6 +71,7 @@ class LogItemListDialogFragment : BottomSheetDialogFragment() {
                 }
                 1 -> {
                     holder.text.text = getString(R.string.water)
+                    holder.imageView.setImageResource(R.drawable.icon_drink)
                     holder.itemView.setOnClickListener {
                         val action = LogItemListDialogFragmentDirections.actionLogItemListDialogFragmentToLogWaterFragment()
                         findNavController().navigate(action)
@@ -77,12 +79,20 @@ class LogItemListDialogFragment : BottomSheetDialogFragment() {
                 }
                 2 -> {
                     holder.text.text = getString(R.string.weight)
+                    holder.imageView.setImageResource(R.drawable.icon_weight)
                     holder.itemView.setOnClickListener {
                         val action = LogItemListDialogFragmentDirections.actionLogItemListDialogFragmentToLogWeightFragment()
                         findNavController().navigate(action)
                     }
                 }
-                3 -> holder.text.text = getString(R.string.exercise)
+                3 -> {
+                    holder.text.text = getString(R.string.exercise)
+                    holder.imageView.setImageResource(R.drawable.icon_exercise)
+                    holder.itemView.setOnClickListener {
+                        val action = LogItemListDialogFragmentDirections.actionLogItemListDialogFragmentToLogExerciseFragment()
+                        findNavController().navigate(action)
+                    }
+                }
             }
 
         }

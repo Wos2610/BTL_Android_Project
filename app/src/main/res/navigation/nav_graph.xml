@@ -144,7 +144,11 @@
         android:id="@+id/logExerciseFragment"
         android:name="com.example.btl_android_project.presentation.log_exercise.LogExerciseFragment"
         android:label="fragment_log_exercise"
-        tools:layout="@layout/fragment_log_exercise" />
+        tools:layout="@layout/fragment_log_exercise" >
+        <action
+            android:id="@+id/action_logExerciseFragment_to_newExerciseFragment"
+            app:destination="@id/newExerciseFragment" />
+    </fragment>
     <fragment
         android:id="@+id/logFoodFragment"
         android:name="com.example.btl_android_project.presentation.log_food.LogFoodFragment"
@@ -328,6 +332,9 @@
         <action
             android:id="@+id/action_logItemListDialogFragment_to_logWeightFragment"
             app:destination="@id/logWeightFragment" />
+        <action
+            android:id="@+id/action_logItemListDialogFragment_to_logExerciseFragment"
+            app:destination="@id/logExerciseFragment" />
     </dialog>
     <action
         android:id="@+id/action_global_logItemListDialogFragment"

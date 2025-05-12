@@ -8,6 +8,7 @@ import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
 import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
+import com.example.btl_android_project.repository.ExercisesRepository
 import com.example.btl_android_project.repository.FoodRepository
 import com.example.btl_android_project.repository.LogWaterRepository
 import com.example.btl_android_project.repository.LogWeightRepository
@@ -32,6 +33,7 @@ class SignInViewModel @Inject constructor(
     private val staticRecipeIngredientRepository: StaticRecipeIngredientRepository,
     private val staticRecipesRepository: StaticRecipesRepository,
     private val staticFoodRepository: StaticFoodsRepository,
+    private val exerciseRepository: ExercisesRepository,
     private val foodRepository: FoodRepository,
     private val logWeightRepository: LogWeightRepository,
     private val logWaterRepository: LogWaterRepository,
@@ -105,6 +107,7 @@ class SignInViewModel @Inject constructor(
                 launch { staticFoodRepository.pullFromFireStore() }
                 launch { staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore() }
                 launch { staticRecipesRepository.pullStaticRecipesFromFireStore() }
+                launch { exerciseRepository.syncExercisesFromFirestore(userId = currentUserId) }
                 launch { foodRepository.syncFoodsFromFirestore(userId = currentUserId) }
                 launch { logWaterRepository.syncLogsFromFirestore(userId = currentUserId) }
                 launch { logWeightRepository.syncLogWeightsFromFirestore(userId = currentUserId) }
