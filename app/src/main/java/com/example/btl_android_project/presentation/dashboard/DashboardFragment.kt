@@ -10,9 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDashboardBinding
 import com.example.btl_android_project.local.entity.LogWeight
+import com.example.btl_android_project.presentation.LogItemListDialogFragmentDirections
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -62,6 +64,11 @@ class DashboardFragment : Fragment() {
 
         viewModel.latestWeights.observe(viewLifecycleOwner) { weights ->
             updateWeightChart(weights)
+        }
+
+        binding.cardWeightChart.setOnClickListener {
+            val action = DashboardFragmentDirections.actionDashboardFragmentToLogWeightFragment()
+            findNavController().navigate(action)
         }
 
     }

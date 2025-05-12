@@ -70,7 +70,11 @@
         android:id="@+id/dashboardFragment"
         android:name="com.example.btl_android_project.presentation.dashboard.DashboardFragment"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_dashboardFragment_to_logWeightFragment"
+            app:destination="@id/logWeightFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailExerciseFragment"
         android:name="com.example.btl_android_project.presentation.log_exercise.DetailExerciseFragment"
