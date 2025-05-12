@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.LogWeight
-import com.example.btl_android_project.local.entity.UserProfile
 import com.example.btl_android_project.repository.LogWeightRepository
 import com.example.btl_android_project.repository.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,8 +90,6 @@ class LogWeightViewModel @Inject constructor(
             }
         }
     }
-
-
 
 
     fun deleteLogWeight(logWeightId: String) {

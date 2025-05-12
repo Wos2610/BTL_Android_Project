@@ -6,14 +6,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentLogExerciseBinding
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LogExerciseFragment : Fragment() {
+
     private var _binding: FragmentLogExerciseBinding? = null
     private val binding get() = _binding!!
+
+    private val fragmentList = listOf(
+        MyExercisesFragment(),
+        BrowseAllExercisesFragment()
+    )
 
     companion object {
         fun newInstance() = LogExerciseFragment()
@@ -31,6 +44,30 @@ class LogExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnCreateExercise.setOnClickListener {
+            val action = LogExerciseFragmentDirections.actionLogExerciseFragmentToNewExerciseFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.viewPager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount() = fragmentList.size
+            override fun createFragment(position: Int): Fragment {
+                return fragmentList[position] as Fragment
+            }
+        }
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = if (position == 0) "MY EXERCISES" else "BROWSE ALL"
+        }.attach()
+
+        binding.etSearch.addTextChangedListener {
+            val query = it.toString()
+            val currentFragment = fragmentList[binding.viewPager.currentItem]
+            if (currentFragment is SearchableExerciseList) {
+                currentFragment.search(query)
+            }
+        }
+
     }
 
     override fun onDestroyView() {
