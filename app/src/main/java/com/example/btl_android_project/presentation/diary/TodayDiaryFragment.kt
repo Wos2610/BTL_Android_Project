@@ -97,7 +97,8 @@ class TodayDiaryFragment : Fragment() {
             MealSection("Breakfast", 0, emptyList()),
             MealSection("Lunch", 0, emptyList()),
             MealSection("Dinner", 0, emptyList()),
-            MealSection("Snacks", 0, emptyList())
+            MealSection("Snacks", 0, emptyList()),
+            MealSection("Water", 0, emptyList()),
         )
 
         adapter = MealSectionAdapter(
@@ -127,7 +128,6 @@ class TodayDiaryFragment : Fragment() {
                         R.id.action_edit -> {
                             val dialogBinding = DialogEditMealBinding.inflate(LayoutInflater.from(view.context))
 
-                            // Gán dữ liệu vào dialog
                             dialogBinding.editTextName.setText(mealItem.name)
                             dialogBinding.editTextCalories.setText(mealItem.calories.toString())
                             dialogBinding.editTextServings.setText(mealItem.servings.toString())

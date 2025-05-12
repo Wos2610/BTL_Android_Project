@@ -34,4 +34,5 @@ interface LogWaterDao {
 
     @Query("SELECT * FROM log_water WHERE dailyDiaryId = :dailyDiaryId")
     suspend fun getLogWaterByDailyDiaryId(dailyDiaryId: String): List<LogWater>?
+
 }

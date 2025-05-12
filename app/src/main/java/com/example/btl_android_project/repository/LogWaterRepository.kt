@@ -38,11 +38,11 @@ class LogWaterRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteLogWater(logWater: LogWater) {
+    suspend fun deleteLogWater(logWaterId: String) {
         try {
-            logWaterDao.deleteLogWater(logWater)
-            logWaterFireStoreDataSource.deleteLogWater(logWater.id.toString())
-            Timber.d("LogWater deleted with ID: ${logWater.id}")
+            logWaterDao.deleteLogWaterById(logWaterId)
+            logWaterFireStoreDataSource.deleteLogWater(logWaterId)
+            Timber.d("LogWater deleted with ID: ${logWaterId}")
         } catch (e: Exception) {
             Timber.e("Error deleting LogWater: ${e.message}")
             throw e

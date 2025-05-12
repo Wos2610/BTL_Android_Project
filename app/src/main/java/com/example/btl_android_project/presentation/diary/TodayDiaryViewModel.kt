@@ -342,6 +342,14 @@ class TodayDiaryViewModel @Inject constructor(
                     onSuccess()
                 }
             }
+            else if(mealItem.type == Type.WATER) {
+                viewModelScope.launch {
+                    waterLogRepository.deleteLogWater(
+                        logWaterId = mealItem.id
+                    )
+                    onSuccess()
+                }
+            }
         }
         else{
             onFailure()
