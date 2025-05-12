@@ -9,6 +9,7 @@ import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.FoodDao
+import com.example.btl_android_project.local.dao.LogWaterDao
 import com.example.btl_android_project.local.dao.LogWeightDao
 import com.example.btl_android_project.local.dao.MealDao
 import com.example.btl_android_project.local.dao.MealFoodCrossRefDao
@@ -24,6 +25,7 @@ import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.Food
+import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.entity.LogWeight
 import com.example.btl_android_project.local.entity.Meal
 import com.example.btl_android_project.local.entity.MealFoodCrossRef
@@ -41,6 +43,7 @@ import com.example.btl_android_project.local.entity.UserProfile
         StaticFoodEntity::class,
         Recipe::class,
         Food::class,
+        LogWater::class,
         LogWeight::class,
         Meal::class,
         MealFoodCrossRef::class,
@@ -52,7 +55,7 @@ import com.example.btl_android_project.local.entity.UserProfile
         UserProfile::class,
         DailyDiarySnapshot::class,
                ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class, RecipeTypeConverters::class)
@@ -61,6 +64,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun staticRecipeDao(): StaticRecipeDao
     abstract fun staticFoodDao(): StaticFoodDao
     abstract fun foodDao(): FoodDao
+    abstract fun logWaterDao(): LogWaterDao
     abstract fun logWeightDao(): LogWeightDao
     abstract fun recipeDao(): RecipeDao
     abstract fun mealDao(): MealDao

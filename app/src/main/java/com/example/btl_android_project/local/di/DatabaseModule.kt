@@ -8,6 +8,7 @@ import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.FoodDao
+import com.example.btl_android_project.local.dao.LogWaterDao
 import com.example.btl_android_project.local.dao.LogWeightDao
 import com.example.btl_android_project.local.dao.MealFoodCrossRefDao
 import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
@@ -45,6 +46,10 @@ class DatabaseModule {
         return appDatabase.foodDao()
     }
 
+    @Provides
+    fun provideLogWaterDao(appDatabase: AppDatabase): LogWaterDao {
+        return appDatabase.logWaterDao()
+        
     @Provides
     fun provideLogWeightDao(appDatabase: AppDatabase): LogWeightDao {
         return appDatabase.logWeightDao()
