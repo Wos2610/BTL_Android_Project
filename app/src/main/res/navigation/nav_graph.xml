@@ -322,6 +322,9 @@
             app:destination="@id/logAllFragment"
             app:popUpTo="@id/logItemListDialogFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_logItemListDialogFragment_to_logWeightFragment"
+            app:destination="@id/logWeightFragment" />
     </dialog>
     <action
         android:id="@+id/action_global_logItemListDialogFragment"
