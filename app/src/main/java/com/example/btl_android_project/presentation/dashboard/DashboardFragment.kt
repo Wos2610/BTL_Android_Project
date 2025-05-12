@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.btl_android_project.R
 import com.example.btl_android_project.databinding.FragmentDashboardBinding
 import com.example.btl_android_project.local.entity.LogWeight
-import com.example.btl_android_project.presentation.LogItemListDialogFragmentDirections
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -22,7 +21,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 
 @AndroidEntryPoint
@@ -55,7 +53,7 @@ class DashboardFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.todayDiary.collect { diary ->
                     binding.tvGoalResult.text = diary?.caloriesGoal.toString()
-                    binding.tvFoodResult.text = diary?.totalFoodCalories.toString()
+                    binding.tvFoodResult.text = (diary?.totalFoodCalories ?: 0).toString()
                 }
             }
         }

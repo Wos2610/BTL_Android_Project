@@ -29,7 +29,7 @@ class DashboardViewModel @Inject constructor(
 
     fun getTodayDiary(){
         viewModelScope.launch {
-            val diary = dailyDiaryRepository.getDailyDiaryByDate(
+            val diary = dailyDiaryRepository.getOrCreateDailyDiary(
                 userId = currentUserId,
                 date = lodDate,
             )

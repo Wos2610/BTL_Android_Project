@@ -182,13 +182,11 @@ class TodayDiaryViewModel @Inject constructor(
         }
 
 
-        // Calculate total calories for each section
         val breakfastCalories = breakfastItems.sumOf { it.calories }
         val lunchCalories = lunchItems.sumOf { it.calories }
         val dinnerCalories = dinnerItems.sumOf { it.calories }
         val snackCalories = snackItems.sumOf { it.calories }
 
-        // Create and return sections
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
@@ -204,7 +202,6 @@ class TodayDiaryViewModel @Inject constructor(
         val snackItems = mutableListOf<MealItem>()
         val waterItems = mutableListOf<MealItem>()
 
-        // Process foods
         val foodCrossRefs = diaryWithNutrition.diary.id.let { diaryId ->
             foodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diaryId)
         }
