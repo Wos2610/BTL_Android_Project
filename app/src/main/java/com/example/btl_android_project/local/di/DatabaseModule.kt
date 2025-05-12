@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.btl_android_project.local.AppDatabase
 import com.example.btl_android_project.local.dao.DailyDiaryDao
+import com.example.btl_android_project.local.dao.DiaryExerciseCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryFoodCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
@@ -110,6 +111,11 @@ class DatabaseModule {
     @Provides
     fun provideDailyDiarySnapshotDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.DailyDiarySnapshotDao {
         return appDatabase.dailyDiarySnapshotDao()
+    }
+
+    @Provides
+    fun provideDiaryExerciseCrossRefDao(appDatabase: AppDatabase) : DiaryExerciseCrossRefDao {
+        return appDatabase.diaryExerciseCrossRefDao()
     }
 
     @Singleton

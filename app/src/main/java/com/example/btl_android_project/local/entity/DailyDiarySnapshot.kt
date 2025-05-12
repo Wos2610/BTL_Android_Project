@@ -33,6 +33,8 @@ data class DailyDiarySnapshot(
     val recipes: List<DiaryRecipeSnapshot> = emptyList(),
 
     val waters : List<LogWaterSnapshot> = emptyList(),
+
+    val exercises : List<LogExerciseSnapshot> = emptyList(),
     
     val createdAt: Long = System.currentTimeMillis(),
     val syncedToFirestore: Boolean = false

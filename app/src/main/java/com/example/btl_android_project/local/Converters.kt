@@ -6,6 +6,7 @@ import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DairyFoodSnapshot
 import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
+import com.example.btl_android_project.local.entity.LogExerciseSnapshot
 import com.example.btl_android_project.local.entity.LogWaterSnapshot
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.local.entity.RecipeIngredient
@@ -173,6 +174,17 @@ class Converters {
     @TypeConverter
     fun toLogWaterSnapshotList(value: String): List<LogWaterSnapshot> {
         val listType = object : TypeToken<List<LogWaterSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromExerciseSnapshotList(value: List<LogExerciseSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toExerciseSnapshotList(value: String): List<LogExerciseSnapshot> {
+        val listType = object : TypeToken<List<LogExerciseSnapshot>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

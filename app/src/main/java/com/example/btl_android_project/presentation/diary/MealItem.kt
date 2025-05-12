@@ -16,5 +16,6 @@ enum class Type {
     FOOD,
     RECIPE,
     MEAL,
-    WATER
+    WATER,
+    EXERCISE,
 }

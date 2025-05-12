@@ -97,7 +97,8 @@ class TodayDiaryViewModel @Inject constructor(
                         MealSection("Lunch", 0, emptyList()),
                         MealSection("Dinner", 0, emptyList()),
                         MealSection("Snacks", 0, emptyList()),
-                        MealSection("Water", 0, emptyList())
+                        MealSection("Water", 0, emptyList()),
+                        MealSection("Exercise", 0, emptyList())
                     )
                     onSuccess(emptySections)
                 }
@@ -128,7 +129,8 @@ class TodayDiaryViewModel @Inject constructor(
                         MealSection("Lunch", 0, emptyList()),
                         MealSection("Dinner", 0, emptyList()),
                         MealSection("Snacks", 0, emptyList()),
-                        MealSection("Water", 0, emptyList())
+                        MealSection("Water", 0, emptyList()),
+                        MealSection("Exercise", 0, emptyList())
                     )
                     onSuccess(emptySections)
                 }
@@ -202,6 +204,7 @@ class TodayDiaryViewModel @Inject constructor(
         val dinnerItems = mutableListOf<MealItem>()
         val snackItems = mutableListOf<MealItem>()
         val waterItems = mutableListOf<MealItem>()
+        val exerciseItems = mutableListOf<MealItem>()
 
         val foodCrossRefs = diaryWithNutrition.diary.id.let { diaryId ->
             foodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diaryId)
@@ -279,6 +282,9 @@ class TodayDiaryViewModel @Inject constructor(
                 servings = 1
             )
             waterItems.add(item)
+        }
+        
+        val exerciseLogs = diaryWithNutrition.diary.id.let { diaryId ->
         }
 
 
