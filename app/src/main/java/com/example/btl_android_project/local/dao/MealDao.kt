@@ -38,7 +38,7 @@ interface MealDao {
 
     @Transaction
     @Query("SELECT * FROM meals WHERE id = :mealId")
-    suspend fun getMealWithFoodsAndRecipes(mealId: Int): MealWithFoodsAndRecipes
+    suspend fun getMealWithFoodsAndRecipes(mealId: String): MealWithFoodsAndRecipes?
 
     @Query("SELECT * FROM meals WHERE userId = :userId ORDER BY id DESC")
     fun getMealsByUserId(userId: String): Flow<List<Meal>>
@@ -61,4 +61,5 @@ interface MealDao {
 
     @Query("DELETE FROM meals")
     suspend fun deleteAllMeals(): Int
+
 }

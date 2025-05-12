@@ -50,7 +50,7 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
                 "userId" to crossRef.userId
             )
             
-            val documentId = "${crossRef.diaryId}_${crossRef.mealId}"
+            val documentId = "${crossRef.diaryId}_${crossRef.mealId}_${crossRef.mealType.name}"
             
             firestore.collection(COLLECTION_NAME)
                 .document(documentId)
@@ -127,6 +127,49 @@ class DiaryMealCrossRefFireStoreDataSourceImpl @Inject constructor(
             count
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+    suspend fun deleteByUserIdDiaryIdMealIdMealType(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: String
+    ): Int {
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${mealId}_$mealType"
+
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .delete()
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
+        }
+    }
+
+    suspend fun updateByUserIdDiaryIdMealIdMealType(
+        userId: String,
+        diaryId: String,
+        mealId: String,
+        mealType: String,
+        servings: Int
+    ): Int {
+        return suspendCoroutine { continuation ->
+            val documentId = "${diaryId}_${mealId}_$mealType"
+
+            firestore.collection(COLLECTION_NAME)
+                .document(documentId)
+                .update("servings", servings)
+                .addOnSuccessListener {
+                    continuation.resume(1)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
         }
     }
     

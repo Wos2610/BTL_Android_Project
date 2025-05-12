@@ -31,6 +31,7 @@ class LogFoodFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: LogFoodViewModel by viewModels()
+
     private lateinit var foodAdapter: FoodAdapter
 
     private var isFromCreateMeal: Boolean = false
@@ -54,8 +55,6 @@ class LogFoodFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFromCreateMeal = arguments?.getBoolean(ARG_IS_FROM_CREATE_MEAL, false) ?: false
-
-        viewModel.syncFoodsFromFirestore()
         viewModel.loadFoods()
     }
 

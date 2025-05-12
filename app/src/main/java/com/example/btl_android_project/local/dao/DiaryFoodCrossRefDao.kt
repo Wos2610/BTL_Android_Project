@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 
@@ -26,6 +27,9 @@ interface DiaryFoodCrossRefDao {
     suspend fun insertDiaryFoodCrossRef(crossRef: DiaryFoodCrossRef): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(crossRefs: List<DiaryFoodCrossRef>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllDiaryFoodCrossRefs(crossRefs: List<DiaryFoodCrossRef>)
 
     @Update
@@ -37,6 +41,37 @@ interface DiaryFoodCrossRefDao {
     @Query("DELETE FROM diary_food_cross_ref WHERE diaryId = :diaryId")
     suspend fun deleteDiaryFoodCrossRefsByDiaryId(diaryId: String): Int
 
+    @Query("DELETE FROM diary_food_cross_ref WHERE diaryId = :diaryId")
+    fun deletesByDiaryId(diaryId: String): Int
+
     @Query("DELETE FROM diary_food_cross_ref")
     suspend fun deleteAllDiaryFoodCrossRefs()
+
+    @Transaction
+    suspend fun deleteAndInsertInTransaction(diaryId: String, crossRefs: List<DiaryFoodCrossRef>) {
+        deletesByDiaryId(diaryId)
+        if (crossRefs.isNotEmpty()) {
+            insertAll(crossRefs)
+        }
+    }
+
+    @Query("SELECT * FROM diary_food_cross_ref WHERE foodId = :foodId")
+    suspend fun getDiaryFoodCrossRefByFoodId(foodId: String): List<DiaryFoodCrossRef>?
+
+    @Query("DELETE FROM diary_food_cross_ref WHERE userId = :userId AND diaryId = :diaryId AND foodId = :foodId AND mealType = :mealType")
+    suspend fun deleteByUserIdDiaryIdFoodIdMealType(
+        userId: String,
+        diaryId: String,
+        foodId: String,
+        mealType: String
+    )
+
+    @Query("UPDATE diary_food_cross_ref SET servings = :servings WHERE userId = :userId AND diaryId = :diaryId AND foodId = :foodId AND mealType = :mealType")
+    suspend fun updateDiaryFoodCrossRefByUserIdDiaryIdFoodIdMealType(
+        userId: String,
+        diaryId: String,
+        foodId: String,
+        mealType: String,
+        servings: Int
+    )
 }

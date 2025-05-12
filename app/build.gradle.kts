@@ -101,4 +101,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 }

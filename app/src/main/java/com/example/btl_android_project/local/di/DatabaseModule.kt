@@ -9,6 +9,7 @@ import com.example.btl_android_project.local.dao.DiaryMealCrossRefDao
 import com.example.btl_android_project.local.dao.DiaryRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.FoodDao
 import com.example.btl_android_project.local.dao.LogWaterDao
+import com.example.btl_android_project.local.dao.LogWeightDao
 import com.example.btl_android_project.local.dao.MealFoodCrossRefDao
 import com.example.btl_android_project.local.dao.MealRecipeCrossRefDao
 import com.example.btl_android_project.local.dao.StaticFoodDao
@@ -48,6 +49,10 @@ class DatabaseModule {
     @Provides
     fun provideLogWaterDao(appDatabase: AppDatabase): LogWaterDao {
         return appDatabase.logWaterDao()
+        
+    @Provides
+    fun provideLogWeightDao(appDatabase: AppDatabase): LogWeightDao {
+        return appDatabase.logWeightDao()
     }
 
     @Provides
@@ -93,6 +98,11 @@ class DatabaseModule {
     @Provides
     fun provideUserProfileDao(appDatabase: AppDatabase) : UserProfileDao {
         return appDatabase.userProfileDao()
+    }
+
+    @Provides
+    fun provideDailyDiarySnapshotDao(appDatabase: AppDatabase) : com.example.btl_android_project.local.dao.DailyDiarySnapshotDao {
+        return appDatabase.dailyDiarySnapshotDao()
     }
 
     @Singleton

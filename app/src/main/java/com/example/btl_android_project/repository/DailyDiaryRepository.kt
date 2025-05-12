@@ -6,7 +6,6 @@ import com.example.btl_android_project.local.dao.DailyDiaryDao
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
@@ -17,21 +16,9 @@ class DailyDiaryRepository @Inject constructor(
     private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
     private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
     private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
-    private val  userProfileRepository: UserProfileRepository,
+    private val userProfileRepository: UserProfileRepository,
 ) {
     private val TAG = "DailyDiaryRepository"
-
-    suspend fun getDailyDiariesByUserId(userId: String): Flow<List<DailyDiary>> {
-        return withContext(Dispatchers.IO) {
-            dailyDiaryDao.getDailyDiariesByUserId(userId)
-        }
-    }
-
-    suspend fun getDailyDiaryById(id: Int): DailyDiary? {
-        return withContext(Dispatchers.IO) {
-            dailyDiaryDao.getDailyDiaryById(id)
-        }
-    }
 
     suspend fun getDailyDiaryByDate(userId: String, date: LocalDate): DailyDiary? {
         return withContext(Dispatchers.IO) {
@@ -45,31 +32,10 @@ class DailyDiaryRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteDailyDiary(dailyDiary: DailyDiary) {
-        withContext(Dispatchers.IO) {
-            dailyDiaryDao.deleteDailyDiary(dailyDiary)
-            Log.d(TAG, "Deleted daily diary with ID: ${dailyDiary.id}")
-            
-            // Delete from Firestore
-            diaryFireStoreDataSource.deleteDailyDiary(dailyDiary)
-        }
-    }
-    
-
-    suspend fun pullFromFireStore(userId: String) {
-        withContext(Dispatchers.IO) {
-            Log.d(TAG, "Pulling daily diaries from Firestore")
-            val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
-            Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore")
-            dailyDiaryDao.deleteAllDailyDiaries()
-            dailyDiaryDao.insertAllDailyDiaries(diaries)
-        }
-    }
-
     suspend fun getOrCreateDailyDiary(userId: String, date: LocalDate): DailyDiary {
         return withContext(Dispatchers.IO) {
             val existingDiary = dailyDiaryDao.getDailyDiaryByDate(userId, date)
-            
+
             if (existingDiary != null) {
                 existingDiary
             } else {
@@ -97,18 +63,18 @@ class DailyDiaryRepository @Inject constructor(
             }
         }
     }
-    
 
-    suspend fun addWater(diaryId: Int, waterMl: Int) {
+
+    suspend fun addWater(diaryId: String, waterMl: Int) {
         withContext(Dispatchers.IO) {
             val diary = dailyDiaryDao.getDailyDiaryById(diaryId)
             if (diary != null) {
                 val updatedWater = diary.totalWaterMl + waterMl
                 val updatedDiary = diary.copy(totalWaterMl = updatedWater)
-                
+
                 dailyDiaryDao.updateDailyDiary(updatedDiary)
                 Log.d(TAG, "Updated water for diary ID: $diaryId, new total: $updatedWater ml")
-                
+
                 // Update in Firestore
                 diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
             }
@@ -120,7 +86,6 @@ class DailyDiaryRepository @Inject constructor(
             dailyDiaryDao.updateDailyDiary(dailyDiary)
             Log.d(TAG, "Updated daily diary with ID: ${dailyDiary.id}")
 
-            // Update in Firestore
             diaryFireStoreDataSource.updateDailyDiary(dailyDiary)
         }
     }
@@ -141,6 +106,88 @@ class DailyDiaryRepository @Inject constructor(
                 diaryRecipeCrossRefRepository.pullFromFireStore(diaryId)
                 diaryMealCrossRefRepository.pullFromFireStore(diaryId)
             }
+        }
+    }
+
+    suspend fun recalculateWhenChanging(userId: String) {
+        withContext(Dispatchers.IO){
+            val today = LocalDate.now()
+            val existingDiary = dailyDiaryDao.getDailyDiaryByDate(userId, today)
+
+            if (existingDiary == null) {
+                Log.d(TAG, "No diary found for user ID: $userId on date: $today")
+                return@withContext
+            }
+
+            Log.d(TAG, "Recalculating diary for user ID: $userId on date: $today")
+
+            val diaryWithAllNutrition = dailyDiaryDao.getDiaryByDate(userId, today)
+
+            if (diaryWithAllNutrition == null) {
+                Log.d(TAG, "No diary found for user ID: $userId on date: $today")
+                return@withContext
+            }
+
+            val diary = diaryWithAllNutrition.diary
+
+            val diaryFoodCrossRefs = diaryFoodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diary.id)
+            val diaryMealCrossRefs = diaryMealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diary.id)
+            val diaryRecipeCrossRefs = diaryRecipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diary.id)
+
+            var totalCalories = 0.0
+            var totalFat = 0.0
+            var totalCarbs = 0.0
+            var totalProtein = 0.0
+
+            diaryFoodCrossRefs?.forEach { crossRef ->
+                val food = diaryWithAllNutrition.foods.find { it.id == crossRef.foodId }
+                food?.let {
+                    totalCalories += it.calories * crossRef.servings
+                    totalFat += it.fat * crossRef.servings
+                    totalCarbs += it.carbs * crossRef.servings
+                    totalProtein += it.protein * crossRef.servings
+                }
+            }
+
+            diaryMealCrossRefs?.forEach { crossRef ->
+                val meal = diaryWithAllNutrition.meals.find { it.id == crossRef.mealId }
+                meal?.let {
+                    totalCalories += it.totalCalories * crossRef.servings
+                    totalFat += it.totalFat * crossRef.servings
+                    totalCarbs += it.totalCarbs * crossRef.servings
+                    totalProtein += it.totalProtein * crossRef.servings
+                }
+
+            }
+
+            diaryRecipeCrossRefs?.forEach { crossRef ->
+                val recipe = diaryWithAllNutrition.recipes.find { it.id == crossRef.recipeId }
+                recipe?.let {
+                    totalCalories += it.calories * crossRef.servings
+                    totalFat += it.fat * crossRef.servings
+                    totalCarbs += it.carbs * crossRef.servings
+                    totalProtein += it.protein * crossRef.servings
+                }
+            }
+
+            val updatedDiary = diary.copy(
+                totalFoodCalories = totalCalories.toFloat(),
+                totalFat = totalFat.toFloat(),
+                totalCarbs = totalCarbs.toFloat(),
+                totalProtein = totalProtein.toFloat()
+            )
+
+            updatedDiary.let {
+                dailyDiaryDao.updateDailyDiary(it)
+                diaryFireStoreDataSource.updateDailyDiary(it)
+            }
+        }
+
+    }
+
+    suspend fun getDailyDiaryById(id: String): DailyDiary? {
+        return withContext(Dispatchers.IO) {
+            dailyDiaryDao.getDailyDiaryById(id)
         }
     }
 }

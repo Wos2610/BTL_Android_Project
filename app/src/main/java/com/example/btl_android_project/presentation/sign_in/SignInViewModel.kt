@@ -5,7 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.repository.DailyDiaryRepository
+import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
+import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
+import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
 import com.example.btl_android_project.repository.FoodRepository
+import com.example.btl_android_project.repository.MealFoodCrossRefRepository
+import com.example.btl_android_project.repository.MealRecipeCrossRefRepository
 import com.example.btl_android_project.repository.MealRepository
 import com.example.btl_android_project.repository.RecipeRepository
 import com.example.btl_android_project.repository.StaticFoodsRepository
@@ -30,6 +35,11 @@ class SignInViewModel @Inject constructor(
     private val mealRepository: MealRepository,
     private val dailyDiaryRepository: DailyDiaryRepository,
     private val userProfileRepository: UserProfileRepository,
+    private val mealFoodCrossRefRepository: MealFoodCrossRefRepository,
+    private val mealRecipeCrossRefRepository: MealRecipeCrossRefRepository,
+    private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
+    private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
+    private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
     val uiState: StateFlow<SignInUiState> = _uiState
@@ -93,8 +103,10 @@ class SignInViewModel @Inject constructor(
                 launch { staticRecipesRepository.pullStaticRecipesFromFireStore() }
                 launch { foodRepository.syncFoodsFromFirestore(userId = currentUserId) }
                 launch { recipeRepository.pullFromFireStore(userId = currentUserId) }
-                launch { mealRepository.pullFromFireStoreByUserId(userId = currentUserId) }
-                launch { dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId) }
+                launch {
+                    mealRepository.pullFromFireStoreByUserId(userId = currentUserId)
+                    dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId)
+                }
             }
         } catch (e: Exception) {
             Log.e("SignInViewModel", "Error loading user data", e)

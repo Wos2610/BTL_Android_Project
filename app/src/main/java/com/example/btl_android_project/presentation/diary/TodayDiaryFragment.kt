@@ -1,16 +1,22 @@
 package com.example.btl_android_project.presentation.diary
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.btl_android_project.MainActivity
+import com.example.btl_android_project.R
+import com.example.btl_android_project.databinding.DialogEditMealBinding
 import com.example.btl_android_project.databinding.FragmentTodayDiaryBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,6 +48,7 @@ class TodayDiaryFragment : Fragment() {
 
         setupRecyclerView()
         setUpDatePicker()
+        setSaveButtonToolBarOnClickListener()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -59,6 +66,19 @@ class TodayDiaryFragment : Fragment() {
 
                 launch {
                     viewModel.dailyDiary.collect { diaryWithNutrition ->
+                        if (diaryWithNutrition != null) {
+                            binding.foodTextView.text = diaryWithNutrition.totalFoodCalories.toString()
+                            binding.goalTextView.text = diaryWithNutrition.caloriesGoal.toString()
+                        }
+                        else{
+                            binding.foodTextView.text = "0"
+                            binding.goalTextView.text = "0"
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.todayDiary.collect { diaryWithNutrition ->
                         if (diaryWithNutrition != null) {
                             binding.foodTextView.text = diaryWithNutrition.diary.totalFoodCalories.toString()
                             binding.goalTextView.text = diaryWithNutrition.diary.caloriesGoal.toString()
@@ -84,7 +104,74 @@ class TodayDiaryFragment : Fragment() {
             MealSection("Snacks", 0, emptyList())
         )
 
-        adapter = MealSectionAdapter(sections)
+        adapter = MealSectionAdapter(
+            sections = sections,
+            onItemLongClick = { mealItem, view, position ->
+                val popup = PopupMenu(view.context, view)
+                popup.menuInflater.inflate(R.menu.menu_meal_item, popup.menu)
+                popup.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.action_delete -> {
+                            viewModel.deleteItemFromDiary(
+                                mealItem = mealItem,
+                                onSuccess = {
+                                    viewModel.getDiaryByDate(
+                                        date = viewModel.selectedDate.value,
+                                        onSuccess = { listMealSection ->
+                                            adapter.updateData(listMealSection)
+                                        }
+                                    )
+                                },
+                                onFailure = {
+                                    Toast.makeText(requireContext(), "Can't delete history item", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                            true
+                        }
+                        R.id.action_edit -> {
+                            val dialogBinding = DialogEditMealBinding.inflate(LayoutInflater.from(view.context))
+
+                            // Gán dữ liệu vào dialog
+                            dialogBinding.editTextName.setText(mealItem.name)
+                            dialogBinding.editTextCalories.setText(mealItem.calories.toString())
+                            dialogBinding.editTextServings.setText(mealItem.servings.toString())
+
+                            AlertDialog.Builder(view.context)
+                                .setTitle("Edit Meal")
+                                .setView(dialogBinding.root)
+                                .setPositiveButton("Save") { _, _ ->
+                                    val newServings = dialogBinding.editTextServings.text.toString().toIntOrNull()
+                                    if (newServings != null) {
+                                        viewModel.updateDiary(
+                                            mealItem = mealItem,
+                                            servings = newServings,
+                                            onSuccess = {
+                                                viewModel.getDiaryByDate(
+                                                    date = viewModel.selectedDate.value,
+                                                    onSuccess = { listMealSection ->
+                                                        adapter.updateData(listMealSection)
+                                                    }
+                                                )
+                                            },
+                                            onFailure = {
+                                                Toast.makeText(view.context, "Can't update history item", Toast.LENGTH_SHORT).show()
+                                            }
+                                        )
+                                    } else {
+                                        Toast.makeText(view.context, "Servings không hợp lệ", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .setNegativeButton("Discard", null)
+                                .show()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+                popup.show()
+            }
+        )
         binding.recyclerView.adapter = adapter
     }
 
@@ -117,5 +204,16 @@ class TodayDiaryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setSaveButtonToolBarOnClickListener() {
+        (requireActivity() as? MainActivity)?.setSaveButtonClickListener {
+            viewModel.saveSnapshot()
+            setSaveButtonVisible()
+        }
+    }
+
+    private fun setSaveButtonVisible() {
+        (requireActivity() as? MainActivity)?.setSaveButtonVisibility(false)
     }
 }

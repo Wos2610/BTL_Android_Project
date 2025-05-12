@@ -108,7 +108,7 @@ class EditRecipeViewModel @Inject constructor(
                 protein = _totalProtein.value,
                 userId = userId,
             )
-            recipeRepository.updateRecipe(newRecipe)
+            recipeRepository.updateRecipe(recipe = newRecipe, userId = userId)
             navigateToLogAllFragment()
         }
     }

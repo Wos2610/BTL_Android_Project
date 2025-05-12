@@ -75,7 +75,13 @@ class LogItemListDialogFragment : BottomSheetDialogFragment() {
                         findNavController().navigate(action)
                     }
                 }
-                2 -> holder.text.text = getString(R.string.weight)
+                2 -> {
+                    holder.text.text = getString(R.string.weight)
+                    holder.itemView.setOnClickListener {
+                        val action = LogItemListDialogFragmentDirections.actionLogItemListDialogFragmentToLogWeightFragment()
+                        findNavController().navigate(action)
+                    }
+                }
                 3 -> holder.text.text = getString(R.string.exercise)
             }
 

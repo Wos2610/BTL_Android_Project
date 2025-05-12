@@ -12,10 +12,9 @@ import javax.inject.Inject
 class RecipeRepository @Inject constructor(
     private val recipeDao: RecipeDao,
     private val recipeFireStoreDataSource: RecipeFireStoreDataSourceImpl,
+    private val mealRepository: MealRepository,
+    private val dailyDiaryRepository: DailyDiaryRepository
 ) {
-
-    fun getAllRecipes(): Flow<List<Recipe>> = recipeDao.getAllRecipes()
-
     suspend fun getRecipesByUserId(userId: String): Flow<List<Recipe>>{
         return withContext(Dispatchers.IO) {
             recipeDao.getRecipesByUserId(userId)
@@ -36,16 +35,12 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun insertRecipes(recipes: List<Recipe>) = recipeDao.insertRecipes(recipes)
-
     suspend fun deleteRecipe(recipeId: String){
         withContext(Dispatchers.IO) {
             recipeFireStoreDataSource.deleteRecipe(recipeId)
             recipeDao.deleteRecipeById(recipeId)
         }
     }
-
-    suspend fun deleteAllRecipes() = recipeDao.deleteAllRecipes()
 
     suspend fun pullFromFireStore(userId: String) {
         withContext(Dispatchers.IO) {
@@ -64,10 +59,12 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun updateRecipe(recipe: Recipe) {
+    suspend fun updateRecipe(recipe: Recipe, userId: String) {
         withContext(Dispatchers.IO) {
             recipeFireStoreDataSource.updateRecipe(recipe)
             recipeDao.updateRecipe(recipe)
+            mealRepository.calculateWhenRecipeChange(recipe.id)
+            dailyDiaryRepository.recalculateWhenChanging(userId = userId)
         }
     }
 }

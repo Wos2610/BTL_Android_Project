@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -68,7 +67,7 @@ class SignInFragment : Fragment() {
                         }
                         is SignInUiState.Error -> {
                             showLoading(false)
-                            Toast.makeText(requireContext(), signInUiState.exception.toString(), Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(requireContext(), signInUiState.exception.toString(), Toast.LENGTH_SHORT).show()
                         }
                         is SignInUiState.NeedsSetup -> {
                             val action = SignInFragmentDirections.actionSignInFragmentToUserWeightGoalFragment()
