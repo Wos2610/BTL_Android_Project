@@ -43,7 +43,7 @@ class DashboardViewModel @Inject constructor(
     fun getLatestWeights() {
         viewModelScope.launch {
             val logs = logWeightRepository.getLast5Weights(currentUserId)
-            _latestWeights.value = logs.sortedBy { it.createdAt }
+            _latestWeights.value = logs.sortedBy { it.date }
         }
     }
 

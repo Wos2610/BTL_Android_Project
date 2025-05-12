@@ -49,6 +49,7 @@ class DatabaseModule {
     @Provides
     fun provideLogWaterDao(appDatabase: AppDatabase): LogWaterDao {
         return appDatabase.logWaterDao()
+    }
         
     @Provides
     fun provideLogWeightDao(appDatabase: AppDatabase): LogWeightDao {

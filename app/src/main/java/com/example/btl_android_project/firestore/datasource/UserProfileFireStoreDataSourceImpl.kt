@@ -64,7 +64,7 @@ class UserProfileFireStoreDataSourceImpl @Inject constructor(
     suspend fun updateUserProfile(userProfile: UserProfile): Result<Unit> {
         return try {
             val data = mapUserProfileToDocument(userProfile)
-            firestore.collection(COLLECTION_NAME).document(userProfile.userId)
+            firestore.collection(COLLECTION_NAME).document(userProfile.userProfileId)
                 .update(data).await()
             Result.success(Unit)
         } catch (e: Exception) {

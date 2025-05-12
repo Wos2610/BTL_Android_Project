@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
+import com.example.btl_android_project.local.entity.LogWeight
 import com.example.btl_android_project.local.entity.UserProfile
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.FoodRepository
+import com.example.btl_android_project.repository.LogWeightRepository
 import com.example.btl_android_project.repository.MealRepository
 import com.example.btl_android_project.repository.RecipeRepository
 import com.example.btl_android_project.repository.StaticFoodsRepository
@@ -18,6 +20,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +34,7 @@ class UserGoalViewModel @Inject constructor(
     private val staticRecipesRepository: StaticRecipesRepository,
     private val staticFoodRepository: StaticFoodsRepository,
     private val foodRepository: FoodRepository,
+    private val logWeightRepository: LogWeightRepository,
     private val recipeRepository: RecipeRepository,
     private val mealRepository: MealRepository,
     private val dailyDiaryRepository: DailyDiaryRepository,
@@ -39,6 +45,10 @@ class UserGoalViewModel @Inject constructor(
 
     var _userPlanInfo: MutableStateFlow<String> = MutableStateFlow("")
     val userPlanInfo: StateFlow<String> = _userPlanInfo.asStateFlow()
+
+    private var signupDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+        Date()
+    )
     fun calculateGoal(
     ) {
         viewModelScope.launch {
@@ -66,6 +76,13 @@ class UserGoalViewModel @Inject constructor(
                 waterGoal = userProfileArgument?.goalWater?.toInt() ?: 0
             )
             userProfileRepository.insertUserProfile(userProfile)
+
+            val logWeight = LogWeight(
+                userId = userId.toString(),
+                weight = userProfileArgument?.currentWeight ?: 0f,
+                date = signupDate
+            )
+            logWeightRepository.insertLogWeight(logWeight)
             loadUserData(
                 onSuccess = onSuccess,
                 onLoading = onLoading,
@@ -84,6 +101,7 @@ class UserGoalViewModel @Inject constructor(
             staticRecipeIngredientRepository.pullStaticRecipeIngredientsFromFireStore()
             staticRecipesRepository.pullStaticRecipesFromFireStore()
             foodRepository.syncFoodsFromFirestore(userId = currentUserId)
+            logWeightRepository.syncLogWeightsFromFirestore(userId = currentUserId)
             recipeRepository.pullFromFireStore(userId = currentUserId)
             mealRepository.pullFromFireStoreByUserId(userId = currentUserId)
             dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId)

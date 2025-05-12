@@ -58,7 +58,7 @@ class LogWeightFragment : Fragment() {
 
             if (weight != null && weight > 0) {
                 if (isUpdateMode && currentLogWeightId != null) {
-                    viewModel.updateLogWeight(currentLogWeightId!!, weight, selectedDate)
+                    viewModel.saveLogWeight(weight, selectedDate)
                 } else {
                     viewModel.saveLogWeight(weight, selectedDate)
                 }
