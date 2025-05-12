@@ -174,7 +174,8 @@ class DailyDiaryRepository @Inject constructor(
                 totalFoodCalories = totalCalories.toFloat(),
                 totalFat = totalFat.toFloat(),
                 totalCarbs = totalCarbs.toFloat(),
-                totalProtein = totalProtein.toFloat()
+                totalProtein = totalProtein.toFloat(),
+                caloriesRemaining = diary.caloriesGoal - totalCalories.toFloat()
             )
 
             updatedDiary.let {
