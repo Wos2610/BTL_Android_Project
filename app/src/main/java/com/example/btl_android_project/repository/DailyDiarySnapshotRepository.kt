@@ -11,6 +11,8 @@ import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
 import com.example.btl_android_project.local.entity.Food
+import com.example.btl_android_project.local.entity.LogWater
+import com.example.btl_android_project.local.entity.LogWaterSnapshot
 import com.example.btl_android_project.local.entity.MealWithFoodsAndRecipes
 import com.example.btl_android_project.local.entity.NutritionSnapshot
 import com.example.btl_android_project.local.entity.Recipe
@@ -27,13 +29,15 @@ class DailyDiarySnapshotRepository @Inject constructor(
     private val diaryFoodCrossRefRepository: DiaryFoodCrossRefRepository,
     private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
     private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
-    private val mealRepository: MealRepository
+    private val mealRepository: MealRepository,
+    private val waterLogRepository: LogWaterRepository
 ) {
     suspend fun createDailyDiarySnapshot(
         diary: DailyDiary,
         foods: List<Pair<Food, DiaryFoodCrossRef>>,
         meals: List<Pair<MealWithFoodsAndRecipes, DiaryMealCrossRef>>,
-        recipes: List<Pair<Recipe, DiaryRecipeCrossRef>>
+        recipes: List<Pair<Recipe, DiaryRecipeCrossRef>>,
+        waters: List<LogWater>
     ): DailyDiarySnapshot {
         // Tạo các snapshot cho food
         val foodSnapshots = foods.map { pair ->
@@ -144,6 +148,17 @@ class DailyDiarySnapshotRepository @Inject constructor(
             )
         }
 
+        val waterSnapshots = waters.map { water ->
+            LogWaterSnapshot(
+                id = water.id,
+                userId = water.userId,
+                dailyDiaryId = water.dailyDiaryId,
+                amountMl = water.amountMl,
+                createdAt = water.createdAt,
+                updatedAt = water.updatedAt
+            )
+        }
+
         // Tạo DailyDiarySnapshot
         val snapshot = DailyDiarySnapshot(
             diaryId = diary.id,
@@ -159,7 +174,8 @@ class DailyDiarySnapshotRepository @Inject constructor(
             caloriesGoal = diary.caloriesGoal,
             foods = foodSnapshots,
             meals = mealSnapshots,
-            recipes = recipeSnapshots
+            recipes = recipeSnapshots,
+            waters = waterSnapshots
         )
 
         val snapshotId = dailyDiarySnapshotFireStoreDataSource.insertDailyDiarySnapshot(snapshot)
@@ -176,19 +192,17 @@ class DailyDiarySnapshotRepository @Inject constructor(
 
             val diary = diaryWithAllNutrition.diary
 
-            // Lấy các CrossRef cho foods, meals, recipes
             val diaryFoodCrossRefs = diaryFoodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diary.id)
             val diaryMealCrossRefs = diaryMealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diary.id)
             val diaryRecipeCrossRefs = diaryRecipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diary.id)
+            val waterLogs = waterLogRepository.getLogWaterByDailyDiaryId(diary.id) ?: emptyList()
 
-            // Ghép cặp foods với các crossRef tương ứng
             val diaryFoods = diaryWithAllNutrition.foods.map { food ->
                 val crossRef = diaryFoodCrossRefs?.find { it.foodId == food.id && it.diaryId == diary.id }
                     ?: return Result.failure(IllegalArgumentException("Food CrossRef not found for food: ${food.id}"))
                 Pair(food, crossRef)
             }
 
-            // Ghép cặp meals với các crossRef tương ứng
             val diaryMeals = diaryWithAllNutrition.meals.map { meal ->
                 val mealWithFoodsAndRecipes = mealRepository.getMealWithFoodsAndRecipes(meal.id)
                 val crossRef = diaryMealCrossRefs?.find { it.mealId == meal.id && it.diaryId == diary.id }
@@ -196,19 +210,18 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 Pair(mealWithFoodsAndRecipes, crossRef)
             }
 
-            // Ghép cặp recipes với các crossRef tương ứng
             val diaryRecipes = diaryWithAllNutrition.recipes.map { recipe ->
                 val crossRef = diaryRecipeCrossRefs?.find { it.recipeId == recipe.id && it.diaryId == diary.id }
                     ?: return Result.failure(IllegalArgumentException("Recipe CrossRef not found for recipe: ${recipe.id}"))
                 Pair(recipe, crossRef)
             }
 
-            // Tạo snapshot
             val snapshot = createDailyDiarySnapshot(
                 diary = diary,
                 foods = diaryFoods,
                 meals = diaryMeals,
-                recipes = diaryRecipes
+                recipes = diaryRecipes,
+                waters = waterLogs
             )
 
             Result.success(snapshot.id)

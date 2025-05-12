@@ -6,6 +6,7 @@ import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DairyFoodSnapshot
 import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
+import com.example.btl_android_project.local.entity.LogWaterSnapshot
 import com.example.btl_android_project.local.entity.Nutrition
 import com.example.btl_android_project.local.entity.RecipeIngredient
 import com.example.btl_android_project.local.entity.StaticRecipeIngredient
@@ -151,6 +152,27 @@ class Converters {
     @TypeConverter
     fun toDairyRecipeSnapshotList(value: String): List<DiaryRecipeSnapshot> {
         val listType = object : TypeToken<List<DiaryRecipeSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromLogWaterSnapshot(value: String?): LogWaterSnapshot? {
+        return value?.let { Gson().fromJson(it, LogWaterSnapshot::class.java) }
+    }
+
+    @TypeConverter
+    fun toLogWaterSnapshot(value: LogWaterSnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromLogWaterSnapshotList(value: List<LogWaterSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toLogWaterSnapshotList(value: String): List<LogWaterSnapshot> {
+        val listType = object : TypeToken<List<LogWaterSnapshot>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

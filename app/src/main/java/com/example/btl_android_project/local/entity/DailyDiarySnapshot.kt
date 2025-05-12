@@ -25,15 +25,14 @@ data class DailyDiarySnapshot(
     val totalCarbs: Float,
     val totalProtein: Float,
     val caloriesGoal: Float,
-    
-    // Các thực phẩm đã thêm
+
     val foods: List<DairyFoodSnapshot> = emptyList(),
-    
-    // Các bữa ăn đã thêm
+
     val meals: List<DiaryMealSnapshot> = emptyList(),
-    
-    // Các công thức đã thêm  
+
     val recipes: List<DiaryRecipeSnapshot> = emptyList(),
+
+    val waters : List<LogWaterSnapshot> = emptyList(),
     
     val createdAt: Long = System.currentTimeMillis(),
     val syncedToFirestore: Boolean = false

@@ -55,7 +55,7 @@ import com.example.btl_android_project.local.entity.UserProfile
         UserProfile::class,
         DailyDiarySnapshot::class,
                ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class, RecipeTypeConverters::class)

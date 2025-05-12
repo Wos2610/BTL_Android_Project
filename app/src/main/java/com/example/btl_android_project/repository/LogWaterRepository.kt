@@ -1,8 +1,8 @@
 package com.example.btl_android_project.repository
 
+import com.example.btl_android_project.firestore.datasource.LogWaterFireStoreDataSourceImpl
 import com.example.btl_android_project.local.dao.LogWaterDao
 import com.example.btl_android_project.local.entity.LogWater
-import com.example.btl_android_project.firestore.datasource.LogWaterFireStoreDataSourceImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -81,6 +81,12 @@ class LogWaterRepository @Inject constructor(
             Timber.d("Synced ${firestoreLogs.size} LogWater entries from Firestore")
         } catch (e: Exception) {
             Timber.e("Error syncing LogWater entries: ${e.message}")
+        }
+    }
+
+    suspend fun getLogWaterByDailyDiaryId(dailyDiaryId: String): List<LogWater>? {
+        return withContext(Dispatchers.IO) {
+            logWaterDao.getLogWaterByDailyDiaryId(dailyDiaryId)
         }
     }
 }

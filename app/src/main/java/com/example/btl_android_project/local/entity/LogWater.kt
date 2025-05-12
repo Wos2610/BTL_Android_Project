@@ -9,9 +9,19 @@ data class LogWater(
     @PrimaryKey
     val id: String = "",
     val userId: String = "",
-    val dailyDiaryId: String,
+    val dailyDiaryId: String = "",
     val amountMl: Int = 0,
 //    val logTime: String = "", // ISO 8601 format
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
-) : Serializable
+) : Serializable {
+    // No-argument constructor for Room
+    constructor() : this(
+        id = "",
+        userId = "",
+        dailyDiaryId = "",
+        amountMl = 0,
+        createdAt = System.currentTimeMillis(),
+        updatedAt = System.currentTimeMillis()
+    )
+}

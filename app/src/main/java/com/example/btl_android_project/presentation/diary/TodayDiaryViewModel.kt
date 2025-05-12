@@ -11,6 +11,7 @@ import com.example.btl_android_project.repository.DailyDiarySnapshotRepository
 import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
 import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
+import com.example.btl_android_project.repository.LogWaterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +27,7 @@ class TodayDiaryViewModel @Inject constructor(
     private val recipeCrossRefRepository: DiaryRecipeCrossRefRepository,
     private val mealCrossRefRepository: DiaryMealCrossRefRepository,
     private val dailyDiarySnapshotRepository: DailyDiarySnapshotRepository,
+    private val waterLogRepository: LogWaterRepository,
 ): ViewModel() {
     val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
     private var _selectedDate : MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
@@ -93,7 +95,8 @@ class TodayDiaryViewModel @Inject constructor(
                         MealSection("Breakfast", 0, emptyList()),
                         MealSection("Lunch", 0, emptyList()),
                         MealSection("Dinner", 0, emptyList()),
-                        MealSection("Snacks", 0, emptyList())
+                        MealSection("Snacks", 0, emptyList()),
+                        MealSection("Water", 0, emptyList())
                     )
                     onSuccess(emptySections)
                 }
@@ -123,7 +126,8 @@ class TodayDiaryViewModel @Inject constructor(
                         MealSection("Breakfast", 0, emptyList()),
                         MealSection("Lunch", 0, emptyList()),
                         MealSection("Dinner", 0, emptyList()),
-                        MealSection("Snacks", 0, emptyList())
+                        MealSection("Snacks", 0, emptyList()),
+                        MealSection("Water", 0, emptyList())
                     )
                     onSuccess(emptySections)
                 }
@@ -147,6 +151,7 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
 
@@ -159,6 +164,7 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
 
@@ -171,8 +177,10 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
+
 
         // Calculate total calories for each section
         val breakfastCalories = breakfastItems.sumOf { it.calories }
@@ -185,7 +193,7 @@ class TodayDiaryViewModel @Inject constructor(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
             MealSection("Dinner", dinnerCalories, dinnerItems),
-            MealSection("Snacks", snackCalories, snackItems)
+            MealSection("Snacks", snackCalories, snackItems),
         )
     }
 
@@ -194,6 +202,7 @@ class TodayDiaryViewModel @Inject constructor(
         val lunchItems = mutableListOf<MealItem>()
         val dinnerItems = mutableListOf<MealItem>()
         val snackItems = mutableListOf<MealItem>()
+        val waterItems = mutableListOf<MealItem>()
 
         // Process foods
         val foodCrossRefs = diaryWithNutrition.diary.id.let { diaryId ->
@@ -212,6 +221,7 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
 
@@ -231,6 +241,7 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
 
@@ -250,8 +261,28 @@ class TodayDiaryViewModel @Inject constructor(
                 MealType.LUNCH -> lunchItems.add(item)
                 MealType.DINNER -> dinnerItems.add(item)
                 MealType.SNACK -> snackItems.add(item)
+                MealType.NONE -> {}
             }
         }
+
+        val waterLogs = diaryWithNutrition.diary.id.let { diaryId ->
+            waterLogRepository.getLogWaterByDailyDiaryId(diaryId)
+        }
+
+        waterLogs?.forEach { waterLog ->
+            val servingText = "${waterLog.amountMl} ml"
+            val item = MealItem(
+                "Water",
+                servingText,
+                waterLog.amountMl,
+                waterLog.id,
+                Type.WATER,
+                mealType = MealType.NONE,
+                servings = 1
+            )
+            waterItems.add(item)
+        }
+
 
         val breakfastCalories = breakfastItems.sumOf { it.calories }
         val lunchCalories = lunchItems.sumOf { it.calories }
@@ -262,7 +293,8 @@ class TodayDiaryViewModel @Inject constructor(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
             MealSection("Dinner", dinnerCalories, dinnerItems),
-            MealSection("Snacks", snackCalories, snackItems)
+            MealSection("Snacks", snackCalories, snackItems),
+            MealSection("Water", waterLogs?.sumOf { it.amountMl } ?: 0, waterItems)
         )
     }
 
