@@ -65,28 +65,24 @@ class TodayDiaryFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.dailyDiary.collect { diaryWithNutrition ->
-                        if (diaryWithNutrition != null) {
-                            binding.foodTextView.text = diaryWithNutrition.totalFoodCalories.toString()
-                            binding.goalTextView.text = diaryWithNutrition.caloriesGoal.toString()
-                        }
-                        else{
-                            binding.foodTextView.text = "0"
-                            binding.goalTextView.text = "0"
-                        }
+                    viewModel.totalCalories.collect { totalCalories ->
+                        binding.goalTextView.text = totalCalories.toString()
                     }
                 }
 
                 launch {
-                    viewModel.todayDiary.collect { diaryWithNutrition ->
-                        if (diaryWithNutrition != null) {
-                            binding.foodTextView.text = diaryWithNutrition.diary.totalFoodCalories.toString()
-                            binding.goalTextView.text = diaryWithNutrition.diary.caloriesGoal.toString()
-                        }
-                        else{
-                            binding.foodTextView.text = "0"
-                            binding.goalTextView.text = "0"
-                        }
+                    viewModel.totalFoodCalories.collect { totalFoodCalories ->
+                        binding.foodTextView.text = totalFoodCalories.toString()
+                    }
+                }
+                launch {
+                    viewModel.totalExerciseCalories.collect { totalExerciseCalories ->
+                        binding.exerciseTextView.text = totalExerciseCalories.toString()
+                    }
+                }
+                launch {
+                    viewModel.totalRemainingCalories.collect { totalRemainingCalories ->
+                        binding.remainingTextView.text = totalRemainingCalories.toString()
                     }
                 }
             }

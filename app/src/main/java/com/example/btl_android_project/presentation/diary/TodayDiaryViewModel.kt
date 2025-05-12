@@ -41,6 +41,17 @@ class TodayDiaryViewModel @Inject constructor(
     private var _todayDiary: MutableStateFlow<DiaryWithAllNutrition?> = MutableStateFlow(null)
     val todayDiary = _todayDiary.asStateFlow()
 
+    private var _totalCalories: MutableStateFlow<Int> = MutableStateFlow(0)
+    val totalCalories = _totalCalories.asStateFlow()
+
+    private var _totalFoodCalories: MutableStateFlow<Int> = MutableStateFlow(0)
+    val totalFoodCalories = _totalFoodCalories.asStateFlow()
+
+    private var _totalExerciseCalories: MutableStateFlow<Int> = MutableStateFlow(0)
+    val totalExerciseCalories = _totalExerciseCalories.asStateFlow()
+
+    private var _totalRemainingCalories: MutableStateFlow<Int> = MutableStateFlow(0)
+    val totalRemainingCalories = _totalRemainingCalories.asStateFlow()
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
@@ -66,9 +77,18 @@ class TodayDiaryViewModel @Inject constructor(
                 _todayDiary.value = diaryWithNutrition
 
                 if (diaryWithNutrition != null) {
+                    _totalCalories.value = diaryWithNutrition.diary.caloriesGoal.toInt()
+                    _totalFoodCalories.value = diaryWithNutrition.diary.totalFoodCalories.toInt()
+                    _totalExerciseCalories.value = diaryWithNutrition.diary.totalExerciseCalories.toInt()
+                    _totalRemainingCalories.value = diaryWithNutrition.diary.caloriesRemaining.toInt()
                     val mealSections = transformTodayDiaryDataToMealSections(diaryWithNutrition)
                     onSuccess(mealSections)
                 } else {
+                    _totalCalories.value = 0
+                    _totalFoodCalories.value = 0
+                    _totalExerciseCalories.value = 0
+                    _totalRemainingCalories.value = 0
+
                     val emptySections = listOf(
                         MealSection("Breakfast", 0, emptyList()),
                         MealSection("Lunch", 0, emptyList()),
@@ -87,9 +107,18 @@ class TodayDiaryViewModel @Inject constructor(
                 _dailyDiary.value = diarySnapshot
 
                 if (diarySnapshot != null) {
+                    _totalCalories.value = diarySnapshot.caloriesGoal.toInt()
+                    _totalFoodCalories.value = diarySnapshot.totalFoodCalories.toInt()
+                    _totalExerciseCalories.value = diarySnapshot.totalExerciseCalories.toInt()
+                    _totalRemainingCalories.value = diarySnapshot.caloriesRemaining.toInt()
                     val mealSections = transformDiaryDataToMealSections(diarySnapshot)
                     onSuccess(mealSections)
                 } else {
+                    _totalCalories.value = 0
+                    _totalFoodCalories.value = 0
+                    _totalExerciseCalories.value = 0
+                    _totalRemainingCalories.value = 0
+
                     val emptySections = listOf(
                         MealSection("Breakfast", 0, emptyList()),
                         MealSection("Lunch", 0, emptyList()),
