@@ -216,6 +216,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.todayDiaryFragment -> getString(R.string.today_diary)
                 R.id.userWeightGoalFragment -> getString(R.string.user_weight_goal)
                 R.id.userActivityLevelFragment -> getString(R.string.user_baseline_activity_level)
+                R.id.logWaterFragment -> getString(R.string.log_water)
+                R.id.logWeightFragment -> getString(R.string.log_weight)
+                R.id.logExerciseFragment -> getString(R.string.log_exercise)
                 else -> ""
             }
             supportActionBar?.title = title

@@ -55,6 +55,9 @@
     <string name="user_baseline_activity_level">Select Activity Level</string>
     <string name="user_basic_info">Basic Info</string>
     <string name="user_personal_info">Personal Info</string>
+    <string name="log_water">Log Water</string>
+    <string name="log_weight">Log Weight</string>
+    <string name="log_exercise">Log Exercise</string>
 
     <string-array name="vietnam_provinces">
         <item>An Giang</item>

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
+import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.enums.MealType
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.DailyDiarySnapshotRepository
@@ -397,6 +398,21 @@ class TodayDiaryViewModel @Inject constructor(
                         mealType = mealItem.mealType,
                         servings = servings
                     )
+                    onSuccess()
+                }
+            }
+            else if(mealItem.type == Type.WATER) {
+                viewModelScope.launch {
+                    val newLogWater = LogWater(
+                        id = mealItem.id,
+                        userId = currentUserId,
+                        dailyDiaryId = todayDiary.value!!.diary.id,
+                        amountMl = servings,
+                        updatedAt = System.currentTimeMillis()
+                    )
+
+                    waterLogRepository.updateLogWater(newLogWater)
+
                     onSuccess()
                 }
             }
