@@ -74,4 +74,7 @@ interface DiaryFoodCrossRefDao {
         mealType: String,
         servings: Int
     )
+
+    @Query("DELETE FROM diary_food_cross_ref WHERE diaryId IN (:diaryIds)")
+    suspend fun deleteAllForDiaries(diaryIds: List<String>)
 }

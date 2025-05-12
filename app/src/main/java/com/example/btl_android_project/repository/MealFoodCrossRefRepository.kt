@@ -66,4 +66,12 @@ class MealFoodCrossRefRepository @Inject constructor(
             mealFoodCrossRefDao.getMealFoodCrossRefByFoodId(foodId)
         }
     }
+
+    suspend fun pullFromFireStoreByMealIds(mealIds: List<String>) {
+        withContext(Dispatchers.IO) {
+            val allCrossRefs = mealFoodCrossRefFireStoreDataSource.getAllByMealIds(mealIds)
+            mealFoodCrossRefDao.deleteAllForMeals(mealIds)
+            mealFoodCrossRefDao.insertAll(allCrossRefs)
+        }
+    }
 }

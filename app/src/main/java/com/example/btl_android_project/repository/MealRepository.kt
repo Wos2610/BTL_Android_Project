@@ -13,7 +13,9 @@ import com.example.btl_android_project.presentation.log_meal.MealItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -216,17 +218,55 @@ class MealRepository @Inject constructor(
 
     suspend fun pullFromFireStoreByUserId(userId: String) {
         withContext(Dispatchers.IO) {
-            Log.d("MealRepository", "Pulling meals from Firestore by user ID: $userId")
-            val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
-            Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore")
-            mealDao.deleteAllMeals()
-            mealDao.insertAllMeals(meals)
+            try {
+                Log.d("MealRepository", "Pulling meals from Firestore by user ID: $userId")
+                val startTime = System.currentTimeMillis()
 
-            meals.forEach { meal ->
-                val mealId = meal.id
-                Log.d("MealRepository", "Pulling food and recipe cross refs for meal ID: $mealId")
-                mealFoodCrossRefRepository.pullFromFireStoreByMealId(mealId)
-                mealRecipeCrossRefRepository.pullFromFireStoreByMealId(mealId)
+                val meals = mealFireStoreDataSource.getAllMealsByUser(userId)
+                Log.d("MealRepository", "Pulled ${meals.size} meals from Firestore in ${System.currentTimeMillis() - startTime}ms")
+
+                if (meals.isEmpty()) {
+                    Log.d("MealRepository", "No meals found for user $userId")
+                    return@withContext
+                }
+
+                mealDao.deleteAllMeals()
+                mealDao.insertAllMeals(meals)
+
+                val mealIds = meals.map { it.id }
+
+                val pullCrossRefsTime = System.currentTimeMillis()
+                coroutineScope {
+                    val foodCrossRefJob = launch {
+                        try {
+                            val foodStartTime = System.currentTimeMillis()
+                            mealFoodCrossRefRepository.pullFromFireStoreByMealIds(mealIds)
+                            Log.d("MealRepository", "Pulled food cross refs for ${mealIds.size} meals in ${System.currentTimeMillis() - foodStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e("MealRepository", "Error pulling food cross refs", e)
+                        }
+                    }
+
+                    val recipeCrossRefJob = launch {
+                        try {
+                            val recipeStartTime = System.currentTimeMillis()
+                            mealRecipeCrossRefRepository.pullFromFireStoreByMealIds(mealIds)
+                            Log.d("MealRepository", "Pulled recipe cross refs for ${mealIds.size} meals in ${System.currentTimeMillis() - recipeStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e("MealRepository", "Error pulling recipe cross refs", e)
+                        }
+                    }
+
+                    foodCrossRefJob.join()
+                    recipeCrossRefJob.join()
+                }
+
+                Log.d("MealRepository", "Completed pulling cross refs in ${System.currentTimeMillis() - pullCrossRefsTime}ms")
+                Log.d("MealRepository", "Total meal sync completed in ${System.currentTimeMillis() - startTime}ms")
+
+            } catch (e: Exception) {
+                Log.e("MealRepository", "Error pulling meals from Firestore", e)
+                throw e
             }
         }
     }

@@ -5,6 +5,7 @@ import com.example.btl_android_project.local.enums.MealType
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -193,5 +194,53 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+    suspend fun getDiaryFoodCrossRefByUserId(userId: String): List<DiaryFoodCrossRef> {
+        return try {
+            val snapshot = firestore.collection(COLLECTION_NAME)
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+            mapSnapshotToDiaryFoodCrossRefs(snapshot)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    suspend fun getAllByDiaryIds(diaryIds: List<String>): List<DiaryFoodCrossRef> {
+        if (diaryIds.isEmpty()) {
+            return emptyList()
+        }
+
+        val result = mutableListOf<DiaryFoodCrossRef>()
+
+        // Xử lý theo batch để tránh vượt quá giới hạn truy vấn Firestore
+        val batchSize = 10 // Firestore giới hạn tối đa 10 phần tử cho mệnh đề IN
+        val startTime = System.currentTimeMillis()
+
+        diaryIds.chunked(batchSize).forEach { diaryIdBatch ->
+            Timber.d("Fetching food cross refs for diary batch size: ${diaryIdBatch.size}")
+
+            try {
+                val snapshot = firestore.collection(COLLECTION_NAME)
+                    .whereIn("diaryId", diaryIdBatch)
+                    .get()
+                    .await()
+
+                val batchResults = snapshot.documents.mapNotNull {
+                    it.toObject(DiaryFoodCrossRef::class.java)
+                }
+
+                result.addAll(batchResults)
+                Timber.d("Fetched ${batchResults.size} food cross refs for this batch")
+            } catch (e: Exception) {
+                Timber.e(e, "Error fetching food cross refs for diary batch: ${e.message}")
+            }
+        }
+
+        val elapsedTime = System.currentTimeMillis() - startTime
+        Timber.d("Total diary-food cross refs fetched: ${result.size} in ${elapsedTime}ms")
+        return result
     }
 }

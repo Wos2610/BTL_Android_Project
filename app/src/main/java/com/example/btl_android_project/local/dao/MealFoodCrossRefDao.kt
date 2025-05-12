@@ -46,4 +46,7 @@ interface MealFoodCrossRefDao {
             insertAll(crossRefs)
         }
     }
+
+    @Query("DELETE FROM meal_recipe_cross_ref WHERE mealId IN (:mealIds)")
+    suspend fun deleteAllForMeals(mealIds: List<String>)
 }

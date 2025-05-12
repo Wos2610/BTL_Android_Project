@@ -64,4 +64,24 @@ class DiaryMealCrossRefRepository @Inject constructor(
             diaryMealCrossRefFireStoreDataSource.updateByUserIdDiaryIdMealIdMealType(userId, diaryId, mealId, mealType.name, servings)
         }
     }
+
+    suspend fun pullFromFireStoreByUserId(userId: String) {
+        withContext(Dispatchers.IO) {
+            Log.d(TAG, "Pulling diary-meal cross references from Firestore for userId=$userId")
+            val crossRefs = diaryMealCrossRefFireStoreDataSource.getDiaryMealCrossRefsByUserId(userId)
+            Log.d(TAG, "Pulled ${crossRefs.size} diary-meal cross references from Firestore")
+            if (crossRefs.isNotEmpty()) {
+                diaryMealCrossRefDao.deleteAllDiaryMealCrossRefs()
+                diaryMealCrossRefDao.insertAll(crossRefs)
+            }
+        }
+    }
+
+    suspend fun pullFromFireStoreByDiaryIds(diaryIds: List<String>) {
+        withContext(Dispatchers.IO) {
+            val allCrossRefs = diaryMealCrossRefFireStoreDataSource.getAllByDiaryIds(diaryIds)
+            diaryMealCrossRefDao.deleteAllForDiaries(diaryIds)
+            diaryMealCrossRefDao.insertAll(allCrossRefs)
+        }
+    }
 }

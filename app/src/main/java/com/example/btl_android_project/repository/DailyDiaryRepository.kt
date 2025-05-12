@@ -6,6 +6,8 @@ import com.example.btl_android_project.local.dao.DailyDiaryDao
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
@@ -92,19 +94,66 @@ class DailyDiaryRepository @Inject constructor(
 
     suspend fun pullFromFireStoreByUserId(userId: String) {
         withContext(Dispatchers.IO) {
-            Log.d(TAG, "Pulling daily diaries from Firestore for user ID: $userId")
-            val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
-            Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore for user ID: $userId")
-            dailyDiaryDao.deleteAllDailyDiaries()
-            dailyDiaryDao.insertAllDailyDiaries(diaries)
+            try {
+                Log.d(TAG, "Pulling daily diaries from Firestore by user ID: $userId")
+                val startTime = System.currentTimeMillis()
 
-            diaries.forEach { diary ->
-                val diaryId = diary.id
-                Log.d(TAG, "Processing daily diary with ID: $diaryId")
+                val diaries = diaryFireStoreDataSource.getDailyDiariesByUserId(userId)
+                Log.d(TAG, "Pulled ${diaries.size} daily diaries from Firestore in ${System.currentTimeMillis() - startTime}ms")
 
-                diaryFoodCrossRefRepository.pullFromFireStore(diaryId)
-                diaryRecipeCrossRefRepository.pullFromFireStore(diaryId)
-                diaryMealCrossRefRepository.pullFromFireStore(diaryId)
+                if (diaries.isEmpty()) {
+                    Log.d(TAG, "No daily diaries found for user $userId")
+                    return@withContext
+                }
+
+                dailyDiaryDao.deleteAllDailyDiaries()
+                dailyDiaryDao.insertAllDailyDiaries(diaries)
+
+                val diaryIds = diaries.map { it.id }
+
+                val pullCrossRefsTime = System.currentTimeMillis()
+                coroutineScope {
+                    val foodCrossRefJob = launch {
+                        try {
+                            val foodStartTime = System.currentTimeMillis()
+                            diaryFoodCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+                            Log.d(TAG, "Pulled food cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - foodStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error pulling food cross refs", e)
+                        }
+                    }
+
+                    val recipeCrossRefJob = launch {
+                        try {
+                            val recipeStartTime = System.currentTimeMillis()
+                            diaryRecipeCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+                            Log.d(TAG, "Pulled recipe cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - recipeStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error pulling recipe cross refs", e)
+                        }
+                    }
+
+                    val mealCrossRefJob = launch {
+                        try {
+                            val mealStartTime = System.currentTimeMillis()
+                            diaryMealCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+                            Log.d(TAG, "Pulled meal cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - mealStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error pulling meal cross refs", e)
+                        }
+                    }
+
+                    foodCrossRefJob.join()
+                    recipeCrossRefJob.join()
+                    mealCrossRefJob.join()
+                }
+
+                Log.d(TAG, "Completed pulling cross refs in ${System.currentTimeMillis() - pullCrossRefsTime}ms")
+                Log.d(TAG, "Total daily diary sync completed in ${System.currentTimeMillis() - startTime}ms")
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Error pulling daily diaries from Firestore", e)
+                throw e
             }
         }
     }

@@ -89,6 +89,39 @@ class MealRecipeCrossRefFireStoreDataSourceImpl @Inject constructor(
 
         return snapshot.documents.mapNotNull { it.toObject(MealRecipeCrossRef::class.java) }
     }
+
+    suspend fun getAllByMealIds(mealIds: List<String>): List<MealRecipeCrossRef> {
+        if (mealIds.isEmpty()) {
+            return emptyList()
+        }
+
+        val result = mutableListOf<MealRecipeCrossRef>()
+
+        val batchSize = 10
+
+        mealIds.chunked(batchSize).forEach { mealIdBatch ->
+            Timber.d("Fetching cross refs for meal batch size: ${mealIdBatch.size}")
+
+            try {
+                val snapshot = firestore.collection(MEAL_RECIPE_CROSS_REF_COLLECTION)
+                    .whereIn("mealId", mealIdBatch)
+                    .get()
+                    .await()
+
+                val batchResults = snapshot.documents.mapNotNull {
+                    it.toObject(MealRecipeCrossRef::class.java)
+                }
+
+                result.addAll(batchResults)
+                Timber.d("Fetched ${batchResults.size} cross refs for this batch")
+            } catch (e: Exception) {
+                Timber.e(e, "Error fetching cross refs for meal batch")
+            }
+        }
+
+        Timber.d("Total cross refs fetched: ${result.size}")
+        return result
+    }
     companion object {
         private const val MEAL_RECIPE_CROSS_REF_COLLECTION = "meal_recipe_cross_ref"
         private const val MAX_BATCH_SIZE = 500
