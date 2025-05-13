@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.DailyDiarySnapshot
+import com.example.btl_android_project.local.entity.DiaryExerciseCrossRef
 import com.example.btl_android_project.local.entity.DiaryWithAllNutrition
 import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.enums.MealType
@@ -166,6 +167,8 @@ class TodayDiaryViewModel @Inject constructor(
         val lunchItems = mutableListOf<MealItem>()
         val dinnerItems = mutableListOf<MealItem>()
         val snackItems = mutableListOf<MealItem>()
+        val waterItems = mutableListOf<MealItem>()
+        val exerciseItems = mutableListOf<MealItem>()
 
 
         diaryWithNutrition.foods.forEach { foodSnapshot ->
@@ -207,21 +210,32 @@ class TodayDiaryViewModel @Inject constructor(
             }
         }
 
+        diaryWithNutrition.waters.forEach { waterSnapshot ->
+            val servingText = "${waterSnapshot.amountMl} ml"
+            val item = MealItem("Water", servingText, waterSnapshot.amountMl, waterSnapshot.id, Type.WATER, mealType = MealType.NONE, servings = 1)
+            waterItems.add(item)
+        }
 
-        val breakfastCalories = breakfastItems.sumOf { it.calories }
-        val lunchCalories = lunchItems.sumOf { it.calories }
-        val dinnerCalories = dinnerItems.sumOf { it.calories }
-        val snackCalories = snackItems.sumOf { it.calories }
-        val waterCalories = diaryWithNutrition.waters.sumOf { it.amountMl }
-        val exerciseCalories = diaryWithNutrition.exercises.sumOf { it.calories }
+        diaryWithNutrition.exercises.forEach { exerciseSnapshot ->
+            val servingText = "${exerciseSnapshot.servings} serving"
+            val item = MealItem(exerciseSnapshot.description, servingText, exerciseSnapshot.caloriesBurned.toInt(), exerciseSnapshot.exerciseId, Type.EXERCISE, mealType = MealType.NONE, servings = exerciseSnapshot.servings)
+            exerciseItems.add(item)
+        }
+
+        val breakfastCalories = breakfastItems.sumOf { it.calories * it.servings }
+        val lunchCalories = lunchItems.sumOf { it.calories * it.servings }
+        val dinnerCalories = dinnerItems.sumOf { it.calories * it.servings }
+        val snackCalories = snackItems.sumOf { it.calories * it.servings }
+        val waterCalories = waterItems.sumOf { it.calories * it.servings }
+        val exerciseCalories = exerciseItems.sumOf { it.calories * it.servings }
 
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
             MealSection("Dinner", dinnerCalories, dinnerItems),
             MealSection("Snacks", snackCalories, snackItems),
-            MealSection("Water", waterCalories, emptyList()),
-            MealSection("Exercise", exerciseCalories, emptyList())
+            MealSection("Water", waterCalories, waterItems),
+            MealSection("Exercise", exerciseCalories, exerciseItems)
         )
     }
 
@@ -240,7 +254,7 @@ class TodayDiaryViewModel @Inject constructor(
         foodCrossRefs?.forEach { crossRef ->
             val food = diaryWithNutrition.foods.find { it.id == crossRef.foodId }
             if (food == null) return@forEach
-            val calories = food.calories * crossRef.servings
+            val calories = food.calories
             val servingText = "${crossRef.servings} serving"
             val item = MealItem(food.name, servingText, calories.toInt(), food.id, Type.FOOD, mealType = crossRef.mealType, servings = crossRef.servings)
 
@@ -260,7 +274,7 @@ class TodayDiaryViewModel @Inject constructor(
         mealCrossRefs?.forEach { crossRef ->
             val meal = diaryWithNutrition.meals.find { it.id == crossRef.mealId }
             if (meal == null) return@forEach
-            val calories = meal.totalCalories * crossRef.servings
+            val calories = meal.totalCalories
             val servingText = "${crossRef.servings} serving"
             val item = MealItem(meal.name, servingText, calories.toInt(), meal.id, Type.MEAL, mealType = crossRef.mealType, servings = crossRef.servings)
 
@@ -280,7 +294,7 @@ class TodayDiaryViewModel @Inject constructor(
         recipeCrossRefs?.forEach { crossRef ->
             val recipe = diaryWithNutrition.recipes.find { it.id == crossRef.recipeId }
             if (recipe == null) return@forEach
-            val calories = recipe.calories * crossRef.servings
+            val calories = recipe.calories
             val servingText = "${crossRef.servings} serving"
             val item = MealItem(recipe.name, servingText, calories.toInt(), recipe.id, Type.RECIPE, mealType = crossRef.mealType, servings = crossRef.servings)
 
@@ -318,7 +332,7 @@ class TodayDiaryViewModel @Inject constructor(
         exerciseLogs?.forEach { exerciseLog ->
             val exercise = diaryWithNutrition.exercises.find { it.id == exerciseLog.exerciseId }
             if (exercise == null) return@forEach
-            val calories = exercise.caloriesBurned * exerciseLog.servings
+            val calories = exercise.caloriesBurned
             val servingText = "${exerciseLog.servings} serving"
             val item = MealItem(exercise.description, servingText, calories.toInt(), exercise.id, Type.EXERCISE, mealType = MealType.NONE, servings = exerciseLog.servings)
 
@@ -326,12 +340,12 @@ class TodayDiaryViewModel @Inject constructor(
         }
 
 
-        val breakfastCalories = breakfastItems.sumOf { it.calories }
-        val lunchCalories = lunchItems.sumOf { it.calories }
-        val dinnerCalories = dinnerItems.sumOf { it.calories }
-        val snackCalories = snackItems.sumOf { it.calories }
-        val waterCalories = waterItems.sumOf { it.calories }
-        val exerciseCalories = exerciseItems.sumOf { it.calories }
+        val breakfastCalories = breakfastItems.sumOf { it.calories * it.servings }
+        val lunchCalories = lunchItems.sumOf { it.calories * it.servings }
+        val dinnerCalories = dinnerItems.sumOf { it.calories * it.servings }
+        val snackCalories = snackItems.sumOf { it.calories * it.servings }
+        val waterCalories = waterItems.sumOf { it.calories * it.servings }
+        val exerciseCalories = exerciseItems.sumOf { it.calories * it.servings }
 
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
@@ -461,6 +475,20 @@ class TodayDiaryViewModel @Inject constructor(
                     waterLogRepository.updateLogWater(newLogWater)
 
                     onSuccess()
+                }
+            }
+            else if(mealItem.type == Type.EXERCISE) {
+                viewModelScope.launch {
+                    val exerciseCrossRef = DiaryExerciseCrossRef(
+                        exerciseId = mealItem.id,
+                        userId = currentUserId,
+                        diaryId = todayDiary.value!!.diary.id,
+                        servings = servings
+                    )
+
+                    exerciseLogRepository.updateDiaryExerciseCrossRef(
+                        exerciseCrossRef
+                    )
                 }
             }
         }

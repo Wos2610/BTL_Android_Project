@@ -61,7 +61,7 @@ class MyExercisesFragment : Fragment(), SearchableExerciseList {
     private fun showEditDialog(exercise: Exercise) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_exercise, null)
         val etDescription = dialogView.findViewById<EditText>(R.id.etDialogDescription)
-        val etMinutes = dialogView.findViewById<EditText>(R.id.etDialogMinutes)
+        val etMinutes = dialogView.findViewById<EditText>(R.id.etDialogServings)
         val etCalories = dialogView.findViewById<EditText>(R.id.etDialogCalories)
 
         etDescription.setText(exercise.description)

@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.btl_android_project.MainActivity
 import com.example.btl_android_project.R
+import com.example.btl_android_project.databinding.DialogEditExerciseBinding
 import com.example.btl_android_project.databinding.DialogEditMealBinding
 import com.example.btl_android_project.databinding.DialogEditWaterBinding
 import com.example.btl_android_project.databinding.FragmentTodayDiaryBinding
@@ -100,6 +101,7 @@ class TodayDiaryFragment : Fragment() {
             MealSection("Dinner", 0, emptyList()),
             MealSection("Snacks", 0, emptyList()),
             MealSection("Water", 0, emptyList()),
+            MealSection("Exercise", 0, emptyList())
         )
 
         adapter = MealSectionAdapter(
@@ -127,7 +129,42 @@ class TodayDiaryFragment : Fragment() {
                             true
                         }
                         R.id.action_edit -> {
-                            if(mealItem.type == Type.WATER){
+                            if(mealItem.type == Type.EXERCISE){
+                                val dialogBinding = DialogEditExerciseBinding.inflate(LayoutInflater.from(view.context))
+
+                                dialogBinding.etDialogDescription.setText(mealItem.name)
+                                dialogBinding.etDialogCalories.setText(mealItem.calories.toString())
+                                dialogBinding.etDialogServings.setText(mealItem.servings.toString())
+
+                                AlertDialog.Builder(view.context)
+                                    .setTitle("Edit Exercise")
+                                    .setView(dialogBinding.root)
+                                    .setPositiveButton("Save") { _, _ ->
+                                        val newServings = dialogBinding.etDialogServings.text.toString().toIntOrNull()
+                                        if (newServings != null) {
+                                            viewModel.updateDiary(
+                                                mealItem = mealItem,
+                                                servings = newServings,
+                                                onSuccess = {
+                                                    viewModel.getDiaryByDate(
+                                                        date = viewModel.selectedDate.value,
+                                                        onSuccess = { listMealSection ->
+                                                            adapter.updateData(listMealSection)
+                                                        }
+                                                    )
+                                                },
+                                                onFailure = {
+                                                    Toast.makeText(view.context, "Can't update history item", Toast.LENGTH_SHORT).show()
+                                                }
+                                            )
+                                        } else {
+                                            Toast.makeText(view.context, "Servings không hợp lệ", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    .setNegativeButton("Discard", null)
+                                    .show()
+                            }
+                            else if(mealItem.type == Type.WATER){
                                 val dialogBinding = DialogEditWaterBinding.inflate(LayoutInflater.from(view.context))
 
                                 dialogBinding.editTextName.setText(mealItem.name)

@@ -5,11 +5,14 @@ import com.example.btl_android_project.local.dao.DailyDiarySnapshotDao
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DairyFoodSnapshot
+import com.example.btl_android_project.local.entity.DiaryExerciseCrossRef
+import com.example.btl_android_project.local.entity.DiaryExerciseSnapshot
 import com.example.btl_android_project.local.entity.DiaryFoodCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealCrossRef
 import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeCrossRef
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
+import com.example.btl_android_project.local.entity.Exercise
 import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.entity.LogWaterSnapshot
@@ -30,16 +33,17 @@ class DailyDiarySnapshotRepository @Inject constructor(
     private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
     private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
     private val mealRepository: MealRepository,
-    private val waterLogRepository: LogWaterRepository
+    private val waterLogRepository: LogWaterRepository,
+    private val diaryExerciseCrossRefRepository: DiaryExerciseCrossRefRepository
 ) {
     suspend fun createDailyDiarySnapshot(
         diary: DailyDiary,
         foods: List<Pair<Food, DiaryFoodCrossRef>>,
         meals: List<Pair<MealWithFoodsAndRecipes, DiaryMealCrossRef>>,
         recipes: List<Pair<Recipe, DiaryRecipeCrossRef>>,
-        waters: List<LogWater>
+        waters: List<LogWater>,
+        exercises: List<Pair<Exercise, DiaryExerciseCrossRef>>
     ): DailyDiarySnapshot {
-        // Tạo các snapshot cho food
         val foodSnapshots = foods.map { pair ->
             val food = pair.first
             val crossRef = pair.second
@@ -48,14 +52,13 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 foodName = food.name,
                 servings = crossRef.servings,
                 mealType = crossRef.mealType,
-                calories = food.calories * crossRef.servings,
-                protein = food.protein * crossRef.servings,
-                carbs = food.carbs * crossRef.servings,
-                fat = food.fat * crossRef.servings
+                calories = food.calories ,
+                protein = food.protein,
+                carbs = food.carbs,
+                fat = food.fat
             )
         }
 
-        // Tạo các snapshot cho meal
         val mealSnapshots = meals.map { pair ->
             val mealWithFoodsAndRecipes = pair.first
             val meal = mealWithFoodsAndRecipes.meal
@@ -67,10 +70,10 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 mealName = meal.name,
                 servings = crossRef.servings,
                 mealType = crossRef.mealType,
-                calories = meal.totalCalories * crossRef.servings,
-                protein = meal.totalProtein * crossRef.servings,
-                carbs = meal.totalCarbs * crossRef.servings,
-                fat = meal.totalFat * crossRef.servings,
+                calories = meal.totalCalories,
+                protein = meal.totalProtein,
+                carbs = meal.totalCarbs,
+                fat = meal.totalFat,
                 foods = foods.map { food ->
                     DairyFoodSnapshot(
                         foodId = food.id,
@@ -115,7 +118,6 @@ class DailyDiarySnapshotRepository @Inject constructor(
             )
         }
 
-        // Tạo các snapshot cho recipe
         val recipeSnapshots = recipes.map { pair ->
             val recipe = pair.first
             val crossRef = pair.second
@@ -124,10 +126,10 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 recipeName = recipe.name,
                 servings = crossRef.servings,
                 mealType = crossRef.mealType,
-                calories = recipe.calories.toFloat() * crossRef.servings,
-                protein = recipe.protein.toFloat() * crossRef.servings,
-                carbs = recipe.carbs.toFloat() * crossRef.servings,
-                fat = recipe.fat.toFloat() * crossRef.servings,
+                calories = recipe.calories.toFloat(),
+                protein = recipe.protein.toFloat(),
+                carbs = recipe.carbs.toFloat(),
+                fat = recipe.fat.toFloat(),
                 ingredients = recipe.ingredients.map { ingredient ->
                     RecipeIngredientSnapshot(
                         id = ingredient.id,
@@ -159,7 +161,19 @@ class DailyDiarySnapshotRepository @Inject constructor(
             )
         }
 
-        // Tạo DailyDiarySnapshot
+        val exerciseSnapshots = exercises.map { pair ->
+            val exercise = pair.first
+            val crossRef = pair.second
+            DiaryExerciseSnapshot(
+                exerciseId = exercise.id,
+                description = exercise.description,
+                minutesPerformed = exercise.minutesPerformed,
+                caloriesBurned = exercise.caloriesBurned,
+                servings = crossRef.servings,
+                userId = exercise.userId,
+            )
+        }
+
         val snapshot = DailyDiarySnapshot(
             diaryId = diary.id,
             userId = diary.userId,
@@ -175,7 +189,8 @@ class DailyDiarySnapshotRepository @Inject constructor(
             foods = foodSnapshots,
             meals = mealSnapshots,
             recipes = recipeSnapshots,
-            waters = waterSnapshots
+            waters = waterSnapshots,
+            exercises = exerciseSnapshots,
         )
 
         val snapshotId = dailyDiarySnapshotFireStoreDataSource.insertDailyDiarySnapshot(snapshot)
@@ -196,12 +211,14 @@ class DailyDiarySnapshotRepository @Inject constructor(
             val diaryMealCrossRefs = diaryMealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diary.id)
             val diaryRecipeCrossRefs = diaryRecipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diary.id)
             val waterLogs = waterLogRepository.getLogWaterByDailyDiaryId(diary.id) ?: emptyList()
+            val exerciseCrossRefs = diaryExerciseCrossRefRepository.getDiaryExerciseCrossRefsByDiaryId(diary.id) ?: emptyList()
 
-            val diaryFoods = diaryWithAllNutrition.foods.map { food ->
-                val crossRef = diaryFoodCrossRefs?.find { it.foodId == food.id && it.diaryId == diary.id }
-                    ?: return Result.failure(IllegalArgumentException("Food CrossRef not found for food: ${food.id}"))
+
+            val diaryFoods = diaryFoodCrossRefs?.map { crossRef ->
+                val food = diaryWithAllNutrition.foods.find { it.id == crossRef.foodId}
+                    ?: return Result.failure(IllegalArgumentException("Food not found for foodId: ${crossRef.foodId}"))
                 Pair(food, crossRef)
-            }
+            } ?: emptyList()
 
             val diaryMeals = diaryWithAllNutrition.meals.map { meal ->
                 val mealWithFoodsAndRecipes = mealRepository.getMealWithFoodsAndRecipes(meal.id)
@@ -210,10 +227,16 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 Pair(mealWithFoodsAndRecipes, crossRef)
             }
 
-            val diaryRecipes = diaryWithAllNutrition.recipes.map { recipe ->
-                val crossRef = diaryRecipeCrossRefs?.find { it.recipeId == recipe.id && it.diaryId == diary.id }
-                    ?: return Result.failure(IllegalArgumentException("Recipe CrossRef not found for recipe: ${recipe.id}"))
+            val diaryRecipes = diaryRecipeCrossRefs?.map { crossRef ->
+                val recipe = diaryWithAllNutrition.recipes.find { it.id == crossRef.recipeId }
+                    ?: return Result.failure(IllegalArgumentException("Recipe not found for recipeId: ${crossRef.recipeId}"))
                 Pair(recipe, crossRef)
+            } ?: emptyList()
+
+            val diaryExercises = exerciseCrossRefs.map { crossRef ->
+                val exercise = diaryWithAllNutrition.exercises.find { it.id == crossRef.exerciseId }
+                    ?: return Result.failure(IllegalArgumentException("Exercise not found for exerciseId: ${crossRef.exerciseId}"))
+                Pair(exercise, crossRef)
             }
 
             val snapshot = createDailyDiarySnapshot(
@@ -221,7 +244,8 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 foods = diaryFoods,
                 meals = diaryMeals,
                 recipes = diaryRecipes,
-                waters = waterLogs
+                waters = waterLogs,
+                exercises = diaryExercises
             )
 
             val updatedDiary = diary.copy(isSaveSnapshot = true)

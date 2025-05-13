@@ -34,7 +34,7 @@ data class DailyDiarySnapshot(
 
     val waters : List<LogWaterSnapshot> = emptyList(),
 
-    val exercises : List<LogExerciseSnapshot> = emptyList(),
+    val exercises : List<DiaryExerciseSnapshot> = emptyList(),
     
     val createdAt: Long = System.currentTimeMillis(),
     val syncedToFirestore: Boolean = false

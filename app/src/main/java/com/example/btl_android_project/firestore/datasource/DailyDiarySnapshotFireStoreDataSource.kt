@@ -2,8 +2,10 @@ package com.example.btl_android_project.firestore.datasource
 
 import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DairyFoodSnapshot
+import com.example.btl_android_project.local.entity.DiaryExerciseSnapshot
 import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
+import com.example.btl_android_project.local.entity.LogWaterSnapshot
 import com.example.btl_android_project.local.entity.NutritionSnapshot
 import com.example.btl_android_project.local.entity.RecipeIngredientSnapshot
 import com.example.btl_android_project.local.enums.MealType
@@ -81,6 +83,8 @@ class DailyDiarySnapshotFireStoreDataSource @Inject constructor(
             "foods" to mapFoodsToMap(snapshot.foods),
             "meals" to mapMealsToMap(snapshot.meals),
             "recipes" to mapRecipesToMap(snapshot.recipes),
+            "waters" to mapLogWaterSnapshotToMap(snapshot.waters),
+            "exercise" to mapExerciseToMap(snapshot.exercises),
             "createdAt" to snapshot.createdAt
         )
     }
@@ -149,6 +153,20 @@ class DailyDiarySnapshotFireStoreDataSource @Inject constructor(
         }
     }
 
+    private fun mapExerciseToMap(exercise: List<DiaryExerciseSnapshot>): List<Map<String, Any?>> {
+        return exercise.map { exercise ->
+            mapOf(
+                "exerciseId" to exercise.exerciseId,
+                "userId" to exercise.userId,
+                "description" to exercise.description,
+                "minutesPerformed" to exercise.minutesPerformed,
+                "caloriesBurned" to exercise.caloriesBurned,
+                "caloriesBurned" to exercise.caloriesBurned,
+                "servings" to exercise.servings
+            )
+        }
+    }
+
     private fun mapIngredientsToMap(ingredients: List<RecipeIngredientSnapshot>): List<Map<String, Any?>> {
         return ingredients.map { ingredient ->
             mapOf(
@@ -173,6 +191,45 @@ class DailyDiarySnapshotFireStoreDataSource @Inject constructor(
         }
     }
 
+    private fun mapLogWaterSnapshotToMap(logWaterSnapshots: List<LogWaterSnapshot>): List<Map<String, Any?>> {
+        return logWaterSnapshots.map { water ->
+            mapOf(
+                "id" to water.id,
+                "userId" to water.userId,
+                "dailyDiaryId" to water.dailyDiaryId,
+                "amountMl" to water.amountMl,
+                "createdAt" to water.createdAt,
+                "updatedAt" to water.updatedAt
+            )
+
+        }
+    }
+
+    private fun mapFirestoreListToExercise(exerciseList: List<Map<String, Any>>): List<DiaryExerciseSnapshot> {
+        return exerciseList.map { exerciseMap ->
+            DiaryExerciseSnapshot(
+                exerciseId = exerciseMap["exerciseId"] as String,
+                userId = exerciseMap["userId"] as String,
+                description = exerciseMap["description"] as String,
+                minutesPerformed = (exerciseMap["minutesPerformed"] as Number).toInt(),
+                caloriesBurned = (exerciseMap["caloriesBurned"] as Number).toFloat(),
+                servings = (exerciseMap["servings"] as Number).toInt()
+            )
+        }
+    }
+
+    private fun mapFirestoreListToWater(logWaterSnapshots: List<Map<String, Any>>): List<LogWaterSnapshot> {
+        return logWaterSnapshots.map { waterMap ->
+            LogWaterSnapshot(
+                id = waterMap["id"] as String,
+                userId = waterMap["userId"] as String,
+                dailyDiaryId = waterMap["dailyDiaryId"] as String,
+                amountMl = (waterMap["amountMl"] as Number).toInt(),
+            )
+        }
+    }
+
+
     private fun mapFromDocumentToSnapshot(document: DocumentSnapshot): DailyDiarySnapshot {
         val data = document.data ?: throw IllegalStateException("Document data is null")
 
@@ -193,7 +250,9 @@ class DailyDiarySnapshotFireStoreDataSource @Inject constructor(
             meals = mapFirestoreListToMeals(data["meals"] as? List<Map<String, Any>> ?: emptyList()),
             recipes = mapFirestoreListToRecipes(data["recipes"] as? List<Map<String, Any>> ?: emptyList()),
             createdAt = (data["createdAt"] as Number).toLong(),
-            syncedToFirestore = true
+            syncedToFirestore = true,
+            waters = mapFirestoreListToWater(data["waters"] as? List<Map<String, Any>> ?: emptyList()),
+            exercises = mapFirestoreListToExercise(data["exercise"] as? List<Map<String, Any>> ?: emptyList())
         )
     }
 

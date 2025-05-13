@@ -20,6 +20,7 @@ class DailyDiaryRepository @Inject constructor(
     private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
     private val userProfileRepository: UserProfileRepository,
     private val diaryExerciseCrossRefRepository: DiaryExerciseCrossRefRepository,
+    private val waterCrossRefRepository: LogWaterRepository
 ) {
     private val TAG = "DailyDiaryRepository"
 
@@ -107,7 +108,6 @@ class DailyDiaryRepository @Inject constructor(
                     return@withContext
                 }
 
-                dailyDiaryDao.deleteAllDailyDiaries()
                 dailyDiaryDao.insertAllDailyDiaries(diaries)
 
                 val diaryIds = diaries.map { it.id }
@@ -144,15 +144,15 @@ class DailyDiaryRepository @Inject constructor(
                         }
                     }
 
-                    val waterCrossRefJob = launch {
-                        try {
-                            val waterStartTime = System.currentTimeMillis()
-                            diaryExerciseCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
-                            Log.d(TAG, "Pulled water cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - waterStartTime}ms")
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error pulling water cross refs", e)
-                        }
-                    }
+//                    val waterCrossRefJob = launch {
+//                        try {
+//                            val waterStartTime = System.currentTimeMillis()
+//                            waterCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+//                            Log.d(TAG, "Pulled water cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - waterStartTime}ms")
+//                        } catch (e: Exception) {
+//                            Log.e(TAG, "Error pulling water cross refs", e)
+//                        }
+//                    }
 
                     val exerciseCrossRefJob = launch {
                         try {
@@ -167,7 +167,7 @@ class DailyDiaryRepository @Inject constructor(
                     foodCrossRefJob.join()
                     recipeCrossRefJob.join()
                     mealCrossRefJob.join()
-                    waterCrossRefJob.join()
+//                    waterCrossRefJob.join()
                     exerciseCrossRefJob.join()
                 }
 
@@ -257,6 +257,7 @@ class DailyDiaryRepository @Inject constructor(
                 totalCarbs = totalCarbs.toFloat(),
                 totalProtein = totalProtein.toFloat(),
                 caloriesRemaining = diary.caloriesGoal - totalCalories.toFloat() + totalExerciseCalories.toFloat(),
+                totalExerciseCalories = totalExerciseCalories.toFloat(),
             )
 
             updatedDiary.let {

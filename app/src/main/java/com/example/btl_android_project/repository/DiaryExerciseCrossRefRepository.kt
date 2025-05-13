@@ -39,7 +39,7 @@ class DiaryExerciseCrossRefRepository @Inject constructor(
             diaryExerciseCrossRefDao.updateDiaryExerciseCrossRef(crossRef)
             Log.d(
                 TAG,
-                "Updated DiaryExerciseCrossRef: diaryId=${crossRef.diaryId}, exerciseId=${crossRef.exerciseId}"
+                "Updated DiaryExerciseCrossRef: diaryId=${crossRef.diaryId}, exerciseId=${crossRef.exerciseId}, servings=${crossRef.servings}"
             )
 
             diaryExerciseCrossRefFireStoreDataSource.updateDiaryExerciseCrossRef(crossRef)
@@ -94,7 +94,7 @@ class DiaryExerciseCrossRefRepository @Inject constructor(
     suspend fun pullFromFireStoreByDiaryIds(diaryIds: List<String>) {
         withContext(Dispatchers.IO) {
             val allCrossRefs = diaryExerciseCrossRefFireStoreDataSource.getAllByDiaryIds(diaryIds)
-            diaryExerciseCrossRefDao.deleteAllForDiaries(diaryIds)
+//            diaryExerciseCrossRefDao.deleteAllForDiaries(diaryIds)
             diaryExerciseCrossRefDao.insertAll(allCrossRefs)
         }
     }

@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import com.example.btl_android_project.local.entity.DailyDiarySnapshot
 import com.example.btl_android_project.local.entity.DairyFoodSnapshot
+import com.example.btl_android_project.local.entity.DiaryExerciseSnapshot
 import com.example.btl_android_project.local.entity.DiaryMealSnapshot
 import com.example.btl_android_project.local.entity.DiaryRecipeSnapshot
 import com.example.btl_android_project.local.entity.LogExerciseSnapshot
@@ -187,4 +188,26 @@ class Converters {
         val listType = object : TypeToken<List<LogExerciseSnapshot>>() {}.type
         return Gson().fromJson(value, listType)
     }
+
+    @TypeConverter
+    fun fromDiaryExerciseSnapshot(value: String?): DiaryExerciseSnapshot? {
+        return value?.let { Gson().fromJson(it, DiaryExerciseSnapshot::class.java) }
+    }
+
+    @TypeConverter
+    fun toDiaryExerciseSnapshot(value: DiaryExerciseSnapshot?): String? {
+        return value?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun fromDiaryExerciseSnapshotList(value: List<DiaryExerciseSnapshot>?): String {
+        return value?.let { Gson().toJson(it) } ?: "[]"
+    }
+
+    @TypeConverter
+    fun toDiaryExerciseSnapshotList(value: String): List<DiaryExerciseSnapshot> {
+        val listType = object : TypeToken<List<DiaryExerciseSnapshot>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
 }

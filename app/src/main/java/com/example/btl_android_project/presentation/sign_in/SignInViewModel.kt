@@ -104,53 +104,54 @@ class SignInViewModel @Inject constructor(
             val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
             loadStaticDataIfNeeded()
             withContext(Dispatchers.IO) {
-                listOf(
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute { exerciseRepository.syncExercisesFromFirestore(userId = currentUserId) }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ exercises: ${endTime - startTime}ms")
-                        result
-                    },
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute { foodRepository.syncFoodsFromFirestore(userId = currentUserId) }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ foods: ${endTime - startTime}ms")
-                        result
-                    },
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute { logWaterRepository.syncLogsFromFirestore(userId = currentUserId) }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ water logs: ${endTime - startTime}ms")
-                        result
-                    },
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute { logWeightRepository.syncLogWeightsFromFirestore(userId = currentUserId) }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ weight logs: ${endTime - startTime}ms")
-                        result
-                    },
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute { recipeRepository.pullFromFireStore(userId = currentUserId) }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ recipes: ${endTime - startTime}ms")
-                        result
-                    },
-                    async {
-                        val startTime = System.currentTimeMillis()
-                        val result = safeExecute {
-                            mealRepository.pullFromFireStoreByUserId(userId = currentUserId)
-                            dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId)
-                        }
-                        val endTime = System.currentTimeMillis()
-                        Log.d("SignInViewModel", "Thời gian đồng bộ meals và daily diary: ${endTime - startTime}ms")
-                        result
-                    }
+                val initialResults = listOf(
+                        async {
+                            val startTime = System.currentTimeMillis()
+                            val result = safeExecute { exerciseRepository.syncExercisesFromFirestore(userId = currentUserId) }
+                            val endTime = System.currentTimeMillis()
+                            Log.d("SignInViewModel", "Thời gian đồng bộ exercises: ${endTime - startTime}ms")
+                            result
+                        },
+                async {
+                    val startTime = System.currentTimeMillis()
+                    val result = safeExecute { foodRepository.syncFoodsFromFirestore(userId = currentUserId) }
+                    val endTime = System.currentTimeMillis()
+                    Log.d("SignInViewModel", "Thời gian đồng bộ foods: ${endTime - startTime}ms")
+                    result
+                },
+                async {
+                    val startTime = System.currentTimeMillis()
+                    val result = safeExecute { logWaterRepository.syncLogsFromFirestore(userId = currentUserId) }
+                    val endTime = System.currentTimeMillis()
+                    Log.d("SignInViewModel", "Thời gian đồng bộ water logs: ${endTime - startTime}ms")
+                    result
+                },
+                async {
+                    val startTime = System.currentTimeMillis()
+                    val result = safeExecute { logWeightRepository.syncLogWeightsFromFirestore(userId = currentUserId) }
+                    val endTime = System.currentTimeMillis()
+                    Log.d("SignInViewModel", "Thời gian đồng bộ weight logs: ${endTime - startTime}ms")
+                    result
+                },
+                async {
+                    val startTime = System.currentTimeMillis()
+                    val result = safeExecute { recipeRepository.pullFromFireStore(userId = currentUserId) }
+                    val endTime = System.currentTimeMillis()
+                    Log.d("SignInViewModel", "Thời gian đồng bộ recipes: ${endTime - startTime}ms")
+                    result
+                }
                 ).awaitAll()
+
+                val finalResult = async {
+                    val startTime = System.currentTimeMillis()
+                    val result = safeExecute {
+                        mealRepository.pullFromFireStoreByUserId(userId = currentUserId)
+                        dailyDiaryRepository.pullFromFireStoreByUserId(userId = currentUserId)
+                    }
+                    val endTime = System.currentTimeMillis()
+                    Log.d("SignInViewModel", "Thời gian đồng bộ meals và daily diary: ${endTime - startTime}ms")
+                    result
+                }.await()
             }
         } catch (e: Exception) {
             Log.e("SignInViewModel", "Lỗi nghiêm trọng khi tải dữ liệu người dùng", e)

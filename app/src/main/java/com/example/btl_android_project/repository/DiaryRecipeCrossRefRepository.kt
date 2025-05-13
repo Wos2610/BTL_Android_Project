@@ -78,7 +78,7 @@ class DiaryRecipeCrossRefRepository @Inject constructor(
     suspend fun pullFromFireStoreByDiaryIds(diaryIds: List<String>) {
         withContext(Dispatchers.IO) {
             val allCrossRefs = diaryRecipeCrossRefFireStoreDataSource.getAllByDiaryIds(diaryIds)
-            diaryRecipeCrossRefDao.deleteAllForDiaries(diaryIds)
+//            diaryRecipeCrossRefDao.deleteAllForDiaries(diaryIds)
             diaryRecipeCrossRefDao.insertAll(allCrossRefs)
         }
     }
