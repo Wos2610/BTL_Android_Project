@@ -39,3 +39,19 @@ data class DailyDiarySnapshot(
     val createdAt: Long = System.currentTimeMillis(),
     val syncedToFirestore: Boolean = false
 ) : Serializable
+
+fun DailyDiarySnapshot.toDailyDiary(): DailyDiary {
+    return DailyDiary(
+        id = id,
+        userId = userId,
+        logDate = logDate,
+        caloriesRemaining = caloriesRemaining,
+        totalFoodCalories = totalFoodCalories,
+        totalExerciseCalories = totalExerciseCalories,
+        totalWaterMl = totalWaterMl,
+        totalFat = totalFat,
+        totalCarbs = totalCarbs,
+        totalProtein = totalProtein,
+        caloriesGoal = caloriesGoal,
+    )
+}

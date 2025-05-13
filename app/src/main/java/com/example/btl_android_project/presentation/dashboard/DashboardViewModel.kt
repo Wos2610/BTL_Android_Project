@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
 import com.example.btl_android_project.local.entity.DailyDiary
 import com.example.btl_android_project.local.entity.LogWeight
+import com.example.btl_android_project.local.entity.toDailyDiary
 import com.example.btl_android_project.repository.DailyDiaryRepository
+import com.example.btl_android_project.repository.DailyDiarySnapshotRepository
 import com.example.btl_android_project.repository.LogWeightRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +23,7 @@ class DashboardViewModel @Inject constructor(
     private val firebaseAuthDataSource: FirebaseAuthDataSource,
     private val dailyDiaryRepository: DailyDiaryRepository,
     private val logWeightRepository: LogWeightRepository,
+    private val dailyDiarySnapshotRepository: DailyDiarySnapshotRepository
 ) : ViewModel() {
     val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
     val lodDate = LocalDate.now()
@@ -33,7 +36,13 @@ class DashboardViewModel @Inject constructor(
                 userId = currentUserId,
                 date = lodDate,
             )
-            _diary.value = diary
+            if(diary.isSaveSnapshot == true){
+                val snapshot = dailyDiarySnapshotRepository.getByDate(currentUserId, lodDate)
+                _diary.value = snapshot?.toDailyDiary()
+            }
+            else{
+                _diary.value = diary
+            }
         }
     }
 

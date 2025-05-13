@@ -242,4 +242,5 @@ class DailyDiarySnapshotRepository @Inject constructor(
             }
         }
     }
+
 }
