@@ -90,7 +90,8 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 "totalFat" to updatedDiary.totalFat,
                 "totalCarbs" to updatedDiary.totalCarbs,
                 "totalProtein" to updatedDiary.totalProtein,
-                "caloriesGoal" to updatedDiary.caloriesGoal
+                "caloriesGoal" to updatedDiary.caloriesGoal,
+                "isSaveSnapshot" to updatedDiary.isSaveSnapshot
             )
 
             docRef.set(diaryMap)
@@ -116,7 +117,8 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 "totalFat" to dailyDiary.totalFat,
                 "totalCarbs" to dailyDiary.totalCarbs,
                 "totalProtein" to dailyDiary.totalProtein,
-                "caloriesGoal" to dailyDiary.caloriesGoal
+                "caloriesGoal" to dailyDiary.caloriesGoal,
+                "isSaveSnapshot" to dailyDiary.isSaveSnapshot
             )
 
             firestore.collection(COLLECTION_NAME)
@@ -167,7 +169,8 @@ class DailyDiaryFireStoreDataSourceImpl @Inject constructor(
                 totalFat = (data["totalFat"] as? Number)?.toFloat() ?: 0f,
                 totalCarbs = (data["totalCarbs"] as? Number)?.toFloat() ?: 0f,
                 totalProtein = (data["totalProtein"] as? Number)?.toFloat() ?: 0f,
-                caloriesGoal = (data["caloriesGoal"] as? Number)?.toFloat() ?: 0f
+                caloriesGoal = (data["caloriesGoal"] as? Number)?.toFloat() ?: 0f,
+                isSaveSnapshot = (data["isSaveSnapshot"] as? Boolean) == true
             )
         } catch (e: Exception) {
             null

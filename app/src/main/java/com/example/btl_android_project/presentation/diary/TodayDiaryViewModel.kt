@@ -71,74 +71,95 @@ class TodayDiaryViewModel @Inject constructor(
     ){
         viewModelScope.launch {
             val today = LocalDate.now()
+
             if(date == today) {
-                dailyDiaryRepository.recalculateWhenChanging(currentUserId)
-
-                val diaryWithNutrition = dailyDiaryRepository.getDiaryByDate(
-                    userId = currentUserId,
-                    date = date
-                )
-
-                _todayDiary.value = diaryWithNutrition
-
-                if (diaryWithNutrition != null) {
-                    _totalCalories.value = diaryWithNutrition.diary.caloriesGoal.toInt()
-                    _totalFoodCalories.value = diaryWithNutrition.diary.totalFoodCalories.toInt()
-                    _totalExerciseCalories.value = diaryWithNutrition.diary.totalExerciseCalories.toInt()
-                    _totalRemainingCalories.value = diaryWithNutrition.diary.caloriesRemaining.toInt()
-                    val mealSections = transformTodayDiaryDataToMealSections(diaryWithNutrition)
-                    onSuccess(mealSections)
-                } else {
-                    _totalCalories.value = 0
-                    _totalFoodCalories.value = 0
-                    _totalExerciseCalories.value = 0
-                    _totalRemainingCalories.value = 0
-
-                    val emptySections = listOf(
-                        MealSection("Breakfast", 0, emptyList()),
-                        MealSection("Lunch", 0, emptyList()),
-                        MealSection("Dinner", 0, emptyList()),
-                        MealSection("Snacks", 0, emptyList()),
-                        MealSection("Water", 0, emptyList()),
-                        MealSection("Exercise", 0, emptyList())
-                    )
-                    onSuccess(emptySections)
-                }
+                getFromDailyDiary(date, onSuccess)
             }
             else{
-                val diarySnapshot = dailyDiarySnapshotRepository.getByDate(
-                    userId = currentUserId,
-                    date = date
-                )
-
-                _dailyDiary.value = diarySnapshot
-
-                if (diarySnapshot != null) {
-                    _totalCalories.value = diarySnapshot.caloriesGoal.toInt()
-                    _totalFoodCalories.value = diarySnapshot.totalFoodCalories.toInt()
-                    _totalExerciseCalories.value = diarySnapshot.totalExerciseCalories.toInt()
-                    _totalRemainingCalories.value = diarySnapshot.caloriesRemaining.toInt()
-                    val mealSections = transformDiaryDataToMealSections(diarySnapshot)
-                    onSuccess(mealSections)
-                } else {
-                    _totalCalories.value = 0
-                    _totalFoodCalories.value = 0
-                    _totalExerciseCalories.value = 0
-                    _totalRemainingCalories.value = 0
-
-                    val emptySections = listOf(
-                        MealSection("Breakfast", 0, emptyList()),
-                        MealSection("Lunch", 0, emptyList()),
-                        MealSection("Dinner", 0, emptyList()),
-                        MealSection("Snacks", 0, emptyList()),
-                        MealSection("Water", 0, emptyList()),
-                        MealSection("Exercise", 0, emptyList())
-                    )
-                    onSuccess(emptySections)
-                }
+                getFromDailyDiarySnapshot(date, onSuccess)
             }
         }
     }
+
+    suspend fun getFromDailyDiary(
+        date: LocalDate,
+        onSuccess: (List<MealSection>) -> Unit,
+    ){
+        dailyDiaryRepository.recalculateWhenChanging(currentUserId)
+
+        val diaryWithNutrition = dailyDiaryRepository.getDiaryByDate(
+            userId = currentUserId,
+            date = date
+        )
+
+        if(diaryWithNutrition?.diary?.isSaveSnapshot == true) {
+            getFromDailyDiarySnapshot(date, onSuccess)
+        }
+        else{
+            _todayDiary.value = diaryWithNutrition
+
+            if (diaryWithNutrition != null) {
+                _totalCalories.value = diaryWithNutrition.diary.caloriesGoal.toInt()
+                _totalFoodCalories.value = diaryWithNutrition.diary.totalFoodCalories.toInt()
+                _totalExerciseCalories.value = diaryWithNutrition.diary.totalExerciseCalories.toInt()
+                _totalRemainingCalories.value = diaryWithNutrition.diary.caloriesRemaining.toInt()
+                val mealSections = transformTodayDiaryDataToMealSections(diaryWithNutrition)
+                onSuccess(mealSections)
+            } else {
+                _totalCalories.value = 0
+                _totalFoodCalories.value = 0
+                _totalExerciseCalories.value = 0
+                _totalRemainingCalories.value = 0
+
+                val emptySections = listOf(
+                    MealSection("Breakfast", 0, emptyList()),
+                    MealSection("Lunch", 0, emptyList()),
+                    MealSection("Dinner", 0, emptyList()),
+                    MealSection("Snacks", 0, emptyList()),
+                    MealSection("Water", 0, emptyList()),
+                    MealSection("Exercise", 0, emptyList())
+                )
+                onSuccess(emptySections)
+            }
+        }
+    }
+
+    suspend fun getFromDailyDiarySnapshot(
+        date: LocalDate,
+        onSuccess: (List<MealSection>) -> Unit,
+    ){
+        val diarySnapshot = dailyDiarySnapshotRepository.getByDate(
+            userId = currentUserId,
+            date = date
+        )
+
+        _dailyDiary.value = diarySnapshot
+
+        if (diarySnapshot != null) {
+            _totalCalories.value = diarySnapshot.caloriesGoal.toInt()
+            _totalFoodCalories.value = diarySnapshot.totalFoodCalories.toInt()
+            _totalExerciseCalories.value = diarySnapshot.totalExerciseCalories.toInt()
+            _totalRemainingCalories.value = diarySnapshot.caloriesRemaining.toInt()
+            val mealSections = transformDiaryDataToMealSections(diarySnapshot)
+            onSuccess(mealSections)
+        } else {
+            _totalCalories.value = 0
+            _totalFoodCalories.value = 0
+            _totalExerciseCalories.value = 0
+            _totalRemainingCalories.value = 0
+
+            val emptySections = listOf(
+                MealSection("Breakfast", 0, emptyList()),
+                MealSection("Lunch", 0, emptyList()),
+                MealSection("Dinner", 0, emptyList()),
+                MealSection("Snacks", 0, emptyList()),
+                MealSection("Water", 0, emptyList()),
+                MealSection("Exercise", 0, emptyList())
+            )
+            onSuccess(emptySections)
+        }
+    }
+
 
     suspend fun transformDiaryDataToMealSections(diaryWithNutrition: DailyDiarySnapshot): List<MealSection> {
         val breakfastItems = mutableListOf<MealItem>()

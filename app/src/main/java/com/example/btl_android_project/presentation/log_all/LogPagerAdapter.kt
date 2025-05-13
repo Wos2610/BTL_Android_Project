@@ -1,6 +1,5 @@
 package com.example.btl_android_project.presentation.log_all
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.btl_android_project.presentation.log_food.LogFoodFragment
@@ -33,15 +32,11 @@ class LogPagerAdapter(
 
     fun updateSearchQuery(query: String) {
         fragments.forEach { (_, fragment) ->
-            when (fragment) {
-                is LogMealFragment -> {
-                    fragment.onSearchQueryChanged(query)
-                }
-                is LogRecipeFragment -> {
-                    fragment.onSearchQueryChanged(query)
-                }
-                is LogFoodFragment -> {
-                    fragment.onSearchQueryChanged(query)
+            if (fragment.isAdded && !fragment.isDetached) {
+                when (fragment) {
+                    is LogMealFragment -> fragment.onSearchQueryChanged(query)
+                    is LogRecipeFragment -> fragment.onSearchQueryChanged(query)
+                    is LogFoodFragment -> fragment.onSearchQueryChanged(query)
                 }
             }
         }

@@ -224,6 +224,9 @@ class DailyDiarySnapshotRepository @Inject constructor(
                 waters = waterLogs
             )
 
+            val updatedDiary = diary.copy(isSaveSnapshot = true)
+            dailyDiaryRepository.updateDailyDiary(updatedDiary)
+
             Result.success(snapshot.id)
         } catch (e: Exception) {
             Result.failure(e)
