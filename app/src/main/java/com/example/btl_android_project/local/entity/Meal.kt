@@ -15,4 +15,5 @@ data class Meal(
     var totalCarbs: Float = 0f,
     var totalProtein: Float = 0f,
     var totalFat: Float = 0f,
+    val isDeleted: Boolean = false,
 ) : Serializable

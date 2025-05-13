@@ -50,11 +50,17 @@ class FoodRepository @Inject constructor(
 
     suspend fun deleteFood(food: Food) {
         try {
-            mealFoodCrossRefRepository.deleteMealFoodCrossRefByFoodId(food.id.toString())
+            val deletedFood = food.copy(deleted = true)
 
-            foodDao.deleteFood(food)
+//            mealFoodCrossRefRepository.deleteMealFoodCrossRefByFoodId(food.id.toString())
 
-            foodFireStoreDataSource.deleteFood(food.id.toString())
+//            foodDao.deleteFood(food)
+
+            foodDao.updateFood(deletedFood)
+
+            foodFireStoreDataSource.updateFood(deletedFood)
+
+//            foodFireStoreDataSource.deleteFood(food.id.toString())
 
             Timber.d("Food deleted with ID: ${food.id}")
         } catch (e: Exception) {

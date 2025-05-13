@@ -56,44 +56,41 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp">
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="16dp"-->
+<!--            android:layout_marginTop="16dp">-->
 
-            <TextView
-                android:id="@+id/tvBulkImport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Bulk Import Ingredients"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tvBulkImport"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:text="Bulk Import Ingredients"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="16sp" />-->
 
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/tvBulkImport"
-                android:layout_marginTop="4dp"
-                android:text="Type or paste the list of ingredients and we'll match them to foods in our database."
-                android:textColor="@color/gray"
-                android:textSize="14sp" />
-
-
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/material_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
+<!--            <TextView-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_below="@id/tvBulkImport"-->
+<!--                android:layout_marginTop="4dp"-->
+<!--                android:text="Type or paste the list of ingredients and we'll match them to foods in our database."-->
+<!--                android:textColor="@color/gray"-->
+<!--                android:textSize="14sp" />-->
 
 
 
+<!--            <com.google.android.material.switchmaterial.SwitchMaterial-->
+<!--                android:id="@+id/material_switch"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true" />-->
+
+<!--        </RelativeLayout>-->
     </LinearLayout>
 
 </FrameLayout>

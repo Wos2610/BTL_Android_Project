@@ -26,5 +26,7 @@ data class Food(
     val nutritions: List<Nutrition> = emptyList(),
     val userId: String = "",
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+
+    val deleted: Boolean = false,
 ) : Serializable

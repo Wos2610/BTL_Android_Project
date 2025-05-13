@@ -171,20 +171,20 @@ class SignInViewModel @Inject constructor(
                             Log.d("SignInViewModel", "Thời gian tải static recipe ingredients: ${endTime - startTime}ms")
                             result
                         },
-                        async {
-                            val startTime = System.currentTimeMillis()
-                            val result = staticRecipesRepository.pullStaticRecipesFromFireStore()
-                            val endTime = System.currentTimeMillis()
-                            Log.d("SignInViewModel", "Thời gian tải static recipes: ${endTime - startTime}ms")
-                            result
-                        },
-                        async {
-                            val startTime = System.currentTimeMillis()
-                            val result = staticFoodRepository.pullFromFireStore()
-                            val endTime = System.currentTimeMillis()
-                            Log.d("SignInViewModel", "Thời gian tải static foods: ${endTime - startTime}ms")
-                            result
-                        }
+//                        async {
+//                            val startTime = System.currentTimeMillis()
+//                            val result = staticRecipesRepository.pullStaticRecipesFromFireStore()
+//                            val endTime = System.currentTimeMillis()
+//                            Log.d("SignInViewModel", "Thời gian tải static recipes: ${endTime - startTime}ms")
+//                            result
+//                        },
+//                        async {
+//                            val startTime = System.currentTimeMillis()
+//                            val result = staticFoodRepository.pullFromFireStore()
+//                            val endTime = System.currentTimeMillis()
+//                            Log.d("SignInViewModel", "Thời gian tải static foods: ${endTime - startTime}ms")
+//                            result
+//                        }
                     ).awaitAll()
                 }
                 firebaseDataManager.setStaticDataLoaded(true)

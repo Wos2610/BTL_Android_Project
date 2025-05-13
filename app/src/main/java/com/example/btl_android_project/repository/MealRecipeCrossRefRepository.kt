@@ -65,7 +65,8 @@ class MealRecipeCrossRefRepository @Inject constructor(
     suspend fun pullFromFireStoreByMealIds(mealIds: List<String>) {
         withContext(Dispatchers.IO) {
             val allCrossRefs = mealRecipeCrossRefFireStoreDataSource.getAllByMealIds(mealIds)
-            mealRecipeCrossRefDao.deleteAllForMeals(mealIds)
+            Timber.d("Pulled ${allCrossRefs.size} recipe cross refs from Firestore")
+//            mealRecipeCrossRefDao.deleteAllForMeals(mealIds)
             mealRecipeCrossRefDao.insertAll(allCrossRefs)
         }
     }

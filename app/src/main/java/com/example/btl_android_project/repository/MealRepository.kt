@@ -227,6 +227,7 @@ class MealRepository @Inject constructor(
 
                 if (meals.isEmpty()) {
                     Log.d("MealRepository", "No meals found for user $userId")
+                    mealDao.deleteAllMeals()
                     return@withContext
                 }
 

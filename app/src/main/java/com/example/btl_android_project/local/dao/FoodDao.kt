@@ -23,10 +23,10 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE id = :foodId")
     suspend fun getFoodById(foodId: String): Food?
 
-    @Query("SELECT * FROM foods WHERE userId = :userId")
+    @Query("SELECT * FROM foods WHERE userId = :userId AND deleted = 0")
     fun getAllFoodsByUser(userId: String): Flow<List<Food>>
 
-    @Query("SELECT * FROM foods WHERE name LIKE '%' || :query || '%' AND userId = :userId")
+    @Query("SELECT * FROM foods WHERE name LIKE '%' || :query || '%' AND userId = :userId AND deleted = 0")
     fun searchFoods(query: String, userId: String): List<Food>
 
     @Query("DELETE FROM foods WHERE id = :foodId")
