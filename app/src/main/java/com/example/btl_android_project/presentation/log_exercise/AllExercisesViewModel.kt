@@ -63,18 +63,32 @@ class AllExercisesViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val dailyDiary = dailyDiaryRepository.getOrCreateDailyDiary(userId.toString(), logDate)
+
+            val originalExercise = exercisesRepository.getExerciseById(exerciseId)
+
+            val localExercise = if (originalExercise?.userId != userId.toString()) {
+                val newExercise = originalExercise?.copy(
+                    userId = userId.toString()
+                )
+                if (newExercise != null) {
+                    exercisesRepository.insertExercise(newExercise)
+                }
+                newExercise
+            } else {
+                originalExercise
+            }
+
             val exerciseCrossRef = DiaryExerciseCrossRef(
                 diaryId = dailyDiary.id,
-                exerciseId = exerciseId,
+                exerciseId = localExercise?.id ?: "",
                 userId = userId.toString(),
                 servings = 1
             )
 
             dairyExerciseCrossRefRepository.insertOrUpdateDiaryExerciseCrossRef(exerciseCrossRef)
 
-            val exercise = exercisesRepository.getExerciseById(exerciseId)
             val updatedDailyDiary = dailyDiary.copy(
-                totalExerciseCalories = dailyDiary.totalExerciseCalories + (exercise?.caloriesBurned ?: 0f) * exerciseCrossRef.servings
+                totalExerciseCalories = dailyDiary.totalExerciseCalories + (localExercise?.caloriesBurned ?: 0f) * exerciseCrossRef.servings
             )
 
             dailyDiaryRepository.updateDailyDiary(updatedDailyDiary)
