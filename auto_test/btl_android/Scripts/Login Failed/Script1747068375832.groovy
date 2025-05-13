@@ -18,7 +18,7 @@ import internal.GlobalVariable as GlobalVariable
 import org.openqa.selenium.Keys as Keys
 
 Mobile.startApplication('D:\\PTIT\\IV.2\\IV.2_Mobile\\app-debug.apk', 
-    true)
+    false)
 
 Mobile.tap(findTestObject('Object Repository/btl_android/android.widget.EditText - Email'), 0)
 
