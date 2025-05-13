@@ -80,7 +80,7 @@ class CreateFoodNutritionFragment : Fragment() {
                 if (isSaved) {
                     Toast.makeText(context, "Food saved successfully", Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
-                    findNavController().navigateUp() // quay lai man log all
+                    findNavController().navigateUp()
                 }
             }
         }

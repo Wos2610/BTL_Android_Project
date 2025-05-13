@@ -215,8 +215,7 @@ class DiaryFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
 
         val result = mutableListOf<DiaryFoodCrossRef>()
 
-        // Xử lý theo batch để tránh vượt quá giới hạn truy vấn Firestore
-        val batchSize = 10 // Firestore giới hạn tối đa 10 phần tử cho mệnh đề IN
+        val batchSize = 10
         val startTime = System.currentTimeMillis()
 
         diaryIds.chunked(batchSize).forEach { diaryIdBatch ->

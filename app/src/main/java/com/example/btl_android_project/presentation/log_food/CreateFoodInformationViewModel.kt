@@ -60,7 +60,6 @@ class CreateFoodInformationViewModel @Inject constructor(
     }
 
 
-    // Hàm kiểm tra hợp lệ toàn bộ các trường
     fun validateBasicFoodInfo(): Boolean {
         if (_foodName.value.isBlank()) return false
         if (_description.value.isBlank()) return false
@@ -70,7 +69,6 @@ class CreateFoodInformationViewModel @Inject constructor(
         return true
     }
 
-    // Hàm gọi trước khi chuyển sang màn hình nhập dinh dưỡng
     fun saveBasicFoodInfo(): Boolean {
         return validateBasicFoodInfo()
     }

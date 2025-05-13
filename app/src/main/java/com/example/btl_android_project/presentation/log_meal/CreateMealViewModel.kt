@@ -104,7 +104,6 @@ class CreateMealViewModel @Inject constructor(
             val mergedFoodItems = rawFoodItems
                 .groupBy { it.food.id }
                 .map { (_, duplicates) ->
-                    // Lấy một Food mẫu rồi copy với servings = tổng servings
                     val any = duplicates.first().food
                     val totalServings = duplicates.sumOf { it.food.servings }
                     MealItem.FoodItem(

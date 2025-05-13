@@ -20,7 +20,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
     private val foodRepository: FoodRepository,
     private val firebaseAuthDataSource: FirebaseAuthDataSource
 ) : ViewModel() {
-    // Danh sách mặc định
     private val _nutritions = MutableStateFlow<List<Nutrition>>(
         listOf(
             Nutrition(number = "1", name = "Calories", amount = 0f, unitName = "kcal"),
@@ -40,7 +39,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
     private val _isSaved = MutableStateFlow(false)
     val isSaved: StateFlow<Boolean> = _isSaved
 
-    // Thông tin từ màn hình trước
     var foodName: String = ""
     var description: String = ""
     var servingsSize: Int = 0
@@ -48,7 +46,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
     var servingsPerContainer: Int = 0
     private val userId = firebaseAuthDataSource.getCurrentUserId()
 
-    // Hàm cập nhật
     fun updateNutrition(index: Int, amount: Float) {
         if (amount < 0) {
             Timber.e("Amount cannot be negative.")
@@ -71,7 +68,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
         }
     }
 
-    // Update
     fun updateFood(foodId: String) {
         _isLoading.value = true
         viewModelScope.launch {
@@ -82,7 +78,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
                 val carbs = _nutritions.value.find { it.name == "Carbs" }?.amount ?: 0f
                 val fat = _nutritions.value.find { it.name == "Fat" }?.amount ?: 0f
 
-                // Check for invalid values
                 if (calories < 0 || protein < 0 || carbs < 0 || fat < 0) {
                     Timber.e("Invalid nutrition values. Amounts cannot be negative.")
                     _isLoading.value = false
@@ -114,7 +109,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
         }
     }
 
-    // Lưu
     fun saveFood() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -125,7 +119,6 @@ class CreateFoodNutritionViewModel @Inject constructor(
                 val carbs = _nutritions.value.find { it.name == "Carbs" }?.amount ?: 0f
                 val fat = _nutritions.value.find { it.name == "Fat" }?.amount ?: 0f
 
-                // Check for invalid values
                 if (calories < 0 || protein < 0 || carbs < 0 || fat < 0) {
                     Timber.e("Invalid nutrition values. Amounts cannot be negative.")
                     _isLoading.value = false

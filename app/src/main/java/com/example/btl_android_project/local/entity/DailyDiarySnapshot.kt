@@ -15,8 +15,7 @@ data class DailyDiarySnapshot(
     val diaryId: String,
     val userId: String,
     val logDate: LocalDate,
-    
-    // Thông tin từ DailyDiary
+
     val caloriesRemaining: Float,
     val totalFoodCalories: Float,
     val totalExerciseCalories: Float,

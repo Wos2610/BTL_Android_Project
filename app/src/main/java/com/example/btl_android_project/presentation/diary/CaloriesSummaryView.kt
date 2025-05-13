@@ -26,8 +26,7 @@ class CaloriesSummaryView @JvmOverloads constructor(
         foodTextView = findViewById(R.id.foodTextView)
         exerciseTextView = findViewById(R.id.exerciseTextView)
         remainingTextView = findViewById(R.id.remainingTextView)
-        
-        // Set default values
+
         setValues(1440, 10, 0, 1430)
     }
     

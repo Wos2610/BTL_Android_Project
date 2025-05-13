@@ -23,10 +23,6 @@ class MealFoodCrossRefFireStoreDataSourceImpl @Inject constructor(
             }
     }
 
-    suspend fun updateMealFoodCrossRef(food: MealFoodCrossRef) {
-        TODO("Not yet implemented")
-    }
-
 
     suspend fun deleteMealFoodCrossRef(foodId: String) {
         val snapshot = firestore.collection(MEAL_FOOD_CROSS_REF_COLLECTION)

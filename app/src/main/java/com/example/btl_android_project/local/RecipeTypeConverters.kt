@@ -12,7 +12,6 @@ import com.google.gson.Gson
 class RecipeTypeConverters {
     private val gson = Gson()
 
-    // Các hàm để chuyển đổi từ đối tượng phức tạp sang chuỗi JSON khi lưu vào database
     @TypeConverter
     fun fromDirectionsToString(directions: Directions?): String? {
         return gson.toJson(directions)

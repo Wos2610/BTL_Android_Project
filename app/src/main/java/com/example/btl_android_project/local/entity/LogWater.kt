@@ -11,11 +11,10 @@ data class LogWater(
     val userId: String = "",
     val dailyDiaryId: String = "",
     val amountMl: Int = 0,
-//    val logTime: String = "", // ISO 8601 format
+//    val logTime: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) : Serializable {
-    // No-argument constructor for Room
     constructor() : this(
         id = "",
         userId = "",

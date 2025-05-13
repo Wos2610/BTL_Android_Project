@@ -79,7 +79,6 @@ class DailyDiaryRepository @Inject constructor(
                 dailyDiaryDao.updateDailyDiary(updatedDiary)
                 Log.d(TAG, "Updated water for diary ID: $diaryId, new total: $updatedWater ml")
 
-                // Update in Firestore
                 diaryFireStoreDataSource.updateDailyDiary(updatedDiary)
             }
         }
