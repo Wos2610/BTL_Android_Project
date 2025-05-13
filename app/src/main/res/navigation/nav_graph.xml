@@ -480,4 +480,9 @@
         android:name="com.example.btl_android_project.presentation.diary.TodayDiaryFragment"
         android:label="fragment_today_diary"
         tools:layout="@layout/fragment_today_diary" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.btl_android_project.presentation.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings"/>
 </navigation>

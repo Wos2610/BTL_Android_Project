@@ -6,7 +6,7 @@
     <item android:id="@+id/todayDiaryFragment"
         android:title="@string/diary"
         android:icon="@drawable/baseline_diary" />
-    <item android:id="@+id/action_recipe"
-        android:title="@string/recipe"
-        android:icon="@drawable/baseline_recipe" />
+    <item android:id="@+id/settingsFragment"
+        android:title="Settings"
+        android:icon="@drawable/baseline_settings_24" />
 </menu>

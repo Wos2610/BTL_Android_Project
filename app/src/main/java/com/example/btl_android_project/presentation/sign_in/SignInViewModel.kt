@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btl_android_project.auth.FirebaseAuthDataSource
-import com.example.btl_android_project.local.FirebaseDataManager
+import com.example.btl_android_project.local.DataStoreManager
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.ExercisesRepository
 import com.example.btl_android_project.repository.FoodRepository
@@ -41,7 +41,7 @@ class SignInViewModel @Inject constructor(
     private val mealRepository: MealRepository,
     private val dailyDiaryRepository: DailyDiaryRepository,
     private val userProfileRepository: UserProfileRepository,
-    private val firebaseDataManager: FirebaseDataManager,
+    private val dataStoreManager: DataStoreManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
     val uiState: StateFlow<SignInUiState> = _uiState
@@ -160,7 +160,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private suspend fun loadStaticDataIfNeeded() {
-        val isStaticDataLoaded = firebaseDataManager.isStaticDataLoaded.first()
+        val isStaticDataLoaded = dataStoreManager.isStaticDataLoaded.first()
         if (!isStaticDataLoaded) {
             try {
                 withContext(Dispatchers.IO) {
@@ -188,10 +188,10 @@ class SignInViewModel @Inject constructor(
 //                        }
                     ).awaitAll()
                 }
-                firebaseDataManager.setStaticDataLoaded(true)
+                dataStoreManager.setStaticDataLoaded(true)
             } catch (e: Exception) {
                 Log.e("SignInViewModel", "Lỗi khi tải dữ liệu tĩnh", e)
-                firebaseDataManager.setStaticDataLoaded(false)
+                dataStoreManager.setStaticDataLoaded(false)
                 throw e
             }
         }

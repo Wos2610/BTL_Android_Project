@@ -20,7 +20,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.btl_android_project.databinding.ActivityMainBinding
-import com.example.btl_android_project.notification.CaloriesReminderHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,8 +47,6 @@ class MainActivity : AppCompatActivity() {
         setUpBottomNavigation()
         setUpActionBar()
         setUpFab()
-
-        CaloriesReminderHelper.setupReminderNotifications(this)
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
@@ -138,6 +135,10 @@ class MainActivity : AppCompatActivity() {
                         it.navigate(R.id.todayDiaryFragment)
                         true
                     }
+                    R.id.settingsFragment -> {
+                        it.navigate(R.id.settingsFragment)
+                        true
+                    }
                     else -> false
                 }
             }
@@ -149,6 +150,9 @@ class MainActivity : AppCompatActivity() {
                     binding.navigation.visibility = View.VISIBLE
                 }
                 R.id.todayDiaryFragment -> {
+                    binding.navigation.visibility = View.VISIBLE
+                }
+                R.id.settingsFragment -> {
                     binding.navigation.visibility = View.VISIBLE
                 }
                 else -> {
@@ -184,6 +188,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.signInFragment -> false
                 R.id.signUpFragment -> false
                 R.id.todayDiaryFragment -> false
+                R.id.settingsFragment -> false
                 else -> true
             }
             supportActionBar?.setDisplayHomeAsUpEnabled(show)
@@ -222,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.logWaterFragment -> getString(R.string.log_water)
                 R.id.logWeightFragment -> getString(R.string.log_weight)
                 R.id.logExerciseFragment -> getString(R.string.log_exercise)
+                R.id.settingsFragment -> getString(R.string.settings)
                 else -> ""
             }
             supportActionBar?.title = title
