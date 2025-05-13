@@ -20,6 +20,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.btl_android_project.databinding.ActivityMainBinding
+import com.example.btl_android_project.notification.CaloriesReminderHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +48,8 @@ class MainActivity : AppCompatActivity() {
         setUpBottomNavigation()
         setUpActionBar()
         setUpFab()
+
+        CaloriesReminderHelper.setupReminderNotifications(this)
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
