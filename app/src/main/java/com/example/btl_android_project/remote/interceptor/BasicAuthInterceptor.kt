@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.*
+import java.util.Base64
 
 @RequiresApi(Build.VERSION_CODES.O)
 class BasicAuthInterceptor(private val clientId: String,
@@ -26,9 +26,12 @@ class BasicAuthInterceptor(private val clientId: String,
         newFormBodyBuilder.add("grant_type", GRAND_TYPE)
         newFormBodyBuilder.add("scope", SCOPE)
 
+        val method = originalRequest.method
+        val body = if (method == "GET") null else newFormBodyBuilder.build()
+
         val authenticatedRequest = originalRequest.newBuilder()
             .addHeader("Authorization", "Basic $encodedCredentials")
-            .method(originalRequest.method, newFormBodyBuilder.build())
+            .method(method, body)
             .build()
 
         return chain.proceed(authenticatedRequest)

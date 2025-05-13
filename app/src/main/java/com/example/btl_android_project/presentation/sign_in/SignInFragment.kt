@@ -22,6 +22,10 @@ class SignInFragment : Fragment() {
     private val args: SignInFragmentArgs by navArgs()
     private val viewModel: SignInViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        viewModel.pushStaticDataToFirestore()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

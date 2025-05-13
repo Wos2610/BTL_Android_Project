@@ -28,4 +28,6 @@ data class DiaryFoodCrossRef(
     val userId: String,
     var servings: Int = 1,
     val mealType: MealType,
-)
+){
+    constructor() : this("", "", "", 1, MealType.BREAKFAST)
+}

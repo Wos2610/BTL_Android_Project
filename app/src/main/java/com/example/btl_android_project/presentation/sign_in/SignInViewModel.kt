@@ -204,4 +204,17 @@ class SignInViewModel @Inject constructor(
             null
         }
     }
+    fun pushStaticDataToFirestore() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                staticRecipeIngredientRepository.pullStaticRecipeIngredients()
+                staticRecipesRepository.pullStaticRecipes()
+                staticRecipesRepository.pushToFireStore()
+                staticFoodRepository.pullStaticFoods()
+                staticFoodRepository.pushToFireStore()
+            } catch (e: Exception) {
+                Log.e("SignInViewModel", "Lỗi khi đẩy dữ liệu tĩnh lên Firestore", e)
+            }
+        }
+    }
 }
