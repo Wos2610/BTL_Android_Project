@@ -54,6 +54,8 @@ class DashboardFragment : Fragment() {
                 viewModel.todayDiary.collect { diary ->
                     binding.tvGoalResult.text = diary?.caloriesGoal.toString()
                     binding.tvFoodResult.text = (diary?.totalFoodCalories ?: 0).toString()
+                    binding.tvExerciseResult.text = (diary?.totalExerciseCalories ?: 0).toString()
+                    binding.tvCaloriesRemaining.text = (diary?.caloriesRemaining ?: 0).toString()
                 }
             }
         }

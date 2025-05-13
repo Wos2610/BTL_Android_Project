@@ -9,6 +9,7 @@ import com.example.btl_android_project.local.entity.LogWater
 import com.example.btl_android_project.local.enums.MealType
 import com.example.btl_android_project.repository.DailyDiaryRepository
 import com.example.btl_android_project.repository.DailyDiarySnapshotRepository
+import com.example.btl_android_project.repository.DiaryExerciseCrossRefRepository
 import com.example.btl_android_project.repository.DiaryFoodCrossRefRepository
 import com.example.btl_android_project.repository.DiaryMealCrossRefRepository
 import com.example.btl_android_project.repository.DiaryRecipeCrossRefRepository
@@ -29,6 +30,7 @@ class TodayDiaryViewModel @Inject constructor(
     private val mealCrossRefRepository: DiaryMealCrossRefRepository,
     private val dailyDiarySnapshotRepository: DailyDiarySnapshotRepository,
     private val waterLogRepository: LogWaterRepository,
+    private val exerciseLogRepository: DiaryExerciseCrossRefRepository,
 ): ViewModel() {
     val currentUserId = firebaseAuthDataSource.getCurrentUserId().toString()
     private var _selectedDate : MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
@@ -189,12 +191,16 @@ class TodayDiaryViewModel @Inject constructor(
         val lunchCalories = lunchItems.sumOf { it.calories }
         val dinnerCalories = dinnerItems.sumOf { it.calories }
         val snackCalories = snackItems.sumOf { it.calories }
+        val waterCalories = diaryWithNutrition.waters.sumOf { it.amountMl }
+        val exerciseCalories = diaryWithNutrition.exercises.sumOf { it.calories }
 
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
             MealSection("Dinner", dinnerCalories, dinnerItems),
             MealSection("Snacks", snackCalories, snackItems),
+            MealSection("Water", waterCalories, emptyList()),
+            MealSection("Exercise", exerciseCalories, emptyList())
         )
     }
 
@@ -285,6 +291,17 @@ class TodayDiaryViewModel @Inject constructor(
         }
         
         val exerciseLogs = diaryWithNutrition.diary.id.let { diaryId ->
+            exerciseLogRepository.getDiaryExerciseCrossRefsByDiaryId(diaryId)
+        }
+
+        exerciseLogs?.forEach { exerciseLog ->
+            val exercise = diaryWithNutrition.exercises.find { it.id == exerciseLog.exerciseId }
+            if (exercise == null) return@forEach
+            val calories = exercise.caloriesBurned * exerciseLog.servings
+            val servingText = "${exerciseLog.servings} serving"
+            val item = MealItem(exercise.description, servingText, calories.toInt(), exercise.id, Type.EXERCISE, mealType = MealType.NONE, servings = exerciseLog.servings)
+
+            exerciseItems.add(item)
         }
 
 
@@ -292,13 +309,16 @@ class TodayDiaryViewModel @Inject constructor(
         val lunchCalories = lunchItems.sumOf { it.calories }
         val dinnerCalories = dinnerItems.sumOf { it.calories }
         val snackCalories = snackItems.sumOf { it.calories }
+        val waterCalories = waterItems.sumOf { it.calories }
+        val exerciseCalories = exerciseItems.sumOf { it.calories }
 
         return listOf(
             MealSection("Breakfast", breakfastCalories, breakfastItems),
             MealSection("Lunch", lunchCalories, lunchItems),
             MealSection("Dinner", dinnerCalories, dinnerItems),
             MealSection("Snacks", snackCalories, snackItems),
-            MealSection("Water", waterLogs?.sumOf { it.amountMl } ?: 0, waterItems)
+            MealSection("Water", waterCalories, waterItems),
+            MealSection("Exercise", exerciseCalories, exerciseItems)
         )
     }
 

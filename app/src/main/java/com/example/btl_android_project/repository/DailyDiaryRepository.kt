@@ -19,6 +19,7 @@ class DailyDiaryRepository @Inject constructor(
     private val diaryRecipeCrossRefRepository: DiaryRecipeCrossRefRepository,
     private val diaryMealCrossRefRepository: DiaryMealCrossRefRepository,
     private val userProfileRepository: UserProfileRepository,
+    private val diaryExerciseCrossRefRepository: DiaryExerciseCrossRefRepository,
 ) {
     private val TAG = "DailyDiaryRepository"
 
@@ -143,9 +144,31 @@ class DailyDiaryRepository @Inject constructor(
                         }
                     }
 
+                    val waterCrossRefJob = launch {
+                        try {
+                            val waterStartTime = System.currentTimeMillis()
+                            diaryExerciseCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+                            Log.d(TAG, "Pulled water cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - waterStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error pulling water cross refs", e)
+                        }
+                    }
+
+                    val exerciseCrossRefJob = launch {
+                        try {
+                            val exerciseStartTime = System.currentTimeMillis()
+                            diaryExerciseCrossRefRepository.pullFromFireStoreByDiaryIds(diaryIds)
+                            Log.d(TAG, "Pulled exercise cross refs for ${diaryIds.size} diaries in ${System.currentTimeMillis() - exerciseStartTime}ms")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error pulling exercise cross refs", e)
+                        }
+                    }
+
                     foodCrossRefJob.join()
                     recipeCrossRefJob.join()
                     mealCrossRefJob.join()
+                    waterCrossRefJob.join()
+                    exerciseCrossRefJob.join()
                 }
 
                 Log.d(TAG, "Completed pulling cross refs in ${System.currentTimeMillis() - pullCrossRefsTime}ms")
@@ -182,11 +205,13 @@ class DailyDiaryRepository @Inject constructor(
             val diaryFoodCrossRefs = diaryFoodCrossRefRepository.getDiaryFoodCrossRefsByDiaryId(diary.id)
             val diaryMealCrossRefs = diaryMealCrossRefRepository.getDiaryMealCrossRefsByDiaryId(diary.id)
             val diaryRecipeCrossRefs = diaryRecipeCrossRefRepository.getDiaryRecipeCrossRefsByDiaryId(diary.id)
+            val diaryExerciseCrossRefs = diaryExerciseCrossRefRepository.getDiaryExerciseCrossRefsByDiaryId(diary.id)
 
             var totalCalories = 0.0
             var totalFat = 0.0
             var totalCarbs = 0.0
             var totalProtein = 0.0
+            var totalExerciseCalories = 0.0
 
             diaryFoodCrossRefs?.forEach { crossRef ->
                 val food = diaryWithAllNutrition.foods.find { it.id == crossRef.foodId }
@@ -219,12 +244,19 @@ class DailyDiaryRepository @Inject constructor(
                 }
             }
 
+            diaryExerciseCrossRefs?.forEach { crossRef ->
+                val exercise = diaryWithAllNutrition.exercises.find { it.id == crossRef.exerciseId }
+                exercise?.let {
+                    totalExerciseCalories += it.caloriesBurned * crossRef.servings
+                }
+            }
+
             val updatedDiary = diary.copy(
                 totalFoodCalories = totalCalories.toFloat(),
                 totalFat = totalFat.toFloat(),
                 totalCarbs = totalCarbs.toFloat(),
                 totalProtein = totalProtein.toFloat(),
-                caloriesRemaining = diary.caloriesGoal - totalCalories.toFloat()
+                caloriesRemaining = diary.caloriesGoal - totalCalories.toFloat() + totalExerciseCalories.toFloat(),
             )
 
             updatedDiary.let {

@@ -37,5 +37,22 @@ data class DiaryWithAllNutrition(
             entityColumn = "foodId"
         )
     )
-    val foods: List<Food>
+    val foods: List<Food>,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = DiaryExerciseCrossRef::class,
+            parentColumn = "diaryId",
+            entityColumn = "exerciseId"
+        )
+    )
+    val exercises: List<Exercise>,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "dailyDiaryId"
+    )
+    val waterLogs: List<LogWater>
 )
