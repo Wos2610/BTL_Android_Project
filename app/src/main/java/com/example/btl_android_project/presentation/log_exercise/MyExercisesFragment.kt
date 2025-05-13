@@ -93,6 +93,10 @@ class MyExercisesFragment : Fragment(), SearchableExerciseList {
         adapter.setExercises(filtered)
     }
 
+    override fun loadDataAgain() {
+        viewModel.loadExercisesForCurrentUser()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

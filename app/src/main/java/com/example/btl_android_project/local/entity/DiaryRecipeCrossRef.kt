@@ -3,6 +3,7 @@ package com.example.btl_android_project.local.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.btl_android_project.local.enums.MealType
+import java.io.Serializable
 
 @Entity(
     tableName = "diary_recipe_cross_ref",
@@ -28,4 +29,4 @@ data class DiaryRecipeCrossRef(
     val userId: String,
     val servings: Int = 1,
     val mealType: MealType,
-)
+) : Serializable

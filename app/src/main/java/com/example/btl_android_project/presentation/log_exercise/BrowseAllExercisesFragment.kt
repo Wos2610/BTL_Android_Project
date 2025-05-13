@@ -23,9 +23,7 @@ class BrowseAllExercisesFragment : Fragment(), SearchableExerciseList {
 
     private val viewModel: AllExercisesViewModel by viewModels()
     private val adapter = ExerciseAdapter(
-        onExerciseClick = { exercise ->
-            showEditDialog(exercise)
-        },
+        onExerciseClick = {},
         onLogExerciseClick = { exercise ->
             viewModel.addExerciseDiary(
                 exerciseId = exercise.id,
@@ -65,36 +63,13 @@ class BrowseAllExercisesFragment : Fragment(), SearchableExerciseList {
         adapter.setExercises(filtered)
     }
 
+    override fun loadDataAgain() {
+        viewModel.loadAllExercises()
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun showEditDialog(exercise: Exercise) {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_exercise, null)
-        val etDescription = dialogView.findViewById<EditText>(R.id.etDialogDescription)
-        val etMinutes = dialogView.findViewById<EditText>(R.id.etDialogMinutes)
-        val etCalories = dialogView.findViewById<EditText>(R.id.etDialogCalories)
-
-        etDescription.setText(exercise.description)
-        etMinutes.setText(exercise.minutesPerformed.toString())
-        etCalories.setText(exercise.caloriesBurned.toString())
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Edit Exercise")
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                val updated = exercise.copy(
-                    description = etDescription.text.toString(),
-                    minutesPerformed = etMinutes.text.toString().toIntOrNull() ?: 0,
-                    caloriesBurned = etCalories.text.toString().toFloatOrNull() ?: 0f
-                )
-                viewModel.updateExercise(updated)
-            }
-            .setNegativeButton("Delete") { _, _ ->
-                viewModel.deleteExercise(exercise)
-            }
-            .setNeutralButton("Cancel", null)
-            .show()
     }
 }

@@ -68,6 +68,19 @@ class LogExerciseFragment : Fragment() {
             }
         }
 
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val currentFragment = childFragmentManager.findFragmentByTag("f${tab.position}")
+                when (currentFragment) {
+                    is MyExercisesFragment -> currentFragment.loadDataAgain()
+                    is BrowseAllExercisesFragment -> currentFragment.loadDataAgain()
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
     }
 
     override fun onDestroyView() {
