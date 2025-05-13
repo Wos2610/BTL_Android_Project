@@ -105,10 +105,7 @@ class DashboardFragment : Fragment() {
             description.isEnabled = false
             setDrawBorders(false)
 
-            setExtraOffsets(10f, 10f, 10f, 20f)
-
-            description.isEnabled = false
-            legend.textColor = ContextCompat.getColor(requireContext(), R.color.white)
+            setExtraOffsets(10f, 10f, 10f, 50f)
 
             xAxis.apply {
                 textColor = ContextCompat.getColor(requireContext(), R.color.white)
@@ -118,6 +115,8 @@ class DashboardFragment : Fragment() {
                 setAvoidFirstLastClipping(true)
                 position = XAxis.XAxisPosition.BOTTOM
                 labelRotationAngle = -45f
+                textSize = 10f
+                yOffset = 10f
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         val index = value.toInt()

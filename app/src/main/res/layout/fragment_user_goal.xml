@@ -107,7 +107,7 @@
             android:id="@+id/btnChangeWeightGoal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginHorizontal="16dp"
             android:text="Change Goal" />
 
         <Button
@@ -116,9 +116,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Save" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="36dp" />
     </LinearLayout>
 
-    <!-- Loading Overlay -->
     <FrameLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
