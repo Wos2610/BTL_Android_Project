@@ -59,7 +59,7 @@ interface DiaryExerciseCrossRefDao {
     suspend fun deleteByUserIdDiaryIdExerciseId(
         userId: String,
         diaryId: String,
-        exerciseId: Int
+        exerciseId: String
     )
 
     @Query("UPDATE diary_exercise_cross_ref SET servings = :servings WHERE userId = :userId AND diaryId = :diaryId AND exerciseId = :exerciseId")

@@ -68,7 +68,7 @@ class DiaryExerciseCrossRefRepository @Inject constructor(
     suspend fun deleteDiaryExerciseCrossRef(
         userId: String,
         diaryId: String,
-        exerciseId: Int
+        exerciseId: String
     ) {
         withContext(Dispatchers.IO) {
             diaryExerciseCrossRefDao.deleteByUserIdDiaryIdExerciseId(userId, diaryId, exerciseId)

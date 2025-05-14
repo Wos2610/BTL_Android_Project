@@ -2,10 +2,10 @@ package com.example.btl_android_project.repository
 
 import android.util.Log
 import com.example.btl_android_project.firestore.datasource.UserProfileFireStoreDataSourceImpl
-import com.example.btl_android_project.local.enums.ActivityLevel
-import com.example.btl_android_project.local.enums.WeightGoal
 import com.example.btl_android_project.local.dao.UserProfileDao
 import com.example.btl_android_project.local.entity.UserProfile
+import com.example.btl_android_project.local.enums.ActivityLevel
+import com.example.btl_android_project.local.enums.WeightGoal
 import com.example.btl_android_project.presentation.user_goal.UserProfileArgument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -332,6 +332,10 @@ class UserProfileRepository @Inject constructor(
 
         if (weightGoal == WeightGoal.GAIN_WEIGHT.name && weightDifference <= 0) {
             return "Invalid weight gain goal: target weight must be greater than current weight"
+        }
+
+        if (weightGoal == WeightGoal.MAINTAIN_WEIGHT.name && weightDifference != 0f) {
+            return "Invalid weight maintenance goal: target weight must be equal to current weight"
         }
 
         val safeWeightChangePerWeek = 0.5f

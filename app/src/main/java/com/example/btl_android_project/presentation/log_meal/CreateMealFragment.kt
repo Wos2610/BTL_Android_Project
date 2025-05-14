@@ -1,13 +1,13 @@
 package com.example.btl_android_project.presentation.log_meal
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,7 +22,6 @@ import com.example.btl_android_project.local.entity.Food
 import com.example.btl_android_project.local.entity.Recipe
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 @AndroidEntryPoint
 class CreateMealFragment : Fragment() {
@@ -55,6 +54,11 @@ class CreateMealFragment : Fragment() {
         setSaveButtonToolBarOnClickListener()
         setupRecyclerView()
         setItemTouchHelper()
+
+        binding.etMealName.doOnTextChanged {
+            text, _, _, _ ->
+            viewModel.mealName = text.toString()
+        }
 
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Recipe>("recipe")

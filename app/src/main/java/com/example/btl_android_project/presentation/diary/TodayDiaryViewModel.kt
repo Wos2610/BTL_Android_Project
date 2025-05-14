@@ -412,6 +412,16 @@ class TodayDiaryViewModel @Inject constructor(
                     onSuccess()
                 }
             }
+            else if(mealItem.type == Type.EXERCISE) {
+                viewModelScope.launch {
+                    exerciseLogRepository.deleteDiaryExerciseCrossRef(
+                        userId = currentUserId,
+                        diaryId = todayDiary.value!!.diary.id,
+                        exerciseId = mealItem.id
+                    )
+                    onSuccess()
+                }
+            }
         }
         else{
             onFailure()
@@ -489,6 +499,8 @@ class TodayDiaryViewModel @Inject constructor(
                     exerciseLogRepository.updateDiaryExerciseCrossRef(
                         exerciseCrossRef
                     )
+
+                    onSuccess()
                 }
             }
         }

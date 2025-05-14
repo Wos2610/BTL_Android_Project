@@ -130,7 +130,7 @@ class DiaryExerciseCrossRefFireStoreDataSourceImpl @Inject constructor(
     suspend fun deleteByUserIdDiaryIdExerciseId(
         userId: String,
         diaryId: String,
-        exerciseId: Int
+        exerciseId: String
     ): Int {
         return try {
             val documents = firestore.collection(COLLECTION_NAME)
